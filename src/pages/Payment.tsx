@@ -84,7 +84,7 @@ const Payment = () => {
 
 export const Element = styled.div`
   flex: 1;
-  font-size: 2rem;
+  font-size: 1.5rem;
 `;
 
 const Wrapper = styled.div`
@@ -96,6 +96,6 @@ const Contact = styled.div`
   flex: 2;
   flex-direction: column;
   padding: 0 1rem;
-`
+`;
 
 export default Payment;

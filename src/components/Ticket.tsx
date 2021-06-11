@@ -32,14 +32,15 @@ const Ticket = (props: PropsType) => {
       <Element>{ticket.name}</Element>
       <Element>{ticket.cost}€</Element>
       <Amount>
-        <LeftAmountButton onClick={() =>saveCart(ticket.id, amount - 1)}><Minus/></LeftAmountButton>
+        <LeftAmountButton aria-label="lisää" onClick={() =>saveCart(ticket.id, amount - 1)}><Minus/></LeftAmountButton>
         <AmountStyle 
           type="number"
           max="50"
           min="0"
-          onChange={updateAmount} 
+          onChange={updateAmount}
+          aria-label="määrä"
           value={amount} />
-        <RightAmountButton onClick={() =>saveCart(ticket.id, amount + 1)}>+</RightAmountButton>
+        <RightAmountButton aria-label="vähennä" onClick={() =>saveCart(ticket.id, amount + 1)}>+</RightAmountButton>
       </Amount>
     </Wrapper>
   );

@@ -32,20 +32,45 @@ const ContactForm = () => {
   }
   return (
     <Form onSubmit={handleSubmit}>
-      <Input {...firstName}   type="text" name="fname"   placeholder="Etunimi"       required/>
-      <Input {...lastName}    type="text" name="lname"   placeholder="Sukunimi"      required/>
-      <Input {...email}       type="email" name="email"  placeholder="Sähköposti"    required/>
-      <Input {...address}     type="text"  name="address" placeholder="Postiosoite"   required/>
-      <Input {...postalCode}  type="text"  name="postal_code" placeholder="Postinumero"   required/>
-      <Input {...city}        type="text"  name="city" placeholder="Postitoimipaikka"required/>
-      <Input {...phone}
-            type="tel"
-            title="Varmista että puhelinnumerossa ei ole välilyöntejä"
-            placeholder="Puhelinnumero"
-            pattern="[0-9+\-]*"
-            name="phone"
-            required/>
-      <TextArea {...extra}    placeholder="Erityistoiveita"/>
+      <Label>
+        Etunimi
+        <Input {...firstName}   type="text" name="fname"   placeholder="Etunimi"       required/>
+      </Label>
+      <Label>
+        Sukunimi
+        <Input {...lastName}    type="text" name="lname"   placeholder="Sukunimi"      required/>
+      </Label>
+
+      <Label>
+        Sähköposti
+        <Input {...email}       type="email" name="email"  placeholder="Sähköposti"    required/>
+      </Label>
+      <Label>
+        Postiosoite
+        <Input {...address}     type="text"  name="address" placeholder="Postiosoite"   required/>
+      </Label>
+      <Label>
+        Postinumero
+        <Input {...postalCode}  type="text"  name="postal_code" placeholder="Postinumero"   required/>
+      </Label>
+      <Label>
+        Postitoimipaikka
+        <Input {...city}        type="text"  name="city" placeholder="Postitoimipaikka"required/>
+      </Label>
+      <Label>
+        Puhelinnumero
+        <Input {...phone}
+              type="tel"
+              title="Varmista että puhelinnumerossa ei ole välilyöntejä"
+              placeholder="Puhelinnumero"
+              pattern="[0-9+\-]*"
+              name="phone"
+              required/>
+      </Label>
+      <Label>
+        Erityistoiveet
+        <TextArea {...extra}    placeholder="Erityistoiveita"/>
+      </Label>
       <Select name="country" id="country" defaultValue={0} disabled>
         <option value="finland">Suomi</option>
       </Select>
@@ -81,6 +106,10 @@ const Form = styled.form`
   width: 100%;
 `
 
+const Label = styled.label`
+  color: ${props => props.theme.neutralActive};
+`;
+
 const Input = styled.input`
   display: block;
   background: ${props => props.theme.backgroundColor};
@@ -89,10 +118,10 @@ const Input = styled.input`
   color: ${props => props.theme.textColor};
   font-size: 1.5rem;
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.5rem;
+  margin-bottom: 2rem;
   ::placeholder{
-    color: hsl(0, 0%, 60%);
+    //color: hsl(0, 0%, 60%);
+    color: ${props => props.theme.backgroundColor};
   }
   &:focus {
     outline-width: 0;
@@ -110,7 +139,8 @@ const TextArea = styled.textarea`
   color: ${props => props.theme.textColor};
   font-size: 1.5rem;
   ::placeholder{
-    color: hsl(0, 0%, 60%);
+    //color: hsl(0, 0%, 60%);
+    color: ${props => props.theme.backgroundColor};
   }
   padding: 0.5rem;
   margin-top: 0.5rem;

@@ -21,7 +21,7 @@ const Header = styled.header`
 `;
 
 const Logo = styled.img`
-  height: 100%;
+  height: 4rem;
   cursor: pointer;
 `;
 
