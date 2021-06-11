@@ -107,7 +107,8 @@ const Form = styled.form`
 `
 
 const Label = styled.label`
-  color: ${props => props.theme.neutralActive};
+  color: ${props => props.theme.neutral};
+  font-size: 1rem;
 `;
 
 const Input = styled.input`

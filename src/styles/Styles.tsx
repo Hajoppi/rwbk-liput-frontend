@@ -4,7 +4,7 @@ export const theme = {
   backgroundColor: "hsl(0,0%,100%)",
   light: "hsl(120,100%,100%)",
   textColor: "hsl(0,0%,10%)",
-  neutral: "hsl(0,0%,10%)",
+  neutral: "hsl(0,0%,50%)",
   neutralLight: "hsl(0,0%,80%)",
   neutralHover: "hsl(0,0%, 80%)",
   neutralActive: "hsl(0,0%, 65%)",
