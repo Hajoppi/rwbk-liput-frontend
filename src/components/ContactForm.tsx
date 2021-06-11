@@ -32,17 +32,18 @@ const ContactForm = () => {
   }
   return (
     <Form onSubmit={handleSubmit}>
-      <Input {...firstName}   type="text"   placeholder="Etunimi"       required/>
-      <Input {...lastName}    type="text"   placeholder="Sukunimi"      required/>
-      <Input {...email}       type="email"  placeholder="Sähköposti"    required/>
-      <Input {...address}     type="text"   placeholder="Postiosoite"   required/>
-      <Input {...postalCode}  type="text"   placeholder="Postinumero"   required/>
-      <Input {...city}        type="text"   placeholder="Postitoimipaikka"required/>
+      <Input {...firstName}   type="text" name="fname"   placeholder="Etunimi"       required/>
+      <Input {...lastName}    type="text" name="lname"   placeholder="Sukunimi"      required/>
+      <Input {...email}       type="email" name="email"  placeholder="Sähköposti"    required/>
+      <Input {...address}     type="text"  name="address" placeholder="Postiosoite"   required/>
+      <Input {...postalCode}  type="text"  name="postal_code" placeholder="Postinumero"   required/>
+      <Input {...city}        type="text"  name="city" placeholder="Postitoimipaikka"required/>
       <Input {...phone}
             type="tel"
             title="Varmista että puhelinnumerossa ei ole välilyöntejä"
             placeholder="Puhelinnumero"
             pattern="[0-9+\-]*"
+            name="phone"
             required/>
       <TextArea {...extra}    placeholder="Erityistoiveita"/>
       <Select name="country" id="country" defaultValue={0} disabled>
@@ -60,7 +61,7 @@ const useFormInput = (initialValue: string) => {
   const [value, setValue] = useState(initialValue);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setValue(e.target.value)
+    setValue(e.target.value);
   }
   const handleReset = () => {
     setValue("");
