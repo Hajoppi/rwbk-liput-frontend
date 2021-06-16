@@ -12,12 +12,11 @@ type TicketType = {
 
 type PropsType = {
   ticket: TicketType;
-  isLast: boolean;
 }
 
 
 const Ticket = (props: PropsType) => {
-  const {ticket, isLast} = props;
+  const {ticket} = props;
   const {cart, saveCart} = useContext(CartContext);
 
   const updateAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +27,7 @@ const Ticket = (props: PropsType) => {
 
   const amount = cart.find(cartTicket => cartTicket.id === ticket.id)?.amount || 0;
   return (
-    <Wrapper isLast={isLast}>
+    <Wrapper>
       <Element>{ticket.name}</Element>
       <Element>{ticket.cost}€</Element>
       <Amount>
@@ -58,6 +57,7 @@ const RightAmountButton = styled(Button)`
   padding: 0;
   height: 100%;
   width: 100%;
+  flex: 1;
   font-size: 2rem;
   border-left: none;
   border-radius: 0 5px 5px 0;
@@ -75,14 +75,17 @@ export const Element = styled.div`
   font-size: 1.25rem;
 `;
 
-const Wrapper = styled.div<{isLast: boolean}>`
+const Wrapper = styled.div`
   position: relative;
   padding: 1.5rem 3rem;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   height: 3rem;
-  border-bottom: ${({isLast}) => isLast ? 'none' : '2px solid hsla(0,0%,80%)'};
+  border-bottom: 2px solid hsla(0,0%,80%);
+  &:last-child {
+    border-bottom: none;
+  }
   @media only screen and (max-width: ${props => props.theme.commonWidth}) {
     padding: 1.5rem 1rem;
   }
@@ -102,6 +105,7 @@ const AmountStyle = styled.input`
   position: relative;
   border: 2px solid hsla(0,0%,80%);
   flex: 1;
+  width: 100%;
   font-size: 1.5rem;
   height: 100%;
   text-align: center;

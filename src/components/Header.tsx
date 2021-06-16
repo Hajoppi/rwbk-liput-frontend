@@ -6,7 +6,7 @@ const HeaderComponent = () => {
   const history = useHistory();
   return (
     <Header>
-      <Logo src={logo} alt="RWBK logo" onClick={() => history.push('/')}></Logo>
+      <Logo height="4rem" src={logo} alt="RWBK logo" onClick={() => history.push('/')}></Logo>
     </Header> 
   )
 }

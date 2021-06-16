@@ -20,7 +20,7 @@ const Home = () => {
     <Tickets>
       <h2>Konserttiliput</h2>
       {cart.map( (ticket,index) => (
-        <Ticket ticket={ticket} isLast={index===cart.length-1} key={ticket.id}></Ticket>
+        <Ticket ticket={ticket} key={ticket.id}></Ticket>
       ))}
     </Tickets>
     <Total>Yhteensä: {cartTotal} €</Total>
