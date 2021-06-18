@@ -1,13 +1,12 @@
 import ContactForm from '../components/ContactForm';
-import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 import { CartContext } from '../contexts/CartContext';
 import { useContext } from 'react';
 
 const Contact = () => {
   const { cartTotal } = useContext(CartContext);
-  const history = useHistory();
-  if (!cartTotal) history.push('/');
+  if (!cartTotal) return <Redirect to="/"/>
   return (
     <Base>
       <Heading>Yhteystiedot</Heading>
