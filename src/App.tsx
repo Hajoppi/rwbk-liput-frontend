@@ -6,13 +6,8 @@ import {
 } from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
-import CartProvider from './contexts/CartContext';
-import ContactProvider from './contexts/ContactContext';
-import AuthProvider from './contexts/AuthContext';
-import { GlobalStyle, theme } from './styles/Styles';
-
-
-import { ThemeProvider } from 'styled-components';
+import MultiProvider from './contexts/MultiProvider';
+import { GlobalStyle } from './styles/Styles';
 
 const Contact = React.lazy(() => import('./pages/Contact'));
 const Home = React.lazy(() => import('./pages/Home'));
@@ -27,43 +22,34 @@ const App = () => {
       <Router>
         <GlobalStyle></GlobalStyle>
         <Header></Header>
-        <CartProvider>
-          <ContactProvider>
-            <AuthProvider>
-              <ThemeProvider theme={theme}>
-                <Switch>
-                  <Route path="/yhteystiedot">
-                    <Contact />
-                  </Route>
-                  <Route path="/maksu">
-                    <Payment />
-                  </Route>
-                  <Route path="/success">
-                    <Callback />
-                  </Route>
-                  <Route path="/cancel">
-                    <Callback />
-                  </Route>
-                  <ProtectedRoute path="/admin">
-                      <Admin />
-                  </ProtectedRoute>
-                  <Route path="/login">
-                    <Login />
-                  </Route>
-                  <Route path="/">
-                    <Home />
-                  </Route>
-                </Switch>
-              </ThemeProvider>
-            </AuthProvider>
-          </ContactProvider>
-        </CartProvider>
+        <MultiProvider>
+          <Switch>
+            <Route path="/yhteystiedot">
+              <Contact />
+            </Route>
+            <Route path="/maksu">
+              <Payment />
+            </Route>
+            <Route path="/success">
+              <Callback />
+            </Route>
+            <Route path="/cancel">
+              <Callback />
+            </Route>
+            <ProtectedRoute path="/admin">
+                <Admin />
+            </ProtectedRoute>
+            <Route path="/kirjaudu">
+                <Login />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </MultiProvider>
       </Router>
     </React.Suspense>
   );
 }
-
-
-
 
 export default App;

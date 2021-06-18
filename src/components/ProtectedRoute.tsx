@@ -15,7 +15,7 @@ const ProtectedRoute: React.FC<RouteProps> = ({children, ...rest}) => {
     }
   );
   const { loggedIn } = useContext(AuthContext);
-  return loggedIn ? <Route {...rest}>{children}</Route> : <Redirect to="/login"/>
+  return loggedIn ? <Route {...rest}>{children}</Route> : <Redirect to="/kirjaudu"/>
 }
 
 export default ProtectedRoute;
