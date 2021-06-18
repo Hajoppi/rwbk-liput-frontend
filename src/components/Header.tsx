@@ -9,7 +9,7 @@ const HeaderComponent = () => {
       <Logo height="4rem" src={logo} alt="RWBK logo" onClick={() => history.push('/')}></Logo>
     </Header> 
   )
-}
+};
 
 
 const Header = styled.header`

@@ -89,3 +89,27 @@ export const Base = styled.div`
   max-width: ${theme.commonWidth};
   width: 100%;
 `;
+
+export const Label = styled.label`
+  color: ${props => props.theme.neutral};
+  font-size: 1rem;
+`;
+
+export const Input = styled.input`
+  display: block;
+  background: ${props => props.theme.backgroundColor};
+  border: none;
+  border-bottom: solid 2px ${props => props.theme.neutralLight};
+  color: ${props => props.theme.textColor};
+  font-size: 1.5rem;
+  width: 100%;
+  margin-bottom: 2rem;
+  ::placeholder{
+    //color: hsl(0, 0%, 60%);
+    color: ${props => props.theme.backgroundColor};
+  }
+  &:focus {
+    outline-width: 0;
+    border-color: ${props => props.theme.neutralActive};
+  }
+`;

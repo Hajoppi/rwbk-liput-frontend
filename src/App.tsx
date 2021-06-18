@@ -7,6 +7,7 @@ import {
 import Header from './components/Header';
 import CartProvider from './contexts/CartContext';
 import ContactProvider from './contexts/ContactContext';
+import AuthProvider from './contexts/AuthContext';
 import { GlobalStyle, theme } from './styles/Styles';
 
 
@@ -16,6 +17,7 @@ const Contact = React.lazy(() => import('./pages/Contact'));
 const Home = React.lazy(() => import('./pages/Home'));
 const Callback = React.lazy(() => import('./pages/Callback'));
 const Payment = React.lazy(() => import('./pages/Payment'));
+const Admin = React.lazy(() => import('./pages/Admin'));
 
 
 const App = () => {
@@ -39,6 +41,11 @@ const App = () => {
               </Route>
               <Route path="/cancel">
                 <Callback />
+              </Route>
+              <Route path="/admin">
+                <AuthProvider>
+                  <Admin />
+                </AuthProvider>
               </Route>
               <Route path="/">
                 <Home />

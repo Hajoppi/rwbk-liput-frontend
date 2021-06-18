@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Order from '../components/Order';
 import { Button, BackButton, Base } from '../styles/Styles';
@@ -25,24 +25,34 @@ const Form = ({ formFields }: FormProps) => (
 
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
-  const { cart } = useContext(CartContext);
+  const [giftCard, setGiftCard] = useState('');
+  const { cart, giftCards, addGiftCard } = useContext(CartContext);
   const [formFields, setFormFields] = useState<Record<string,string>>({});
   const history = useHistory();
+  const handleGiftCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setGiftCard(e.target.value);
+  }
+  const submitClick = () => {
+    addGiftCard(giftCard);
+  }
   useEffect(() => {
     if (!cart.length) history.push('/');
     if (!customerInfo.firstName.length) history.push('/yhteystiedot');
     const orderNumber = sessionStorage.getItem('order') || '';
+    console.log(giftCards);
     proxy.post<Record<string,string>>('/payment/create',
       {
         cart: cart.filter(ticket => ticket.amount > 0),
         customerInfo,
+        giftCards,
         orderNumber,
       }).then((response) => {
-      const {data} = response;
+      const { data } = response;
       sessionStorage.setItem('order', data.ORDER_NUMBER)
       setFormFields(data);
     });
-  },[cart, customerInfo, history]);
+  },[cart, giftCards, customerInfo, history]);
   
   return (
     <>
@@ -71,8 +81,14 @@ const Payment = () => {
           {customerInfo.extra}
         </Element>
       </Contact>
+      {giftCards}
       <Order></Order>
     </Base>
+      <Label>
+        Lahjakortti
+        <Input type="text" name="giftCard" onChange={handleGiftCardChange}></Input>
+      </Label>
+      <Button onClick={submitClick}>Lisää Lahjakortti</Button>
     <Wrapper>
       <BackButton onClick={() => history.push('/yhteystiedot')}>Takaisin</BackButton>
       <Form formFields={formFields}></Form>
@@ -80,8 +96,27 @@ const Payment = () => {
     </>
   );
 }
-
-
+const Label = styled.label`
+  color: ${props => props.theme.neutral};
+  font-size: 1rem;
+`;
+const Input = styled.input`
+  display: block;
+  background: ${props => props.theme.backgroundColor};
+  border: solid 2px ${props => props.theme.neutralLight};
+  color: ${props => props.theme.textColor};
+  font-size: 1.5rem;
+  width: 100%;
+  margin-bottom: 2rem;
+  ::placeholder{
+    //color: hsl(0, 0%, 60%);
+    color: ${props => props.theme.backgroundColor};
+  }
+  &:focus {
+    outline-width: 0;
+    border-color: ${props => props.theme.neutralActive};
+  }
+`;
 export const Element = styled.div`
   flex: 1;
   font-size: 1.5rem;
