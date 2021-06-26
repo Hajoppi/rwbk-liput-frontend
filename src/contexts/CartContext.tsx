@@ -1,17 +1,18 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import { proxy } from "../utils/axios";
 
 
-type TicketType = {
+type Ticket = {
+  id: string;
   name: string;
   cost: number;
-  id: string;
-  amount: number
+  amount: number;
 }
 
 const MAX_ORDER_LIMIT = 50;
 
 export interface CartContextType {
-  cart: TicketType[];
+  cart: Ticket[];
   giftCards: string[];
   saveCart: (ticketId: string, amount: number) => void;
   resetCart: () => void;
@@ -20,30 +21,7 @@ export interface CartContextType {
 }
 
 const cartContextDefault = {
-  cart: [{
-    name: 'Deluxe',
-    id: '0312',
-    cost: 65,
-    amount: 0
-  },
-  {
-    name: '1. Luokka',
-    id: '0231',
-    cost: 45,
-    amount: 0
-  },
-  {
-    name: '2. Luokka',
-    id: '0123',
-    cost: 30,
-    amount: 0
-  },
-  {
-    name: 'Opiskelija',
-    id: '0132',
-    cost: 15,
-    amount: 0
-  }],
+  cart: [],
   giftCards: [],
   saveCart: () => null,
   resetCart: () => null,
@@ -55,10 +33,15 @@ export const CartContext = createContext<CartContextType>(cartContextDefault);
 
 const CartProvider: React.FC = ({ children }) => {
   const storage = sessionStorage.getItem('cart')
-  const savedCart = storage ? JSON.parse(storage) as TicketType[] : cartContextDefault.cart
-  const [cart, updateCart] = useState<TicketType[]>(savedCart);
+  const savedCart = storage ? JSON.parse(storage) as Ticket[] : cartContextDefault.cart;
+  const [cart, updateCart] = useState<Ticket[]>(savedCart);
   const [giftCards, setGiftCards] = useState<string[]>(cartContextDefault.giftCards);
-  
+  useEffect(() => {
+    proxy.get<Ticket[]>('/payment/tickets').then(response => {
+      const tickets = response.data.map(ticket=> ({...ticket, amount: 0}));
+      updateCart(tickets);
+    });
+  },[])
   const saveCart = (ticketId: string, amount: number): void => {
     const newCart = [...cart]
     const ticket = newCart.find(ticket => ticket.id === ticketId)

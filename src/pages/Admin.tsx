@@ -1,17 +1,49 @@
-import { useContext, useEffect } from 'react';
-import { AuthContext } from "../contexts/AuthContext";
-import { Button } from '../styles/Styles';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { proxy } from '../utils/axios';
 
+type TicketType = {
+  name: string;
+  cost: number;
+  id: string;
+  amount: number;
+}
+
+type Order = {
+  id: string;
+  status: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalcode: string;
+  extra: string;
+  created: string;
+  tickets: TicketType[];
+}
+
+const Orders = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+`
+
 const Admin = () => {
-  const { logout } = useContext(AuthContext);
+  const [orders, setOrders] = useState<Order[]>([]);
   useEffect(() => {
-    proxy.get('/admin/test').then(console.log);
-  })
+    proxy.get<Order[]>('/admin/orders').then((response) => {
+      setOrders(response.data);
+    });
+  },[])
   return (
     <>
-    <div>Kirjautunut</div>
-    <Button onClick={logout}>Kirjaudu ulos</Button>
+    <Orders>
+      {orders.map(order => {
+        return <div key={order.id}>{order.id}</div>
+      })}
+    </Orders>
     </>
   )
 }
