@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import SeatMap from '../components/SeatMap';
 import { proxy } from '../utils/axios';
 
-type TicketType = {
-  name: string;
-  cost: number;
+type Ticket = {
   id: string;
-  amount: number;
+  seat?: string;
+  name: string;
 }
 
 type Order = {
@@ -21,14 +21,23 @@ type Order = {
   postalcode: string;
   extra: string;
   created: string;
-  tickets: TicketType[];
+  tickets: Ticket[];
 }
 
 const Orders = styled.div`
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: block;
+  width: 100%;
+  max-width: 768px;
+`;
+const Item = styled.div`
+  flex: 1;
 `
+const Flex = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+`;
 
 const Admin = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -39,9 +48,21 @@ const Admin = () => {
   },[])
   return (
     <>
+    <SeatMap/>
     <Orders>
-      {orders.map(order => {
-        return <div key={order.id}>{order.id}</div>
+      <Flex>
+        <Item><b>Päivämäärä</b></Item>
+        <Item><b>Lippuja</b></Item>
+        <Item><b>status</b></Item>
+      </Flex>
+      {orders.map((order, index) => {
+        return (
+        <Flex key={order.id}>
+          <Item>{new Date(order.created).toLocaleDateString()}</Item>
+          <Item>{order.tickets.reduce((a,b) => a + (b.seat === null ? 1 : 0), 0)}</Item>
+          <Item>{order.status}</Item>
+        </Flex>
+        );
       })}
     </Orders>
     </>

@@ -40,7 +40,6 @@ const Payment = () => {
     if (!cart.length) history.push('/');
     if (!customerInfo.firstName.length) history.push('/yhteystiedot');
     const orderNumber = sessionStorage.getItem('order') || '';
-    console.log(giftCards);
     proxy.post<Record<string,string>>('/payment/create',
       {
         cart: cart.filter(ticket => ticket.amount > 0),

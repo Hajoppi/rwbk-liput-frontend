@@ -32,16 +32,18 @@ const cartContextDefault = {
 export const CartContext = createContext<CartContextType>(cartContextDefault);
 
 const CartProvider: React.FC = ({ children }) => {
-  const storage = sessionStorage.getItem('cart')
+  const storage = sessionStorage.getItem('cart');
   const savedCart = storage ? JSON.parse(storage) as Ticket[] : cartContextDefault.cart;
   const [cart, updateCart] = useState<Ticket[]>(savedCart);
   const [giftCards, setGiftCards] = useState<string[]>(cartContextDefault.giftCards);
   useEffect(() => {
-    proxy.get<Ticket[]>('/payment/tickets').then(response => {
-      const tickets = response.data.map(ticket=> ({...ticket, amount: 0}));
-      updateCart(tickets);
-    });
-  },[])
+    if(cart.length === 0) {
+      proxy.get<Ticket[]>('/payment/tickets').then(response => {
+        const tickets = response.data.map(ticket=> ({...ticket, amount: 0}));
+        updateCart(tickets);
+      });
+    }
+  },[cart])
   const saveCart = (ticketId: string, amount: number): void => {
     const newCart = [...cart]
     const ticket = newCart.find(ticket => ticket.id === ticketId)
