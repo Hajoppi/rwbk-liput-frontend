@@ -4,7 +4,6 @@ import { CartContext } from '../contexts/CartContext';
 
 const Order = () => {
   const { cart, cartTotal } = useContext(CartContext);
-  console.log(cart);
   return (
     <StyledOrder>
     <h2>Tilauksesi</h2>

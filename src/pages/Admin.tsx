@@ -1,28 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext } from 'react';
+import { useHistory } from 'react-router';
 import styled from 'styled-components';
-import SeatMap from '../components/SeatMap';
-import { proxy } from '../utils/axios';
-
-type Ticket = {
-  id: string;
-  seat?: string;
-  name: string;
-}
-
-type Order = {
-  id: string;
-  status: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  postalcode: string;
-  extra: string;
-  created: string;
-  tickets: Ticket[];
-}
+import { AdminContext } from '../contexts/AdminContext';
+import { Button } from '../styles/Styles';
 
 const Orders = styled.div`
   position: relative;
@@ -40,27 +20,24 @@ const Flex = styled.div`
 `;
 
 const Admin = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  useEffect(() => {
-    proxy.get<Order[]>('/admin/orders').then((response) => {
-      setOrders(response.data);
-    });
-  },[])
+  const { orders } = useContext(AdminContext);
+  const history = useHistory();
   return (
     <>
-    <SeatMap/>
     <Orders>
       <Flex>
         <Item><b>Päivämäärä</b></Item>
         <Item><b>Lippuja</b></Item>
         <Item><b>status</b></Item>
+        <Item></Item>
       </Flex>
-      {orders.map((order, index) => {
+      {orders.map((order) => {
         return (
         <Flex key={order.id}>
           <Item>{new Date(order.created).toLocaleDateString()}</Item>
-          <Item>{order.tickets.reduce((a,b) => a + (b.seat === null ? 1 : 0), 0)}</Item>
+          <Item>{order.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)}</Item>
           <Item>{order.status}</Item>
+          <Item><Button onClick={() => history.push(`/admin/order/${order.id}`)}>Place</Button></Item>
         </Flex>
         );
       })}

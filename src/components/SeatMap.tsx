@@ -1,28 +1,55 @@
 import styled from 'styled-components';
 import permantoSeats from '../assets/permanto.json';
-import React, { useState } from 'react';
+import parvekeSeats from '../assets/parveke.json';
+import React, { useEffect, useState } from 'react';
+import { proxy } from '../utils/axios';
 
 const generateSeats = (row: number[]) => {
   const [end, start] = row;
-  const nums = Array.from({length: end-start + 1}, (_, i) => i + start).reverse();
+  const nums = Array.from(
+    {length: Math.abs(end-start) + 1},
+    (_, i) => i + Math.min(start,end)
+  );
+  if (end > start) nums.reverse();
   return nums;
 }
 
-const Seat = styled.span`
-  font-size: 0.75rem;
-  height: 1rem;
-  width: 2rem;
-  display: inline-block;
+type Ticket = {
+  id: string;
+  name: string;
+  seat_number?: number;
+  row_number?: number;
+  location?: string;
+  created: string;
+}
+
+
+type SeatProp = {
+  taken: boolean;
+}
+
+const Seat = styled.span<SeatProp>`
+  font-size: 1rem;
+  height: 24px;
+  width: 40px;
+  margin: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   border: 1px solid black;
-
+  background-color: ${props => props.taken ? 'red' : props.theme.backgroundColor};
 `
 const Row = styled.span`
-  overflow-wrap: none;
 `
 
+const Label = styled.label`
+  margin-left: 8px;
+  margin-right: 8px;
+`;
+
 const Section = styled.div`
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -36,39 +63,123 @@ const Select = styled.div`
   justify-content: center;
 `;
 
-type sectionTypes = "left" | "center" | "right";
+const sections = [
+  'permantoA',
+  'permantoBVasen',
+  'permantoBOikea',
+  'permantoCVasen',
+  'permantoCOikea',
+  'permantoD',
+  'parvekeA',
+  'parvekeBVasen',
+  'parvekeBKeski',
+  'parvekeBOikea',
+  'parvekeCVasen',
+  'parvekeCKeski',
+  'parvekeCOikea',
+  'parvekeDVasen',
+  'parvekeDOikea',
+] as const;
 
-const SelectedSection = ({ section }: {section: sectionTypes}) => {
-  const seats = [...permantoSeats[section]].map((row,index) => (
-    <div>
+type Sections = typeof sections[number];
+type Locations = 'permanto' | 'parveke';
+
+type SectionPropType = {
+  setTicketPlace: (seat: number, row: number, location: string) => void;
+  section: Sections;
+  takenSeats: Ticket[];
+}
+const SelectedSection = ({ section, takenSeats, setTicketPlace }: SectionPropType) => {
+  const allSeats = {...parvekeSeats, ...permantoSeats};
+  const seatNumbers = takenSeats.map(seat => seat.seat_number);
+  const seats = [...allSeats[section]].map((row,index) => (
+    <div key={`${section}-${index+1}`}>
       <b>{index+1}</b>
-      <Row key={`right-${index+1}`}>
-        {generateSeats(row).map(seat => <Seat key={seat}>{seat}</Seat>)}
+      <Row >
+        {generateSeats(row).map(seat => 
+          <Seat
+            taken={seatNumbers.indexOf(seat) > -1}
+            key={`${section}-${seat}`}
+            onClick={() => setTicketPlace(seat, index+1, section)}>
+              {seat}
+          </Seat>)}
       </Row>
     </div>
-  ))
+  ));
   return (
     <Section>
     {seats.reverse()}
   </Section>
   )
 }
-const SeatMap = () => {
-  const [section, setSection] = useState<sectionTypes>('center');
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSection(e.target.value as sectionTypes);
+
+type PropType = {
+  ticket: Ticket;
+}
+
+const SeatMap = ({ticket}: PropType) => {
+  const [section, setSection] = useState<Sections>('permantoBVasen');
+  const [location, setLocation] = useState<Locations>('permanto');
+  const [takenSeats, setTakenSeats] = useState<Ticket[]>([]);
+  const handleSectionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSection = e.target.value as Sections;
+    setSection(newSection);
+  }
+  const setTicketPlace = (seat: number, row: number, location: string) => {
+    proxy.post(`/admin/tickets`, {
+      id: ticket.id,
+      seat_number: seat,
+      row_number: row,
+      location,
+    }).then(() => {
+      proxy.get<Ticket[]>(`/admin/tickets/${section}`).then((response) => {
+        setTakenSeats(response.data);
+      });
+    }).catch();
+  }
+  useEffect(() => {
+    proxy.get<Ticket[]>(`/admin/tickets/${section}`).then((response) => {
+      setTakenSeats(response.data);
+    });
+  },[section]);
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const location = e.target.value as Locations
+    setLocation(location);
+    setSection(location === 'permanto' ? 'permantoBVasen' : 'parvekeA');
+  }
+  const commonRadioParams = {
+    onChange: handleSectionChange,
+    name: 'section',
+    type: 'radio',
   }
   return (
     <All>
-      <Select onChange={handleChange}>
-        <input type="radio" value="left"   name="section" checked={section==='left'} />Vasen
-        <input type="radio" value="center" name="section" checked={section==='center'} />Keski
-        <input type="radio" value="right"  name="section" checked={section==='right'}/>Oikea
+      <Select>
+        <input onChange={handleLocationChange} type="radio" value="permanto"  name="location" checked={location==='permanto'}/>Permanto
+        <input onChange={handleLocationChange} type="radio" value="parveke"  name="location" checked={location==='parveke'}/>Parveke
       </Select>
-      <SelectedSection section={section}></SelectedSection>
+      <Select>
+        {
+        sections
+          .filter(s => s.indexOf(location) >= 0)
+          .map(s =>(
+            <Label key={s}>
+              {s}<br></br>
+              <input {...commonRadioParams} value={s} checked={s===section} />
+            </Label>
+          )
+          )
+        }
+      </Select>
+      <SelectedSection
+        takenSeats={takenSeats}
+        setTicketPlace={setTicketPlace}
+        section={section}
+        />
     </All>
 
   )
 }
+
 
 export default SeatMap;

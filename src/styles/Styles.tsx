@@ -56,7 +56,7 @@ export const Button = styled.button`
   background: ${theme.backgroundColor};
   border: 2px solid ${theme.neutralLight};
   border-radius: 5px;
-  padding: 1rem;
+  padding: 0.5rem;
   @media (hover: hover) {
     &:hover:enabled {
       background: ${theme.neutralLight};

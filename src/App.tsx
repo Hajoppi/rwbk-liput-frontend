@@ -15,6 +15,7 @@ const Callback = React.lazy(() => import('./pages/Callback'));
 const Payment = React.lazy(() => import('./pages/Payment'));
 const Admin = React.lazy(() => import('./pages/Admin'));
 const Login = React.lazy(() => import('./pages/Login'));
+const PlaceOrder = React.lazy(() => import('./pages/PlaceOrder'));
 
 const App = () => {
   return (
@@ -36,8 +37,11 @@ const App = () => {
             <Route path="/cancel">
               <Callback />
             </Route>
-            <ProtectedRoute path="/admin">
+            <ProtectedRoute path="/admin" exact>
                 <Admin />
+            </ProtectedRoute>
+            <ProtectedRoute path="/admin/order/:orderId" exact>
+                <PlaceOrder />
             </ProtectedRoute>
             <Route path="/kirjaudu">
                 <Login />
