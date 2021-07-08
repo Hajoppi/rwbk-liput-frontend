@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useMemo, useCallback } from "react";
 import { proxy } from "../utils/axios";
 
 
@@ -20,7 +20,7 @@ export interface CartContextType {
   cartTotal: number;
 }
 
-const cartContextDefault = {
+const cartContextDefault: CartContextType = {
   cart: [],
   giftCards: [],
   saveCart: () => null,
@@ -55,13 +55,16 @@ const CartProvider: React.FC = ({ children }) => {
   const addGiftCard = (giftCardId: string) => {
     setGiftCards([...giftCards, giftCardId]);
   }
-  const resetCart = () => {
-    updateCart(cartContextDefault.cart)
+  const resetCart = useCallback(() => {
+    let newCart = cartContextDefault.cart
+    updateCart(newCart)
     sessionStorage.removeItem('cart');
-  }
+  },[]);
+  
+  const itemsSetters = useMemo(() => ({ resetCart }), [resetCart])
   const cartTotal = cart.reduce((a,b) => a + b.amount*b.cost,0)
   return (
-    <CartContext.Provider value={{cart, saveCart, cartTotal, resetCart, giftCards, addGiftCard}}>
+    <CartContext.Provider value={{cart, saveCart, cartTotal, ...itemsSetters, giftCards, addGiftCard}}>
       {children}
     </CartContext.Provider>
   );
