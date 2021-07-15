@@ -19,8 +19,8 @@ const Home = () => {
     </Wrapper>
     <Tickets>
       <h2>Konserttiliput</h2>
-      {cart.map( (ticket,index) => (
-        <Ticket ticket={ticket} key={ticket.id}></Ticket>
+      {cart.map( (ticket) => (
+        <Ticket item={ticket} key={ticket.id}></Ticket>
       ))}
     </Tickets>
     <Total>Yhteensä: {cartTotal} €</Total>

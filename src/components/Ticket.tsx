@@ -3,35 +3,35 @@ import styled from 'styled-components';
 import {Button} from '../styles/Styles';
 import { CartContext } from '../contexts/CartContext';
 
-type TicketType = {
+type CartItem = {
+  id: string;
   name: string;
   cost: number;
-  id: string;
   amount: number;
 }
 
 type PropsType = {
-  ticket: TicketType;
+  item: CartItem;
 }
 
 
 const Ticket = (props: PropsType) => {
-  const {ticket} = props;
+  const { item } = props;
   const {cart, saveCart} = useContext(CartContext);
 
   const updateAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
     const number = Number(event.target.value);
     event.target.value = String(number);
-    saveCart(ticket.id, number);
+    saveCart(item.id, number);
   };
 
-  const amount = cart.find(cartTicket => cartTicket.id === ticket.id)?.amount || 0;
+  const amount = cart.find(ticket => ticket.id === item.id)?.amount || 0;
   return (
     <Wrapper>
-      <Element>{ticket.name}</Element>
-      <Element>{ticket.cost}€</Element>
+      <Element>{item.name}</Element>
+      <Element>{item.cost}€</Element>
       <Amount>
-        <LeftAmountButton aria-label="lisää" onClick={() =>saveCart(ticket.id, amount - 1)}><Minus/></LeftAmountButton>
+        <LeftAmountButton aria-label="lisää" onClick={() =>saveCart(item.id, amount - 1)}><Minus/></LeftAmountButton>
         <AmountStyle 
           type="number"
           max="50"
@@ -39,7 +39,7 @@ const Ticket = (props: PropsType) => {
           onChange={updateAmount}
           aria-label="määrä"
           value={amount} />
-        <RightAmountButton aria-label="vähennä" onClick={() =>saveCart(ticket.id, amount + 1)}>+</RightAmountButton>
+        <RightAmountButton aria-label="vähennä" onClick={() =>saveCart(item.id, amount + 1)}>+</RightAmountButton>
       </Amount>
     </Wrapper>
   );

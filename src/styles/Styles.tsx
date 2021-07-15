@@ -5,7 +5,9 @@ export const theme = {
   light: "hsl(120,100%,100%)",
   textColor: "hsl(0,0%,10%)",
   neutral: "hsl(0,0%,50%)",
+  error: "hsl(0,30%,50%)",
   neutralLight: "hsl(0,0%,80%)",
+  neutralFade: "hsl(0,0%,90%)",
   neutralHover: "hsl(0,0%, 80%)",
   neutralActive: "hsl(0,0%, 65%)",
   neutralDisabled: "hsla(0,0%, 20%,0.2)",
@@ -80,6 +82,7 @@ export const Button = styled.button`
 
 export const BackButton = styled(Button)`
   padding: 0 0.1rem;
+  font-size: 1.25rem;
 `
 
 export const Base = styled.div`

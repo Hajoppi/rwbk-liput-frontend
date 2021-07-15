@@ -86,6 +86,12 @@ const ContactForm = () => {
 
 const Wrapper = styled.div`
   display: flex;
+  width: 100%;
+  max-width: 200px;
+  margin: auto;
+  &> * {
+    margin: 0 4px;
+  }
 `
 
 const Form = styled.form`
