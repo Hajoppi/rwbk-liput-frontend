@@ -26,7 +26,7 @@ const CallbackPage = () => {
     }
     const parsed = parseQueryString(queryString);
     setPaymentStatus(parsed.STATUS);
-    proxy.post('/payment/verify',{data: parsed}).then(() => {
+    proxy.post('/order/verify',{data: parsed}).then(() => {
       setValid(true)
     }).catch(() => {
       setValid(false);

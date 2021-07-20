@@ -3,119 +3,145 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Order from '../components/Order';
 import { Button, BackButton, Base } from '../styles/Styles';
-import { ContactContext } from "../contexts/ContactContext";
-import { CartContext } from "../contexts/CartContext";
+import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
+import { CartContext, GiftCard } from "../contexts/CartContext";
 import { proxy } from '../utils/axios';
 
 
-interface FormProps {
-  formFields: Record<string,string>
-}
 
-type CartItem = {
-  id: string;
-  name: string;
-  cost: number;
-  amount: number;
-}
-
-const Form = ({ formFields }: FormProps) => (
-  <form action="https://payment.paytrail.com/e2" method="post">
-    {
-      Object.keys(formFields).map((key) => 
-          <input name={key} type="hidden" value={formFields[key]} key={key} />
-        )
-    }
-    <Button as="input" type="submit" value="Maksa"/>
-  </form>
-)
+const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
+  <Contact>
+    <h2>Yhteystiedot</h2>
+    <Element>
+      {customerInfo.firstName} {customerInfo.lastName}
+    </Element>
+    <Element>
+      {customerInfo.email}
+    </Element>
+    <Element>
+      {customerInfo.phone}
+    </Element>
+    <Element>
+      {customerInfo.address}
+    </Element>
+    <Element>
+      {customerInfo.city}
+    </Element>
+    <Element>
+      {customerInfo.postalCode}
+    </Element>
+    <Element>
+      {customerInfo.extra}
+    </Element>
+</Contact>
+);
 
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
-  const [ orderId, setOrderId] = useState('');
+  const [ isSubmitting, setSubmitting ] = useState(false);
+  const [ error, setError ] = useState('');
+  const [ orderId, setOrderId ] = useState('');
   const [ giftCard, setGiftCard ] = useState('');
   const [ giftCardError, setGiftCardError ] = useState('');
-  const { cart, addItemToCart } = useContext(CartContext);
-  const [formFields, setFormFields] = useState<Record<string,string>>({});
+  const { cart, giftCards, addGiftCard } = useContext(CartContext);
+  const [ formFields, setFormFields ] = useState<Record<string,string>>({});
   const history = useHistory();
   const handleGiftCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setGiftCard(e.target.value);
   }
-  const submitClick = () => {
-    proxy.post<CartItem>('payment/giftcard', {
+  const submitGiftcard = () => {
+    proxy.post<GiftCard>('order/giftcard', {
       code: giftCard,
-      orderId,
     }).then((response) => {
       const { data } = response;
-      const result = addItemToCart(data);
-      if (!result) setGiftCardError('Lahjakortti on jo käytössä');
+      const result = addGiftCard(data);
+      if (!result) setGiftCardError('Et voi lisätä tätä lahjakorttia');
     }).catch((error) => {
-      console.log(error.response);
       if (error && error.response && error.response.status === 404) {
         return setGiftCardError('Väärä lahjakortin koodi')
       }
       setGiftCardError('Tapahtui virhe');
+    }).finally(() => {
+      setGiftCard('')
     })
+  }
+
+  const verifyPayment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+    const form = e.currentTarget;
+    proxy.post('/order/start',
+      {
+        cart: cart.filter(item => item.amount > 0),
+        customerInfo,
+        orderNumber: orderId,
+        giftCards
+      }).then(() => {
+        form.submit();
+        setSubmitting(false);
+    }).catch((error) => {
+      setSubmitting(false);
+      if (error && error.response && error.response.status === 404) {
+        return setError('Tilaus on vanhentunut, päivitä sivu')
+      }
+      setError('Tilauksen maksussa tapahtui virhe');
+    });
   }
   useEffect(() => {
     if (!cart.length) history.push('/');
     if (!customerInfo.firstName.length) history.push('/yhteystiedot');
     const orderNumber = sessionStorage.getItem('order') || '';
-    proxy.post<Record<string,string>>('/payment/create',
+    proxy.post<Record<string,string>>('/order/create',
       {
         cart: cart.filter(item => item.amount > 0),
         customerInfo,
         orderNumber,
+        giftCards
       }).then((response) => {
       const { data } = response;
       sessionStorage.setItem('order', data.ORDER_NUMBER);
       setOrderId(data.ORDER_NUMBER);
       setFormFields(data);
     });
-  },[cart, customerInfo, history]);
+  },[cart, customerInfo, history, giftCards]);
   
   return (
     <>
     <StyledBase>
-      <Contact>
-        <h2>Yhteystiedot</h2>
-        <Element>
-          {customerInfo.firstName} {customerInfo.lastName}
-        </Element>
-        <Element>
-          {customerInfo.email}
-        </Element>
-        <Element>
-          {customerInfo.phone}
-        </Element>
-        <Element>
-          {customerInfo.address}
-        </Element>
-        <Element>
-          {customerInfo.city}
-        </Element>
-        <Element>
-          {customerInfo.postalCode}
-        </Element>
-        <Element>
-          {customerInfo.extra}
-        </Element>
-      </Contact>
+    <ContactComponent customerInfo={customerInfo}/>
       <OrderSection>
         <Order></Order>
+        {giftCards.length > 0 && <h2>Lahjakortit</h2>}
+        {giftCards.map(card => (
+          <div key={card.id}>
+            <Element>{card.code}</Element>
+            <Element>{card.balance}€</Element>
+          </div>
+        ))}
         <Label>
           Lahjakortti
-          <Input type="text" name="giftCard" onChange={handleGiftCardChange}></Input>
+          <Input type="text" name="giftCard" value={giftCard} onChange={handleGiftCardChange}></Input>
         </Label>
         <Error>{giftCardError}</Error>
-        <GiftCardButton onClick={submitClick}>Lisää Lahjakortti</GiftCardButton>
+        <GiftCardButton
+          disabled={isSubmitting || giftCard.length === 0}
+          onClick={submitGiftcard}>
+          Lisää Lahjakortti
+        </GiftCardButton>
       </OrderSection>
     </StyledBase>
-
+    <Error>{error}</Error>
     <Wrapper>
-      <BackButton onClick={() => history.push('/yhteystiedot')}>Takaisin</BackButton>
-      <Form formFields={formFields}></Form>
+      <BackButton disabled={isSubmitting} onClick={() => history.push('/yhteystiedot')}>Takaisin</BackButton>
+      <form onSubmit={verifyPayment} action="https://payment.paytrail.com/e2" method="post">
+        {
+          Object.keys(formFields).map((key) => 
+              <input name={key} type="hidden" value={formFields[key]} key={key} />
+            )
+        }
+        <Button disabled={isSubmitting} as="input" type="submit" value="Maksa"/>
+      </form>
     </Wrapper>
     </>
   );
@@ -164,7 +190,6 @@ export const Element = styled.div`
 
 const Wrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   &> * {
     margin: 0 4px;
   }

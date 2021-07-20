@@ -1,7 +1,7 @@
 import React, { createContext, useState } from "react";
 
 
-type CustomerInfo = {
+export type CustomerInfo = {
   firstName: string;
   lastName: string;
   email: string;

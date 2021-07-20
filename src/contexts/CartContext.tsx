@@ -9,23 +9,33 @@ type CartItem = {
   amount: number;
 }
 
+export type GiftCard = {
+  id: string;
+  code: string;
+  balance: number;
+  order?: string;
+  type: string;
+}
+
 const MAX_ORDER_LIMIT = 50;
 
 export interface CartContextType {
   cart: CartItem[];
+  giftCards: GiftCard[];
   saveCart: (ticketId: string, amount: number) => void;
-  addItemToCart: (item: CartItem) => boolean;
-  removeItemFromCart: (itemId: string) => boolean;
+  addGiftCard: (giftCard: GiftCard) => boolean;
+  removeGiftCard: (itemId: string) => boolean;
   resetCart: () => void;
   cartTotal: number;
 }
 
 const cartContextDefault: CartContextType = {
   cart: [],
+  giftCards: [],
   saveCart: () => null,
   resetCart: () => null,
-  addItemToCart: () => false,
-  removeItemFromCart: () => false,
+  addGiftCard: () => false,
+  removeGiftCard: () => false,
   cartTotal: 0,
 }
 
@@ -35,10 +45,11 @@ const CartProvider: React.FC = ({ children }) => {
   const storage = sessionStorage.getItem('cart');
   const savedCart = storage ? JSON.parse(storage) as CartItem[] : cartContextDefault.cart;
   const [cart, updateCart] = useState<CartItem[]>(savedCart);
+  const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
 
   useEffect(() => {
     if(cart.length === 0) {
-      proxy.get<CartItem[]>('/payment/tickets').then(response => {
+      proxy.get<CartItem[]>('/order/tickets').then(response => {
         const tickets = response.data.map(ticket=> ({...ticket, amount: 0}));
         updateCart(tickets);
       });
@@ -54,21 +65,22 @@ const CartProvider: React.FC = ({ children }) => {
     updateCart(newCart)
   };
 
-  const addItemToCart = (newItem: CartItem) => {
-    const itemAlreadyExists = cart.some(cartItem => cartItem.id === newItem.id);
-    if (itemAlreadyExists) return false;
-    const newCart = [...cart, newItem];
-    sessionStorage.setItem('cart', JSON.stringify(newCart));
-    updateCart(newCart);
+  const addGiftCard = (giftCard: GiftCard) => {
+    const itemAlreadyExists = giftCards.some(card => card.id === giftCard.id);
+    const cartCount = cart.find(item => item.id === giftCard.type)?.amount || 0;
+    if (itemAlreadyExists || cartCount === 0) return false;
+    const existingCount =  giftCards.reduce((a,b) => a + b.type === giftCard.type ? 1 : 0, 0);
+    if(existingCount >= cartCount) return false; // Trying to add too many giftCards of same type
+    const newCards = [...giftCards, giftCard];
+    setGiftCards(newCards);
     return true;
   }
 
-  const removeItemFromCart = (itemId: string) => {
-    const index = cart.findIndex(cartItem => cartItem.id === itemId);
-    const newCart = [...cart];
-    const result = newCart.splice(index, 1);
-    sessionStorage.setItem('cart', JSON.stringify(newCart));
-    updateCart(newCart);
+  const removeGiftCard = (giftCardId: string) => {
+    const index = cart.findIndex(card => card.id === giftCardId);
+    const newCards = [...giftCards];
+    const result = newCards.splice(index, 1);
+    setGiftCards(newCards);
     return result.length > 0;
   }
 
@@ -79,16 +91,19 @@ const CartProvider: React.FC = ({ children }) => {
   },[]);
   
   const itemsSetters = useMemo(() => ({ resetCart }), [resetCart])
-  const cartTotal = cart.reduce((a,b) => a + b.amount*b.cost,0)
+  const cartTotal = 
+    cart.reduce((a,b) => a + b.amount*b.cost,0)
+    - giftCards.reduce((a,b) => a + b.balance,0);
   return (
     <CartContext.Provider value={
       {
         cart,
+        giftCards,
         saveCart,
         cartTotal,
         ...itemsSetters,
-        addItemToCart,
-        removeItemFromCart,
+        addGiftCard,
+        removeGiftCard,
       }}>
       {children}
     </CartContext.Provider>

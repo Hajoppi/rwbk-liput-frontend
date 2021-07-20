@@ -1,10 +1,9 @@
 import { useContext } from "react";
 import styled from "styled-components";
 import { CartContext } from '../contexts/CartContext';
-import { Button } from "../styles/Styles";
 
 const Order = () => {
-  const { cart, cartTotal, removeItemFromCart } = useContext(CartContext);
+  const { cart, cartTotal } = useContext(CartContext);
   return (
     <StyledOrder>
     <h2>Tilauksesi</h2>
@@ -12,7 +11,6 @@ const Order = () => {
       <Header>Lippu</Header>
       <Header>Lkm</Header>
       <Header>Hinta</Header>
-      <Header></Header>
     </Cart>
     {cart.map( item => {
       if (!item.amount) return null;
@@ -21,7 +19,6 @@ const Order = () => {
       <Element>{item.name}</Element>
       <Element>{item.amount}</Element>
       <Element>{item.amount*item.cost} €</Element>
-      <Element>{item.cost < 0  && <RemoveButton onClick={() => removeItemFromCart(item.id)}>-</RemoveButton>}</Element> 
       </Cart>
       );
     })}
@@ -34,12 +31,6 @@ export const Element = styled.div`
   flex: 1;
   font-size: 1.25rem;
 `;
-
-const RemoveButton = styled(Button)`
-  padding: 0;
-  width: 2rem;
-  flex: none;
-`
 
 const Header = styled(Element)`
   font-weight: bold;
