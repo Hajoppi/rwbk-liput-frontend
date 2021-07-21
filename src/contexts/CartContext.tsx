@@ -54,13 +54,17 @@ const CartProvider: React.FC = ({ children }) => {
         updateCart(tickets);
       });
     }
-  },[cart]);
+  },[cart.length]);
 
   const saveCart = (ticketId: string, amount: number): void => {
     const newCart = [...cart]
     const ticket = newCart.find(ticket => ticket.id === ticketId)
     if (!ticket) return;
-    ticket.amount = Math.min(Math.max(0,amount),MAX_ORDER_LIMIT);
+    ticket.amount = Math.min(Math.max(0,amount), MAX_ORDER_LIMIT);
+    if (ticket.amount === 0) {
+      const giftCardsFiltered = giftCards.filter( card => card.type !== ticket.id);
+      setGiftCards(giftCardsFiltered);
+    }
     sessionStorage.setItem('cart', JSON.stringify(newCart));
     updateCart(newCart)
   };

@@ -36,36 +36,69 @@ const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
 </Contact>
 );
 
-const Payment = () => {
-  const { customerInfo } = useContext(ContactContext);
-  const [ isSubmitting, setSubmitting ] = useState(false);
-  const [ error, setError ] = useState('');
-  const [ orderId, setOrderId ] = useState('');
-  const [ giftCard, setGiftCard ] = useState('');
+const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orderId: string}) => {
   const [ giftCardError, setGiftCardError ] = useState('');
-  const { cart, giftCards, addGiftCard } = useContext(CartContext);
-  const [ formFields, setFormFields ] = useState<Record<string,string>>({});
-  const history = useHistory();
-  const handleGiftCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setGiftCard(e.target.value);
-  }
+  const { giftCards, addGiftCard } = useContext(CartContext);
+  const [ giftCard, setGiftCard ] = useState('');
+
   const submitGiftcard = () => {
     proxy.post<GiftCard>('order/giftcard', {
       code: giftCard,
+      orderId,
     }).then((response) => {
       const { data } = response;
       const result = addGiftCard(data);
+      setGiftCardError('');
       if (!result) setGiftCardError('Et voi lisätä tätä lahjakorttia');
     }).catch((error) => {
-      if (error && error.response && error.response.status === 404) {
-        return setGiftCardError('Väärä lahjakortin koodi')
+      if (error && error.response) {
+        switch(error.response.status){
+          case 404:
+            return setGiftCardError('Väärä lahjakortin koodi')
+          case 429:
+            return setGiftCardError('Liian monta yritystä peräkkäin');
+        }
       }
       setGiftCardError('Tapahtui virhe');
     }).finally(() => {
       setGiftCard('')
     })
   }
+  const handleGiftCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setGiftCard(e.target.value);
+  }
+  return(
+    <div>
+      {giftCards.length > 0 && <h2>Lahjakortit</h2>}
+      {giftCards.map(card => (
+        <div key={card.id}>
+          <Element>{card.code}</Element>
+          <Element>{card.balance}€</Element>
+        </div>
+      ))}
+      <Label>
+      Lahjakortti
+      <Input type="text" name="giftCard" value={giftCard} onChange={handleGiftCardChange}></Input>
+      </Label>
+      <Error>{giftCardError}</Error>
+      <GiftCardButton
+        disabled={isSubmitting || giftCard.length === 0}
+        onClick={submitGiftcard}>
+        Lisää Lahjakortti
+      </GiftCardButton>
+  </div>
+  )
+}
+
+const Payment = () => {
+  const { customerInfo } = useContext(ContactContext);
+  const [ isSubmitting, setSubmitting ] = useState(false);
+  const [ error, setError ] = useState('');
+  const [ orderId, setOrderId ] = useState('');
+  const { cart, giftCards } = useContext(CartContext);
+  const [ formFields, setFormFields ] = useState<Record<string,string>>({});
+  const history = useHistory();
 
   const verifyPayment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -111,24 +144,8 @@ const Payment = () => {
     <StyledBase>
     <ContactComponent customerInfo={customerInfo}/>
       <OrderSection>
-        <Order></Order>
-        {giftCards.length > 0 && <h2>Lahjakortit</h2>}
-        {giftCards.map(card => (
-          <div key={card.id}>
-            <Element>{card.code}</Element>
-            <Element>{card.balance}€</Element>
-          </div>
-        ))}
-        <Label>
-          Lahjakortti
-          <Input type="text" name="giftCard" value={giftCard} onChange={handleGiftCardChange}></Input>
-        </Label>
-        <Error>{giftCardError}</Error>
-        <GiftCardButton
-          disabled={isSubmitting || giftCard.length === 0}
-          onClick={submitGiftcard}>
-          Lisää Lahjakortti
-        </GiftCardButton>
+        <Order />
+        <GiftCardComponent orderId={orderId} isSubmitting={isSubmitting} />
       </OrderSection>
     </StyledBase>
     <Error>{error}</Error>

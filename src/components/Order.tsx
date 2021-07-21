@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { CartContext } from '../contexts/CartContext';
 
 const Order = () => {
-  const { cart, cartTotal } = useContext(CartContext);
+  const { cart, cartTotal, giftCards } = useContext(CartContext);
   return (
     <StyledOrder>
     <h2>Tilauksesi</h2>
@@ -14,11 +14,12 @@ const Order = () => {
     </Cart>
     {cart.map( item => {
       if (!item.amount) return null;
+      const discountAmount = giftCards.filter(card => card.type === item.id).length;
       return (
       <Cart key={item.id}>
       <Element>{item.name}</Element>
-      <Element>{item.amount}</Element>
-      <Element>{item.amount*item.cost} €</Element>
+      <Element>{item.amount} {discountAmount > 0 && `- ${discountAmount}`}</Element>
+      <Element>{(item.amount-discountAmount)*item.cost} €</Element>
       </Cart>
       );
     })}
