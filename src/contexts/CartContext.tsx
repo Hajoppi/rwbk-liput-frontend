@@ -22,9 +22,11 @@ const MAX_ORDER_LIMIT = 50;
 export interface CartContextType {
   cart: CartItem[];
   giftCards: GiftCard[];
+  paymentByInvoice: boolean;
   saveCart: (ticketId: string, amount: number) => void;
   addGiftCard: (giftCard: GiftCard) => boolean;
   removeGiftCard: (itemId: string) => boolean;
+  setPaymentByInvoice: (status: boolean) => void;
   resetCart: () => void;
   cartTotal: number;
 }
@@ -32,8 +34,10 @@ export interface CartContextType {
 const cartContextDefault: CartContextType = {
   cart: [],
   giftCards: [],
+  paymentByInvoice: false,
   saveCart: () => null,
   resetCart: () => null,
+  setPaymentByInvoice: () => null,
   addGiftCard: () => false,
   removeGiftCard: () => false,
   cartTotal: 0,
@@ -46,6 +50,7 @@ const CartProvider: React.FC = ({ children }) => {
   const savedCart = storage ? JSON.parse(storage) as CartItem[] : cartContextDefault.cart;
   const [cart, updateCart] = useState<CartItem[]>(savedCart);
   const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
+  const [ paymentByInvoice, setPaymentByInvoice ] = useState(cartContextDefault.paymentByInvoice);
 
   useEffect(() => {
     if(cart.length === 0) {
@@ -89,8 +94,9 @@ const CartProvider: React.FC = ({ children }) => {
   }
 
   const resetCart = useCallback(() => {
-    let newCart = cartContextDefault.cart
-    updateCart(newCart)
+    let newCart = cartContextDefault.cart;
+    updateCart(newCart);
+    setGiftCards([]);
     sessionStorage.removeItem('cart');
   },[]);
   
@@ -103,6 +109,8 @@ const CartProvider: React.FC = ({ children }) => {
       {
         cart,
         giftCards,
+        paymentByInvoice,
+        setPaymentByInvoice,
         saveCart,
         cartTotal,
         ...itemsSetters,

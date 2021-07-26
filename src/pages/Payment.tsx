@@ -40,7 +40,6 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
   const [ giftCardError, setGiftCardError ] = useState('');
   const { giftCards, addGiftCard } = useContext(CartContext);
   const [ giftCard, setGiftCard ] = useState('');
-
   const submitGiftcard = () => {
     proxy.post<GiftCard>('order/giftcard', {
       code: giftCard,
@@ -96,7 +95,7 @@ const Payment = () => {
   const [ isSubmitting, setSubmitting ] = useState(false);
   const [ error, setError ] = useState('');
   const [ orderId, setOrderId ] = useState('');
-  const { cart, giftCards } = useContext(CartContext);
+  const { cart, giftCards, paymentByInvoice, setPaymentByInvoice } = useContext(CartContext);
   const [ formFields, setFormFields ] = useState<Record<string,string>>({});
   const history = useHistory();
 
@@ -104,13 +103,18 @@ const Payment = () => {
     e.preventDefault();
     setSubmitting(true);
     const form = e.currentTarget;
-    proxy.post('/order/start',
+    proxy.post<string>('/order/start',
       {
         cart: cart.filter(item => item.amount > 0),
         customerInfo,
         orderNumber: orderId,
-        giftCards
-      }).then(() => {
+        giftCards,
+        paymentByInvoice,
+      }).then((response) => {
+        const nextPaymentProcess = response.data;
+        if(nextPaymentProcess === 'skip'){
+          return history.push(`/success?STATUS=skip&ORDER_NUMBER=${orderId}`);
+        }
         form.submit();
         setSubmitting(false);
     }).catch((error) => {
@@ -148,9 +152,14 @@ const Payment = () => {
         <GiftCardComponent orderId={orderId} isSubmitting={isSubmitting} />
       </OrderSection>
     </StyledBase>
+    <Label>
+      Haluan maksaa laskulla
+      <Checkbox type="checkbox" checked={paymentByInvoice} onChange={(event) => setPaymentByInvoice(event.target.checked)}/>
+    </Label>
     <Error>{error}</Error>
     <Wrapper>
       <BackButton disabled={isSubmitting} onClick={() => history.push('/yhteystiedot')}>Takaisin</BackButton>
+
       <form onSubmit={verifyPayment} action="https://payment.paytrail.com/e2" method="post">
         {
           Object.keys(formFields).map((key) => 
@@ -163,6 +172,11 @@ const Payment = () => {
     </>
   );
 }
+
+const Checkbox = styled.input`
+  height: 1rem;
+  width: 1rem;
+`
 
 const Error = styled.div`
   color: ${props => props.theme.error};
@@ -180,7 +194,7 @@ const GiftCardButton = styled(Button)`
 `
 
 const StyledBase = styled(Base)`
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 
 `
 const Input = styled.input`

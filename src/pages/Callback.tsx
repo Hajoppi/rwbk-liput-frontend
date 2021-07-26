@@ -25,12 +25,24 @@ const CallbackPage = () => {
       history.push('/');
     }
     const parsed = parseQueryString(queryString);
-    setPaymentStatus(parsed.STATUS);
-    proxy.post('/order/verify',{data: parsed}).then(() => {
-      setValid(true)
-    }).catch(() => {
-      setValid(false);
-    });
+    if (parsed.STATUS === 'skip') {
+      proxy.post('/order/verifySkip', { orderId: parsed.ORDER_NUMBER }).then(() => {
+        setValid(true);
+      }).catch(() => {
+        setValid(false);
+      }).finally(() => {
+        setPaymentStatus('PAID');
+      });
+    }
+    else {
+      proxy.post('/order/verify', { data: parsed }).then(() => {
+        setValid(true)
+      }).catch(() => {
+        setValid(false);
+      }).finally(() => {
+        setPaymentStatus(parsed.STATUS);
+      });
+    }
   },[queryString, history]);
 
   useEffect(() => {
