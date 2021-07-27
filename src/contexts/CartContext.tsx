@@ -17,7 +17,7 @@ export type GiftCard = {
   type: string;
 }
 
-const MAX_ORDER_LIMIT = 50;
+const MAX_ORDER_LIMIT = 20;
 
 export interface CartContextType {
   cart: CartItem[];
@@ -62,10 +62,14 @@ const CartProvider: React.FC = ({ children }) => {
   },[cart.length]);
 
   const saveCart = (ticketId: string, amount: number): void => {
-    const newCart = [...cart]
-    const ticket = newCart.find(ticket => ticket.id === ticketId)
+    const newCart = [...cart];
+    const ticket = newCart.find(ticket => ticket.id === ticketId);
     if (!ticket) return;
-    ticket.amount = Math.min(Math.max(0,amount), MAX_ORDER_LIMIT);
+    const amountOfOtherTickets = newCart
+      .filter(item=>item.id !== ticket.id)
+      .reduce((a,b) => a + b.amount, 0);
+    if(amount + amountOfOtherTickets > MAX_ORDER_LIMIT) return;
+    ticket.amount = Math.max(0,amount);
     if (ticket.amount === 0) {
       const giftCardsFiltered = giftCards.filter( card => card.type !== ticket.id);
       setGiftCards(giftCardsFiltered);

@@ -3,7 +3,7 @@ import { Button } from '../styles/Styles'
 import { useContext } from 'react';
 import Ticket from '../components/Ticket';
 import { CartContext } from '../contexts/CartContext';
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link} from 'react-router-dom'
 
 const Home = () => {
   const { cart, cartTotal } = useContext(CartContext);
@@ -15,6 +15,9 @@ const Home = () => {
       <Paragraph>
       Tervetuloa tilaamaan lippuja Retuperän WBK:n konserttiin 5.11.2021 klo 19:33 Finlandia-talossa!
       Tilaus tapahtuu allaolevalla lomakkeella, jonka jälkeen käsittelemme kaikki tilaukset ja lähetämme liput valitsemallanne toimitustavalla.
+      </Paragraph>
+      <Paragraph>
+        Jos olet epävarma kuinka toimia, ole hyvä ja <Link to="/ohjeet">katso tarkemmat ohjeet.</Link>
       </Paragraph>
     </Wrapper>
     <Tickets>

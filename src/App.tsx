@@ -6,9 +6,12 @@ import {
 } from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import MultiProvider from './contexts/MultiProvider';
 import { GlobalStyle } from './styles/Styles';
 
+const TermsAndConditions = React.lazy(() => import('./pages/TermsAndConditions'));
+const Instructions = React.lazy(() => import('./pages/Instruction'));
 const Contact = React.lazy(() => import('./pages/Contact'));
 const Home = React.lazy(() => import('./pages/Home'));
 const Callback = React.lazy(() => import('./pages/Callback'));
@@ -21,8 +24,8 @@ const App = () => {
   return (
     <React.Suspense fallback={<span>Loading...</span>}>
       <Router>
-        <GlobalStyle></GlobalStyle>
-        <Header></Header>
+        <GlobalStyle/>
+        <Header/>
         <MultiProvider>
           <Switch>
             <Route path="/yhteystiedot">
@@ -30,6 +33,12 @@ const App = () => {
             </Route>
             <Route path="/maksu">
               <Payment />
+            </Route>
+            <Route path="/ohjeet">
+              <Instructions />
+            </Route>
+            <Route path="/ehdot">
+              <TermsAndConditions />
             </Route>
             <Route path="/success">
               <Callback />
@@ -51,6 +60,7 @@ const App = () => {
             </Route>
           </Switch>
         </MultiProvider>
+        <Footer/>
       </Router>
     </React.Suspense>
   );
