@@ -7,6 +7,7 @@ import { useContext } from 'react';
 const Progress = () => {
   const { pathname } = useLocation();
   const paths = ['/','/yhteystiedot','/maksu'];
+  if(!paths.some(path=>pathname.indexOf(path)>=0)) return null;
   return(
     <Wrapper>
       {paths.map(path => (
@@ -35,7 +36,7 @@ const FooterComponent = () => {
   const location = useLocation();
   const {state} = useContext(TimeContext);
   if (state === 'ENDED' || state === 'NONE') return null;
-  const excludePaths = ['/ehdot', '/ohjeet', '/admin'];
+  const excludePaths = ['/ehdot', '/ohjeet', '/admin', '/success','/cancel','/kirjaudu'];
   if (excludePaths.some(path => location.pathname.indexOf(path) >= 0)) return null;
   return (
     <Footer>

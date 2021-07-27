@@ -6,20 +6,29 @@ const Order = () => {
   const { cart, cartTotal, giftCards } = useContext(CartContext);
   return (
     <StyledOrder>
-    <h2>Tilauksesi</h2>
     <Cart>
-      <Header>Lippu</Header>
-      <Header>Lkm</Header>
+      <Header>Tuote</Header>
+      <Header>Määrä</Header>
       <Header>Hinta</Header>
     </Cart>
     {cart.map( item => {
       if (!item.amount) return null;
-      const discountAmount = giftCards.filter(card => card.type === item.id).length;
       return (
       <Cart key={item.id}>
       <Element>{item.name}</Element>
-      <Element>{item.amount} {discountAmount > 0 && `- ${discountAmount}`}</Element>
-      <Element>{(item.amount-discountAmount)*item.cost} €</Element>
+      <Element>{item.amount}</Element>
+      <Element>{(item.amount)*item.cost} €</Element>
+      </Cart>
+      );
+    })}
+    {giftCards.map(item => {
+      // const associatedTicket = cart.find(ticket => ticket.id === item.type);
+      // if (!associatedTicket) return null;
+      return (
+        <Cart key={item.id}>
+        <Element>Lahjakortti</Element>
+        <Element>1</Element>
+        <Element>-{item.balance} €</Element>
       </Cart>
       );
     })}

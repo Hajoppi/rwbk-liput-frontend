@@ -8,10 +8,8 @@ import { CartContext, GiftCard } from "../contexts/CartContext";
 import { proxy } from '../utils/axios';
 
 
-
 const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
   <Contact>
-    <h2>Yhteystiedot</h2>
     <Element>
       {customerInfo.firstName} {customerInfo.lastName}
     </Element>
@@ -38,7 +36,7 @@ const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
 
 const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orderId: string}) => {
   const [ giftCardError, setGiftCardError ] = useState('');
-  const { giftCards, addGiftCard } = useContext(CartContext);
+  const { addGiftCard } = useContext(CartContext);
   const [ giftCard, setGiftCard ] = useState('');
   const submitGiftcard = () => {
     proxy.post<GiftCard>('order/giftcard', {
@@ -69,13 +67,6 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
   }
   return(
     <div>
-      {giftCards.length > 0 && <h2>Lahjakortit</h2>}
-      {giftCards.map(card => (
-        <div key={card.id}>
-          <Element>{card.code}</Element>
-          <Element>{card.balance}€</Element>
-        </div>
-      ))}
       <Label>
       Lahjakortti
       <Input type="text" name="giftCard" value={giftCard} onChange={handleGiftCardChange}></Input>
@@ -120,7 +111,7 @@ const Payment = () => {
     }).catch((error) => {
       setSubmitting(false);
       if (error && error.response && error.response.status === 404) {
-        return setError('Tilaus on vanhentunut, päivitä sivu')
+        return setError('Tilaus on vanhentunut, päivitä sivu');
       }
       setError('Tilauksen maksussa tapahtui virhe');
     });
@@ -145,6 +136,7 @@ const Payment = () => {
   
   return (
     <>
+    <h1>Tilauksesi</h1>
     <StyledBase>
     <ContactComponent customerInfo={customerInfo}/>
       <OrderSection>
