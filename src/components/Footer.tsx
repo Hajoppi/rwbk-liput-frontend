@@ -7,7 +7,6 @@ import { useContext } from 'react';
 const Progress = () => {
   const { pathname } = useLocation();
   const paths = ['/','/yhteystiedot','/maksu'];
-  if(!paths.some(path=>pathname.indexOf(path)>=0)) return null;
   return(
     <Wrapper>
       {paths.map(path => (
@@ -33,17 +32,17 @@ const Ball = styled.span<{selected: boolean}>`
 
 
 const FooterComponent = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const {state} = useContext(TimeContext);
   if (state === 'ENDED' || state === 'NONE') return null;
-  const excludePaths = ['/ehdot', '/ohjeet', '/admin', '/success','/cancel','/kirjaudu'];
-  if (excludePaths.some(path => location.pathname.indexOf(path) >= 0)) return null;
+  const includePaths = ['/','/yhteystiedot','/maksu'];
+  if(!includePaths.some(path=> path===pathname )) return null;
   return (
     <Footer>
       <Progress></Progress>
       <StyledLink to={{
         pathname: "/ehdot",
-        state: {prev: location.pathname}
+        state: {prev: pathname}
       }}>Tilausehdot</StyledLink>
     </Footer> 
   )
