@@ -7,7 +7,7 @@ const Instructions = () => (
     </div>
     <div>
       <ol>
-        <li>Ilmoita haluamasi lippumäärä luokittain. Yhteensä yli 20 lipun tilaaminen ei ole mahdollista yhteen osoitteeseen.</li>
+        <li>Ilmoita haluamasi lippumäärä luokittain. Yhteensä yli 30 lipun tilaaminen ei ole mahdollista yhteen osoitteeseen.</li>
         <li>Liput maksetaan verkkomaksulla. Mikäli tämä ei onnistu voit vaihtaa maksutavaksi sähköpostilaskun.
           Jos sinulla on erityistoiveita paperi laskulle, ilmoita siitä tilauksen lisätiedoissa.</li>
         <li>Valitse, haluatko liput lisämaksusta postitse kotiin vai e-lippuna antamaasi sähköpostiosoitteeseen.</li>

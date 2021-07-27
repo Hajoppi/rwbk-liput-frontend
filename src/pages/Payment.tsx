@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React, { useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import Order from '../components/Order';
 import { Button, BackButton, Base } from '../styles/Styles';
 import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
@@ -83,6 +83,7 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
 
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
+  const [ termsAccepted, setTermsAccepted ] = useState(false);
   const [ isSubmitting, setSubmitting ] = useState(false);
   const [ error, setError ] = useState('');
   const [ orderId, setOrderId ] = useState('');
@@ -148,6 +149,13 @@ const Payment = () => {
       Haluan maksaa laskulla
       <Checkbox type="checkbox" checked={paymentByInvoice} onChange={(event) => setPaymentByInvoice(event.target.checked)}/>
     </Label>
+    <Label>
+      Olen lukenut <StyledLink to={{
+        pathname: "/ehdot",
+        state: {prev: history.location.pathname}
+      }}>tilausehdot</StyledLink>
+      <Checkbox type="checkbox" checked={termsAccepted} onChange={(event) => setTermsAccepted(event.target.checked)}/>
+    </Label>
     <Error>{error}</Error>
     <Wrapper>
       <BackButton disabled={isSubmitting} onClick={() => history.push('/yhteystiedot')}>Takaisin</BackButton>
@@ -158,7 +166,7 @@ const Payment = () => {
               <input name={key} type="hidden" value={formFields[key]} key={key} />
             )
         }
-        <Button disabled={isSubmitting} as="input" type="submit" value="Maksa"/>
+        <Button disabled={isSubmitting || !termsAccepted} as="input" type="submit" value="Maksa"/>
       </form>
     </Wrapper>
     </>
@@ -169,7 +177,9 @@ const Checkbox = styled.input`
   height: 1rem;
   width: 1rem;
 `
-
+const StyledLink = styled(Link)`
+  color: ${props => props.theme.neutral};
+`
 const Error = styled.div`
   color: ${props => props.theme.error};
   height: 1rem;
@@ -186,8 +196,6 @@ const GiftCardButton = styled(Button)`
 `
 
 const StyledBase = styled(Base)`
-  margin-bottom: 1rem;
-
 `
 const Input = styled.input`
   display: block;

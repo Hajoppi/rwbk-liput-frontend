@@ -40,10 +40,10 @@ const FooterComponent = () => {
   return (
     <Footer>
       <Progress></Progress>
-      <StyledLink to={{
+      {pathname !== '/maksu' && <StyledLink to={{
         pathname: "/ehdot",
         state: {prev: pathname}
-      }}>Tilausehdot</StyledLink>
+      }}>Tilausehdot</StyledLink>}
     </Footer> 
   )
 };

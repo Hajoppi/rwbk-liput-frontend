@@ -18,7 +18,7 @@ export type GiftCard = {
   type: string;
 }
 
-const MAX_ORDER_LIMIT = 20;
+const MAX_ORDER_LIMIT = 30;
 
 export interface CartContextType {
   cart: CartItem[];

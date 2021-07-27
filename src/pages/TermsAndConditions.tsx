@@ -13,8 +13,12 @@ const TermsAndConditions = () => {
         Palautamme lipuista saamamme hinnan vain, jos saamme liput myytyä eteenpäin.
       </p>
       <p>
-        Yhden tilauksen maksimilippumäärä on kaksikymmentä (20) lippua.
-        Toimitamme maksimissaan 20 lippua yhteen osoitteeseen, vaikka tilaus tehtäisiin useammassa erässä.
+        Mikäli tapahtuman osallistujamäärää joudutaan rajoittamaan terveyssyistä johtuen,
+        pidätämme oikeuden palauttaa tai muuttaa lippuja satunnaisesti valituilta ostajilta.
+      </p>
+      <p>
+        Yhden tilauksen maksimilippumäärä on kolmekymmentä (30) lippua.
+        Toimitamme maksimissaan 30 lippua yhteen osoitteeseen, vaikka tilaus tehtäisiin useammassa erässä.
         Tämän lisäksi tilauksen yhteydessä voi ostaa jatkolippuja konsertin karonkkaillalliselle, sekä Retuperän WBK:n äänilevyjä.
         Tilatut äänilevyt ovat noudettavissa konsertin yhteydessä Finlandia-talosta levynmyyntitiskiltämme.
       </p>
