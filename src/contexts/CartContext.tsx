@@ -7,6 +7,7 @@ type CartItem = {
   name: string;
   cost: number;
   amount: number;
+  maxAmount: number;
 }
 
 export type GiftCard = {
@@ -55,7 +56,7 @@ const CartProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if(cart.length === 0) {
       proxy.get<CartItem[]>('/order/tickets').then(response => {
-        const tickets = response.data.map(ticket=> ({...ticket, amount: 0}));
+        const tickets = response.data.map(ticket=> ({...ticket, amount: 0, maxAmount: ticket.amount}));
         updateCart(tickets);
       });
     }
@@ -75,7 +76,7 @@ const CartProvider: React.FC = ({ children }) => {
       setGiftCards(giftCardsFiltered);
     }
     sessionStorage.setItem('cart', JSON.stringify(newCart));
-    updateCart(newCart)
+    updateCart(newCart);
   };
 
   const addGiftCard = (giftCard: GiftCard) => {
