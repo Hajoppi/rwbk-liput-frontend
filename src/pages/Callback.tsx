@@ -15,8 +15,8 @@ const parseQueryString = (queryString: string): Record<string,string> =>
 const CallbackPage = () => {
   const queryString = useLocation().search;
   const history = useHistory();
-  const [paymentStatus, setPaymentStatus] = useState('')
-  const [isValid, setValid] = useState(true);
+  const [paymentStatus, setPaymentStatus] = useState('LOADING')
+  const [isValid, setValid] = useState<boolean | undefined>(undefined);
   const { resetInfo } = useContext(ContactContext);
   const { resetCart } = useContext(CartContext);
 
@@ -52,8 +52,14 @@ const CallbackPage = () => {
       sessionStorage.removeItem('order');
     }
   },[paymentStatus, resetCart, resetInfo, isValid])
-  let message = paymentStatus === 'PAID' ? "Maksu onnistui" : "Maksu epäonnistui";
-  message = isValid ? message : "Virheellinen pyyntö";
+  const messages: Record<string,string> = {
+    PAID: 'Maksu onnistui',
+    CANCELLED: 'Maksu epäonnistui',
+    LOADING: 'Lataa'
+  }
+  let message = messages[paymentStatus]
+
+  if(isValid===false) message = "Virheellinen pyyntö";
 
   return (
     <div>
