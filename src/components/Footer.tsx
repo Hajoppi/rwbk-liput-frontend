@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
+import { TimeContext } from '../contexts/TimeContext';
 import { theme } from '../styles/Styles';
+import { useContext } from 'react';
 
 const Progress = () => {
   const { pathname } = useLocation();
@@ -31,7 +33,10 @@ const Ball = styled.span<{selected: boolean}>`
 
 const FooterComponent = () => {
   const location = useLocation();
-  if (location.pathname === '/ehdot' || location.pathname === '/ohjeet') return null;
+  const {state} = useContext(TimeContext);
+  if (state === 'ENDED' || state === 'NONE') return null;
+  const excludePaths = ['/ehdot', '/ohjeet', '/admin'];
+  if (excludePaths.some(path => location.pathname.indexOf(path) >= 0)) return null;
   return (
     <Footer>
       <Progress></Progress>

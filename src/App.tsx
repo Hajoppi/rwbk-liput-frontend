@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import MultiProvider from './contexts/MultiProvider';
 import { GlobalStyle } from './styles/Styles';
 
+
 const TermsAndConditions = React.lazy(() => import('./pages/TermsAndConditions'));
 const Instructions = React.lazy(() => import('./pages/Instruction'));
 const Contact = React.lazy(() => import('./pages/Contact'));
@@ -59,8 +60,8 @@ const App = () => {
               <Home />
             </Route>
           </Switch>
+         <Footer/>
         </MultiProvider>
-        <Footer/>
       </Router>
     </React.Suspense>
   );

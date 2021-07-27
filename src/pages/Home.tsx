@@ -4,10 +4,26 @@ import { useContext } from 'react';
 import Ticket from '../components/Ticket';
 import { CartContext } from '../contexts/CartContext';
 import { useHistory, Link} from 'react-router-dom'
+import { TimeContext } from '../contexts/TimeContext';
 
 const Home = () => {
   const { cart, cartTotal } = useContext(CartContext);
   const history = useHistory();
+  const { state } = useContext(TimeContext)
+  if (state === 'NONE') return(
+    <>
+      <Paragraph>Ennakkomyynti alkaa 1.8.2021</Paragraph>
+      <Paragraph>Lipunmyynti alkaa 1.9.2021</Paragraph>
+    </>
+    );
+  if(state === 'ENDED') return(
+    <Paragraph>
+    Sähköinen lipunmyynti konserttiin on nyt sulkeutunut.
+    Lippuja voi ostaa vielä rajatuissa määrissä konserttipaikalta konserttipäivänä klo 18:30 alkaen. 
+    Voit myös varata liput itsellesi ja seuralaisillesi sähköpostitse osoitteesta liput@rwbk.fi.
+    </Paragraph>
+  );
+
   return (
     <>
     <Wrapper>
@@ -19,6 +35,7 @@ const Home = () => {
       <Paragraph>
         Jos olet epävarma kuinka toimia, ole hyvä ja <Link to="/ohjeet">katso tarkemmat ohjeet.</Link>
       </Paragraph>
+      {state === 'PRESALE' && <Paragraph>Ennakkolipunmyynti on alkanut. Jos sinulla on lahjakortti, niin voit tilata lipun</Paragraph>}
     </Wrapper>
     <Tickets>
       <h2>Konserttiliput</h2>
@@ -29,7 +46,7 @@ const Home = () => {
     <Total>Yhteensä: {cartTotal} €</Total>
     <Button disabled={cartTotal === 0} onClick={() => history.push("/yhteystiedot")}>Seuraava</Button>
     </>
-  )
+  );
 }
 
 const Total = styled.div`

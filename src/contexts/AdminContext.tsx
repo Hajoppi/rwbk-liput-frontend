@@ -38,7 +38,7 @@ type Order = {
 
 export const AdminContext = createContext<AdminContextType>(adminContextDefault);
 
-const ContactProvider: React.FC = ({ children }) => {
+const AdminProvider: React.FC = ({ children }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   
   const getOrders = () => {
@@ -56,4 +56,4 @@ const ContactProvider: React.FC = ({ children }) => {
   );
 };
 
-export default ContactProvider;
+export default AdminProvider;
