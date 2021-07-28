@@ -19,6 +19,13 @@ const ContactForm = () => {
   const city = useFormInput(customerInfo.city);
   const extra = useFormInput(customerInfo.extra);
 
+  const formReady =  firstName.value
+                  && lastName.value
+                  && email.value
+                  && address.value
+                  && postalCode.value
+                  && phone.value
+                  && city.value;
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateInfo({
@@ -78,7 +85,7 @@ const ContactForm = () => {
       </Select>
       <NavigationButtons>
         <NavigationButton onClick={(e: React.FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
-        <NavigationButton>Seuraava</NavigationButton>
+        <NavigationButton disabled={!formReady}>Seuraava</NavigationButton>
       </NavigationButtons>
     </form>
   );
