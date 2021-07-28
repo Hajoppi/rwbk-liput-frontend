@@ -30,9 +30,9 @@ const Ticket = (props: PropsType) => {
     <Wrapper>
       <Element>{item.name}</Element>
       <Element>{item.cost}€</Element>
-      <Amount>
+      <AmountWrapper>
         <LeftAmountButton aria-label="lisää" onClick={() =>saveCart(item.id, amount - 1)}><Minus/></LeftAmountButton>
-        <AmountStyle 
+        <Amount
           type="number"
           max="50"
           min="0"
@@ -40,7 +40,7 @@ const Ticket = (props: PropsType) => {
           aria-label="määrä"
           value={amount} />
         <RightAmountButton aria-label="vähennä" onClick={() =>saveCart(item.id, amount + 1)}>+</RightAmountButton>
-      </Amount>
+      </AmountWrapper>
     </Wrapper>
   );
 };
@@ -77,31 +77,37 @@ export const Element = styled.div`
 
 const Wrapper = styled.div`
   position: relative;
-  padding: 1.5rem 3rem;
+  padding: 20px 16px;
   display: flex;
-  justify-content: space-evenly;
   align-items: center;
-  height: 3rem;
   border-bottom: 2px solid hsla(0,0%,80%);
   &:last-child {
     border-bottom: none;
   }
   @media only screen and (max-width: ${props => props.theme.commonWidth}) {
-    padding: 1.5rem 1rem;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 3rem;
+    padding: 8px 16px;
+    align-items: initial;
   }
 `;
 
-const Amount = styled(Element)`
+const AmountWrapper = styled(Element)`
   position: relative;
-  min-width: 8rem;
   display: flex;
   flex: 1;
   justify-content: center;
-  align-items: center;
-  height: 2.5rem;
+  max-width: 240px;
+  width: 100%;
+  height: 3rem;
+  align-self: flex-end;
+  @media only screen and (max-width: 500px) {
+    max-width: 128px;
+  }
 `;
 
-const AmountStyle = styled.input`
+const Amount = styled.input`
   position: relative;
   border: 2px solid hsla(0,0%,80%);
   flex: 1;

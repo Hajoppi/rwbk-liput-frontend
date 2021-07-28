@@ -52,9 +52,7 @@ export const GlobalStyle = createGlobalStyle`
 
 export const Button = styled.button`
   position: relative;
-  flex: 1;
   font-size: 1.5rem;
-  border: none;
   background: ${theme.backgroundColor};
   border: 2px solid ${theme.neutralLight};
   border-radius: 5px;
@@ -79,19 +77,10 @@ export const Button = styled.button`
     color: ${theme.neutralDisabled};
   }
 `
-
-export const BackButton = styled(Button)`
-  padding: 0 0.1rem;
-  font-size: 1.25rem;
+export const NavigationButton = styled(Button)`
+  width: 120px;
+  margin: 0 4px;
 `
-
-export const Base = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  max-width: ${theme.commonWidth};
-  width: 100%;
-`;
 
 export const Label = styled.label`
   color: ${props => props.theme.neutral};
@@ -106,13 +95,17 @@ export const Input = styled.input`
   color: ${props => props.theme.textColor};
   font-size: 1.5rem;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
   ::placeholder{
-    //color: hsl(0, 0%, 60%);
     color: ${props => props.theme.backgroundColor};
   }
   &:focus {
     outline-width: 0;
     border-color: ${props => props.theme.neutralActive};
   }
+`;
+
+export const Wrapper = styled.div`
+  max-width: ${props => props.theme.commonWidth};
+  width: 100%;
 `;

@@ -2,36 +2,36 @@ import styled from 'styled-components';
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Order from '../components/Order';
-import { Button, BackButton, Base } from '../styles/Styles';
+import { Button, Input, Label, NavigationButton } from '../styles/Styles';
 import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
 import { CartContext, GiftCard } from "../contexts/CartContext";
 import { proxy } from '../utils/axios';
 
 
 const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
-  <Contact>
-    <Element>
+  <Section>
+    <div>
       {customerInfo.firstName} {customerInfo.lastName}
-    </Element>
-    <Element>
+    </div>
+    <div>
       {customerInfo.email}
-    </Element>
-    <Element>
+    </div>
+    <div>
       {customerInfo.phone}
-    </Element>
-    <Element>
+    </div>
+    <div>
       {customerInfo.address}
-    </Element>
-    <Element>
+    </div>
+    <div>
       {customerInfo.city}
-    </Element>
-    <Element>
+    </div>
+    <div>
       {customerInfo.postalCode}
-    </Element>
-    <Element>
+    </div>
+    <div>
       {customerInfo.extra}
-    </Element>
-</Contact>
+    </div>
+</Section>
 );
 
 const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orderId: string}) => {
@@ -66,10 +66,10 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
     setGiftCard(e.target.value);
   }
   return(
-    <div>
+    <StyledGiftCard>
       <Label>
       Lahjakortti
-      <Input type="text" name="giftCard" value={giftCard} onChange={handleGiftCardChange}></Input>
+      <StyledInput type="text" name="giftCard" value={giftCard} onChange={handleGiftCardChange}></StyledInput>
       </Label>
       <Error>{giftCardError}</Error>
       <GiftCardButton
@@ -77,7 +77,7 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
         onClick={submitGiftcard}>
         Lisää Lahjakortti
       </GiftCardButton>
-  </div>
+  </StyledGiftCard>
   )
 }
 
@@ -138,40 +138,47 @@ const Payment = () => {
   return (
     <>
     <h1>Tilauksesi</h1>
-    <StyledBase>
-    <ContactComponent customerInfo={customerInfo}/>
-      <OrderSection>
+    <OrderInformation>
+      <ContactComponent customerInfo={customerInfo}/>
+      <Section>
         <Order />
         <GiftCardComponent orderId={orderId} isSubmitting={isSubmitting} />
-      </OrderSection>
-    </StyledBase>
+      </Section>
+    </OrderInformation>
     <Label>
       Haluan maksaa laskulla
       <Checkbox type="checkbox" checked={paymentByInvoice} onChange={(event) => setPaymentByInvoice(event.target.checked)}/>
     </Label>
     <Label>
-      Olen lukenut <StyledLink to={{
+      Olen lukenut <StyledLink to={
+        {
         pathname: "/ehdot",
         state: {prev: history.location.pathname}
-      }}>tilausehdot</StyledLink>
+        }}>
+        tilausehdot
+      </StyledLink>
       <Checkbox type="checkbox" checked={termsAccepted} onChange={(event) => setTermsAccepted(event.target.checked)}/>
     </Label>
     <Error>{error}</Error>
-    <Wrapper>
-      <BackButton disabled={isSubmitting} onClick={() => history.push('/yhteystiedot')}>Takaisin</BackButton>
-
+    <NavigationButtons>
+      <NavigationButton disabled={isSubmitting} onClick={() => history.push('/yhteystiedot')}>Takaisin</NavigationButton>
       <form onSubmit={verifyPayment} action="https://payment.paytrail.com/e2" method="post">
         {
           Object.keys(formFields).map((key) => 
               <input name={key} type="hidden" value={formFields[key]} key={key} />
             )
         }
-        <Button disabled={isSubmitting || !termsAccepted} as="input" type="submit" value="Maksa"/>
+        <NavigationButton disabled={isSubmitting || !termsAccepted} as="input" type="submit" value="Maksa"/>
       </form>
-    </Wrapper>
+    </NavigationButtons>
     </>
   );
 }
+
+const StyledGiftCard = styled.div`
+  width: 200px;
+  margin: 8px 0;
+`;
 
 const Checkbox = styled.input`
   height: 1rem;
@@ -179,63 +186,42 @@ const Checkbox = styled.input`
 `
 const StyledLink = styled(Link)`
   color: ${props => props.theme.neutral};
-`
+`;
+
 const Error = styled.div`
   color: ${props => props.theme.error};
   height: 1rem;
-`
-const Label = styled.label`
-  margin-top: 1rem;
-  color: ${props => props.theme.neutral};
   font-size: 1rem;
-`;
+  margin: 2px 0;
+`
 
 const GiftCardButton = styled(Button)`
   font-size: 1rem;
-  margin-top: 0.25rem;
 `
 
-const StyledBase = styled(Base)`
-`
-const Input = styled.input`
-  display: block;
-  background: ${props => props.theme.backgroundColor};
-  border: solid 2px ${props => props.theme.neutralLight};
-  color: ${props => props.theme.textColor};
-  font-size: 1.5rem;
-  width: 100%;
-  max-width: 200px;
-  ::placeholder{
-    //color: hsl(0, 0%, 60%);
-    color: ${props => props.theme.backgroundColor};
-  }
-  &:focus {
-    outline-width: 0;
-    border-color: ${props => props.theme.neutralActive};
-  }
-`;
-export const Element = styled.div`
-  flex: 1;
-  font-size: 1.25rem;
-`;
-
-const Wrapper = styled.div`
+const OrderInformation = styled.div`
   display: flex;
-  &> * {
-    margin: 0 4px;
-  }
-`
-
-const OrderSection = styled.div`
-  flex: 2;
-  padding: 0 1rem;
-`
-
-const Contact = styled.div`
-  display: block;
-  flex: 1;
-  flex-direction: column;
-  padding: 0 1rem;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  width: 100%;
+  max-width: ${props => props.theme.commonWidth};
 `;
+
+const StyledInput = styled(Input)`
+  border: solid 2px ${props => props.theme.neutralLight};
+  margin: 0;
+`;
+
+const NavigationButtons = styled.div`
+  display: flex;
+`
+
+const Section = styled.section`
+  width: 100%;
+  max-width: 350px;
+  font-size: 1.25rem;
+  margin: 8px;
+`
+
 
 export default Payment;

@@ -28,6 +28,7 @@ export interface CartContextType {
   addGiftCard: (giftCard: GiftCard) => boolean;
   removeGiftCard: (itemId: string) => boolean;
   setPaymentByInvoice: (status: boolean) => void;
+  cartIsEmpty: boolean;
   resetCart: () => void;
   cartTotal: number;
 }
@@ -38,6 +39,7 @@ const cartContextDefault: CartContextType = {
   paymentByInvoice: false,
   saveCart: () => null,
   resetCart: () => null,
+  cartIsEmpty: true,
   setPaymentByInvoice: () => null,
   addGiftCard: () => false,
   removeGiftCard: () => false,
@@ -98,6 +100,8 @@ const CartProvider: React.FC = ({ children }) => {
     return result.length > 0;
   }
 
+  const cartIsEmpty = cart.every(item => item.amount === 0);
+
   const resetCart = useCallback(() => {
     let newCart = cartContextDefault.cart;
     updateCart(newCart);
@@ -121,6 +125,7 @@ const CartProvider: React.FC = ({ children }) => {
         ...itemsSetters,
         addGiftCard,
         removeGiftCard,
+        cartIsEmpty,
       }}>
       {children}
     </CartContext.Provider>
