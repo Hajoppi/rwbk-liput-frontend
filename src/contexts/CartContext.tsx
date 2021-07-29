@@ -60,7 +60,7 @@ const CartProvider: React.FC = ({ children }) => {
       proxy.get<CartItem[]>('/order/tickets').then(response => {
         const tickets = response.data.map(ticket=> ({...ticket, amount: 0, maxAmount: ticket.amount}));
         updateCart(tickets);
-      });
+      }).catch();
     }
   },[cart.length]);
 
