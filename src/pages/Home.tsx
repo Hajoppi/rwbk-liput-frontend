@@ -13,7 +13,7 @@ const Home = () => {
   if (state === 'NONE') return(
     <>
       <p>Ennakkomyynti alkaa 1.8.2021</p>
-      <p>Lipunmyynti alkaa 1.9.2021</p>
+      <p>Lipunmyynti alkaa 13.9.2021</p>
     </>
     );
   if(state === 'ENDED') return(
