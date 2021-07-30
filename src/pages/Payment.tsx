@@ -7,7 +7,6 @@ import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
 import { CartContext, GiftCard } from "../contexts/CartContext";
 import { proxy } from '../utils/axios';
 
-
 const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
   <Section>
     <div>
@@ -81,6 +80,30 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
   )
 }
 
+const PostalComponent = () => {
+  const { addItemToCart, removeItemFromCart } = useContext(CartContext);
+  const [postalAdded, setPostal] = useState(false);
+
+  const handlePostalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {checked} = event.target;
+    setPostal(checked);
+    if (checked) return addItemToCart({
+        amount: 1,
+        cost: 3,
+        id: '60571',
+        maxAmount: 0,
+        name: 'Postitus'
+      });
+    removeItemFromCart('60571');
+  }
+  return(
+    <Label>
+      Haluan saada liput myös postitettuna (3€)
+    <Checkbox type="checkbox" checked={postalAdded} onChange={handlePostalChange}/>
+  </Label>
+  )
+}
+
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
   const [ termsAccepted, setTermsAccepted ] = useState(false);
@@ -111,8 +134,13 @@ const Payment = () => {
         setSubmitting(false);
     }).catch((error) => {
       setSubmitting(false);
-      if (error && error.response && error.response.status === 404) {
-        return setError('Tilaus on vanhentunut, päivitä sivu');
+      if (error && error.response) {
+        switch (error.response.status) {
+          case 404:
+            return setError('Tilaus on vanhentunut, päivitä sivu');
+          case 405:
+            return setError('Ennakkomyynnin aikana tarvitset lahjakortin tehdäksesi tilauksen');
+        }
       }
       setError('Tilauksen maksussa tapahtui virhe');
     });
@@ -135,6 +163,7 @@ const Payment = () => {
     });
   },[cart, customerInfo, history, giftCards]);
   
+
   return (
     <>
     <h1>Tilauksesi</h1>
@@ -142,6 +171,7 @@ const Payment = () => {
       <ContactComponent customerInfo={customerInfo}/>
       <Section>
         <Order />
+        <PostalComponent/>
         <GiftCardComponent orderId={orderId} isSubmitting={isSubmitting} />
       </Section>
     </OrderInformation>

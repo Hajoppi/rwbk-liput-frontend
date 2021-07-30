@@ -25,6 +25,8 @@ export interface CartContextType {
   giftCards: GiftCard[];
   paymentByInvoice: boolean;
   saveCart: (ticketId: string, amount: number) => void;
+  addItemToCart: (item: CartItem) => void;
+  removeItemFromCart: (itemId: string) => void;
   addGiftCard: (giftCard: GiftCard) => boolean;
   removeGiftCard: (itemId: string) => boolean;
   setPaymentByInvoice: (status: boolean) => void;
@@ -43,6 +45,8 @@ const cartContextDefault: CartContextType = {
   setPaymentByInvoice: () => null,
   addGiftCard: () => false,
   removeGiftCard: () => false,
+  addItemToCart: () => null,
+  removeItemFromCart: () => null,
   cartTotal: 0,
 }
 
@@ -93,8 +97,21 @@ const CartProvider: React.FC = ({ children }) => {
     return true;
   }
 
+  const addItemToCart = (item: CartItem) => {
+    const newCart = [...cart, item]
+    updateCart(newCart);
+  }
+
+  const removeItemFromCart = (itemId: string) => {
+    const index = cart.findIndex(card => card.id === itemId);
+    const newCart = [...cart];
+    const result = newCart.splice(index, 1);
+    updateCart(newCart);
+    return result.length > 0;
+  }
+
   const removeGiftCard = (giftCardId: string) => {
-    const index = cart.findIndex(card => card.id === giftCardId);
+    const index = giftCards.findIndex(card => card.id === giftCardId);
     const newCards = [...giftCards];
     const result = newCards.splice(index, 1);
     setGiftCards(newCards);
@@ -126,6 +143,8 @@ const CartProvider: React.FC = ({ children }) => {
         ...itemsSetters,
         addGiftCard,
         removeGiftCard,
+        addItemToCart,
+        removeItemFromCart,
         cartIsEmpty,
       }}>
       {children}
