@@ -44,15 +44,24 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
     }).then((response) => {
       const { data } = response;
       const result = addGiftCard(data);
-      setGiftCardError('');
-      if (!result) setGiftCardError('Et voi lisätä tätä lahjakorttia');
+      switch(result) {
+        case 'NOMATCH':
+          setGiftCardError('Ostoskorissa ei ole yhteensopivaa lippua');
+          break;
+        case 'DUPLICATE':
+          setGiftCardError('Olet jo lisännyt tämän lahjakortin');
+          break;
+        default:
+          setGiftCardError('');
+      }
+
     }).catch((error) => {
       if (error && error.response) {
         switch(error.response.status){
           case 404:
             return setGiftCardError('Väärä lahjakortin koodi')
           case 429:
-            return setGiftCardError('Liian monta yritystä peräkkäin');
+            return setGiftCardError('Liian monta yritystä peräkkäin. Odota hetki');
         }
       }
       setGiftCardError('Tapahtui virhe');

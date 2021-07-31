@@ -10,6 +10,8 @@ type CartItem = {
   maxAmount: number;
 }
 
+type GiftCardsAddResult = 'OK' | 'NOMATCH' | 'DUPLICATE';
+
 export type GiftCard = {
   id: string;
   code: string;
@@ -27,7 +29,7 @@ export interface CartContextType {
   saveCart: (ticketId: string, amount: number) => void;
   addItemToCart: (item: CartItem) => void;
   removeItemFromCart: (itemId: string) => void;
-  addGiftCard: (giftCard: GiftCard) => boolean;
+  addGiftCard: (giftCard: GiftCard) => GiftCardsAddResult;
   removeGiftCard: (itemId: string) => boolean;
   setPaymentByInvoice: (status: boolean) => void;
   cartIsEmpty: boolean;
@@ -43,7 +45,7 @@ const cartContextDefault: CartContextType = {
   resetCart: () => null,
   cartIsEmpty: true,
   setPaymentByInvoice: () => null,
-  addGiftCard: () => false,
+  addGiftCard: () => 'OK',
   removeGiftCard: () => false,
   addItemToCart: () => null,
   removeItemFromCart: () => null,
@@ -89,12 +91,14 @@ const CartProvider: React.FC = ({ children }) => {
   const addGiftCard = (giftCard: GiftCard) => {
     const itemAlreadyExists = giftCards.some(card => card.id === giftCard.id);
     const cartCount = cart.find(item => item.id === giftCard.type)?.amount || 0;
-    if (itemAlreadyExists || cartCount === 0) return false;
     const existingCount =  giftCards.reduce((a,b) => a + b.type === giftCard.type ? 1 : 0, 0);
-    if(existingCount >= cartCount) return false; // Trying to add too many giftCards of same type
-    const newCards = [...giftCards, giftCard];
-    setGiftCards(newCards);
-    return true;
+    const result =  itemAlreadyExists ? 'DUPLICATE' :
+              (cartCount === 0 || existingCount >= cartCount) ? 'NOMATCH' : 'OK'
+    if(result === 'OK'){
+      const newCards = [...giftCards, giftCard];
+      setGiftCards(newCards);
+    }
+    return result;
   }
 
   const addItemToCart = (item: CartItem) => {
