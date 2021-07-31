@@ -12,7 +12,7 @@ const Home = () => {
   const { state } = useContext(TimeContext)
   if (state === 'NONE') return(
     <>
-      <p>Ennakkomyynti alkaa 1.8.2021</p>
+      <p>Lahjakorttien lunastus alkaa 1.8.2021</p>
       <p>Lipunmyynti alkaa 13.9.2021</p>
     </>
     );
@@ -35,7 +35,7 @@ const Home = () => {
       <p>
         Jos olet epävarma kuinka toimia, ole hyvä ja <Link to="/ohjeet">katso tarkemmat ohjeet.</Link>
       </p>
-      {state === 'PRESALE' && <p>Ennakkolipunmyynti on alkanut. Jos sinulla on lahjakortti, niin voit tilata lippuja.</p>}
+      {state === 'PRESALE' && <p>Lahjakorttien lunastus on alkanut. Jos sinulla on lahjakortti, voit tilata lippuja.</p>}
     </Wrapper>
     <Wrapper>
       <h2>Konserttiliput</h2>
