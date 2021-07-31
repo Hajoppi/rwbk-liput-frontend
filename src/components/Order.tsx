@@ -1,32 +1,38 @@
 import { useContext } from "react";
 import styled from "styled-components";
+import { Button } from "../styles/Styles";
 import { CartContext } from '../contexts/CartContext';
 
 const Order = () => {
-  const { cart, cartTotal, giftCards } = useContext(CartContext);
+  const { cart, cartTotal, giftCards, removeGiftCard } = useContext(CartContext);
   return (
     <div>
       <Cart>
-        <Header flex={2}>Tuote</Header>
-        <Header flex={1}>Määrä</Header>
-        <Header flex={1}>Hinta</Header>
+        <Header flex={4}>Tuote</Header>
+        <Header flex={2}>Määrä</Header>
+        <Header flex={2}>Hinta</Header>
+        <Header flex={1}></Header>
       </Cart>
       {cart.map( item => {
         if (!item.amount) return null;
         return (
         <Cart key={item.id}>
-        <Element flex={2}>{item.name}</Element>
-        <Element flex={1}>{item.amount}</Element>
-        <Element flex={1}>{(item.amount)*item.cost} €</Element>
+        <Element flex={4}>{item.name}</Element>
+        <Element flex={2}>{item.amount}</Element>
+        <Element flex={2}>{(item.amount)*item.cost} €</Element>
+        <Element flex={1}></Element>
         </Cart>
         );
       })}
       {giftCards.map(item => {
         return (
           <Cart key={item.id}>
-          <Element flex={2}>Lahjakortti</Element>
-          <Element flex={1}>1</Element>
-          <Element flex={1}>-{item.balance} €</Element>
+          <Element flex={4}>Lahjakortti</Element>
+          <Element flex={2}>1</Element>
+          <Element flex={2}>-{item.balance} €</Element>
+          <Element flex={1}>
+            <RemoveButton onClick={() => removeGiftCard(item.id)}>X</RemoveButton>
+            </Element>
         </Cart>
         );
       })}
@@ -37,11 +43,21 @@ const Order = () => {
 
 export const Element = styled.div<{flex: number}>`
   flex: ${props => props.flex};
+  position: relative;
 `;
 
 const Header = styled(Element)`
   font-weight: bold;
 `;
+const RemoveButton = styled(Button)`
+  font-size: 1rem;
+  height: 1.75rem;
+  width: 1.75rem;
+  padding: 2px;
+  font-weight: 600;
+  text-align: center;
+`;
+
 
 const Cart = styled.div`
   display: flex;

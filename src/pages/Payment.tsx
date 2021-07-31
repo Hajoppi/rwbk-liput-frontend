@@ -160,6 +160,9 @@ const Payment = () => {
       sessionStorage.setItem('order', data.ORDER_NUMBER);
       setOrderId(data.ORDER_NUMBER);
       setFormFields(data);
+    }).catch(() => {
+      setError('Ostoskorissa on virhe');
+      setSubmitting(true);
     });
   },[cart, customerInfo, history, giftCards]);
   
@@ -223,9 +226,10 @@ const StyledLink = styled(Link)`
 
 const Error = styled.div`
   color: ${props => props.theme.error};
+  font-weight: 600;
   height: 1rem;
   font-size: 1rem;
-  margin: 2px 0;
+  margin: 5px 0;
 `
 
 const GiftCardButton = styled(Button)`

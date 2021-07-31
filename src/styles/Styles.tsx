@@ -5,7 +5,7 @@ export const theme = {
   light: "hsl(120,100%,100%)",
   textColor: "hsl(0,0%,10%)",
   neutral: "hsl(0,0%,40%)",
-  error: "hsl(0,30%,50%)",
+  error: "hsl(0,40%,50%)",
   neutralLight: "hsl(0,0%,70%)",
   neutralActive: "hsl(0,0%, 65%)",
   bgGradient: "hsla(0, 100%, 50%, 0)",
