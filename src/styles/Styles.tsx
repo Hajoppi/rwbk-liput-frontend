@@ -8,7 +8,6 @@ export const theme = {
   error: "hsl(0,30%,50%)",
   neutralLight: "hsl(0,0%,70%)",
   neutralActive: "hsl(0,0%, 65%)",
-  neutralDisabled: "hsla(0, 0%, 70%, 0)",
   bgGradient: "hsla(0, 100%, 50%, 0)",
   commonWidth: "768px",
 }
@@ -75,8 +74,7 @@ export const Button = styled.button`
     }
   }
   &:disabled {
-    border-color: ${theme.neutralDisabled};
-    color: ${theme.neutralDisabled};
+    color: ${theme.neutralLight};
   }
 `
 export const NavigationButton = styled(Button)`
