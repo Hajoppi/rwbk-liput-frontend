@@ -64,7 +64,7 @@ const RightAmountButton = styled(Button)`
 `;
 
 const LeftAmountButton = styled(RightAmountButton)`
-  border: 2px solid hsla(0,0%,80%);
+  border: 2px solid ${props => props.theme.neutralLight};
   border-right: none;
   border-radius: 5px 0 0 5px;
 `
@@ -80,7 +80,7 @@ const Wrapper = styled.div`
   padding: 20px 16px;
   display: flex;
   align-items: center;
-  border-bottom: 2px solid hsla(0,0%,80%);
+  border-bottom: 2px solid ${props => props.theme.neutralLight};
   &:last-child {
     border-bottom: none;
   }
@@ -109,12 +109,13 @@ const AmountWrapper = styled(Element)`
 
 const Amount = styled.input`
   position: relative;
-  border: 2px solid hsla(0,0%,80%);
+  border: 2px solid ${props => props.theme.neutralLight};
   flex: 1;
   width: 100%;
   font-size: 1.5rem;
   height: 100%;
   text-align: center;
+  background: transparent;
   &:focus {
     outline-width: 0;
   }

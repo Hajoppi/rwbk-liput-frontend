@@ -1,17 +1,15 @@
 import styled, { createGlobalStyle } from 'styled-components';
-
+import background from '../assets/bg.png'
 export const theme = {
   backgroundColor: "hsl(0,0%,100%)",
   light: "hsl(120,100%,100%)",
   textColor: "hsl(0,0%,10%)",
-  neutral: "hsl(0,0%,50%)",
+  neutral: "hsl(0,0%,40%)",
   error: "hsl(0,30%,50%)",
-  neutralLight: "hsl(0,0%,80%)",
-  neutralFade: "hsl(0,0%,90%)",
-  neutralHover: "hsl(0,0%, 80%)",
+  neutralLight: "hsl(0,0%,70%)",
   neutralActive: "hsl(0,0%, 65%)",
-  neutralDisabled: "hsla(0,0%, 20%,0.2)",
-  disabledColor: "#AAAAAA",
+  neutralDisabled: "hsla(0, 0%, 70%, 0)",
+  bgGradient: "hsla(0, 100%, 50%, 0)",
   commonWidth: "768px",
 }
  
@@ -23,8 +21,12 @@ export const GlobalStyle = createGlobalStyle`
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: ${theme.backgroundColor};
     color: ${theme.textColor};
+    background-image:
+      linear-gradient(to bottom, 
+      ${theme.bgGradient}, 
+      ${theme.bgGradient}),
+      url(${background});
   }
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -53,7 +55,7 @@ export const GlobalStyle = createGlobalStyle`
 export const Button = styled.button`
   position: relative;
   font-size: 1.5rem;
-  background: ${theme.backgroundColor};
+  background: transparent;
   border: 2px solid ${theme.neutralLight};
   border-radius: 5px;
   padding: 0.5rem;
@@ -89,7 +91,7 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   display: block;
-  background: ${props => props.theme.backgroundColor};
+  background: transparent;
   border: none;
   border-bottom: solid 2px ${props => props.theme.neutralLight};
   color: ${props => props.theme.textColor};
@@ -97,7 +99,7 @@ export const Input = styled.input`
   width: 100%;
   margin-bottom: 32px;
   ::placeholder{
-    color: ${props => props.theme.backgroundColor};
+    color: transparent;
   }
   &:focus {
     outline-width: 0;

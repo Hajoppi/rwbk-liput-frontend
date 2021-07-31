@@ -80,9 +80,13 @@ const ContactForm = () => {
         Erityistoiveet
         <TextArea {...extra}    placeholder="Erityistoiveita"/>
       </Label>
-      <Select name="country" id="country" defaultValue={0} disabled>
-        <option value="finland">Suomi</option>
-      </Select>
+      <br/>
+      <Label>
+        Maa
+        <Select name="country" id="country" defaultValue={0} disabled>
+          <option value="finland">Suomi</option>
+        </Select>
+      </Label>
       <NavigationButtons>
         <NavigationButton onClick={(e: React.FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
         <NavigationButton disabled={!formReady}>Seuraava</NavigationButton>
@@ -112,13 +116,12 @@ const TextArea = styled.textarea`
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   display: block;
-  background: ${props => props.theme.backgroundColor};
+  background: transparent;
   border: solid 2px ${props => props.theme.neutralLight};
   color: ${props => props.theme.textColor};
   font-size: 1.5rem;
   ::placeholder{
-    //color: hsl(0, 0%, 60%);
-    color: ${props => props.theme.backgroundColor};
+    color: transparent;
   }
   padding: 8px;
   margin-top: 8px;
@@ -133,7 +136,7 @@ const TextArea = styled.textarea`
 
 const Select = styled.select`
   display: block;
-  background: ${props => props.theme.backgroundColor};
+  background: transparent;
   border: solid 2px ${props => props.theme.neutralLight};
   color: ${props => props.theme.textColor};
   font-size: 1.5rem;

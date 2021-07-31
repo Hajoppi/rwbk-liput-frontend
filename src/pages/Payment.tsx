@@ -206,13 +206,16 @@ const Payment = () => {
 }
 
 const StyledGiftCard = styled.div`
-  width: 200px;
   margin: 8px 0;
+  & > label> input {
+    width: 200px;
+  }
 `;
 
 const Checkbox = styled.input`
   height: 1rem;
   width: 1rem;
+  background: transparent;
 `
 const StyledLink = styled(Link)`
   color: ${props => props.theme.neutral};

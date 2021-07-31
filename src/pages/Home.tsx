@@ -29,7 +29,7 @@ const Home = () => {
     <Wrapper>
       <h1>Retuperän WBK:n konserttilipputilaus</h1>
       <p>
-      Tervetuloa tilaamaan lippuja Retuperän WBK:n konserttiin 5.11.2021 klo 19:33 Finlandia-talossa!
+      Tervetuloa tilaamaan lippuja Retuperän WBK:n konserttiin. Konsertti järjestetään Finlandia-talossa 5.11.2021 klo 19:33!
       Tilaus tapahtuu allaolevalla lomakkeella, jonka jälkeen käsittelemme kaikki tilaukset ja lähetämme liput valitsemallanne toimitustavalla.
       </p>
       <p>
