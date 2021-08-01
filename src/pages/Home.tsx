@@ -12,7 +12,7 @@ const Home = () => {
   const { state } = useContext(TimeContext)
   if (state === 'NONE') return(
     <>
-      <p>Lahjakorttien lunastus alkaa 9.6.2021</p>
+      <p>Lahjakorttien lunastus alkaa 6.9.2021</p>
       <p>Lipunmyynti alkaa 13.9.2021</p>
     </>
     );
