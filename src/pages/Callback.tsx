@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import {useHistory, useLocation} from 'react-router-dom';
 import { proxy } from '../utils/axios';
 import { ContactContext } from "../contexts/ContactContext";
@@ -51,7 +52,8 @@ const CallbackPage = () => {
       resetInfo();
       sessionStorage.removeItem('order');
     }
-  },[paymentStatus, resetCart, resetInfo, isValid])
+  },[paymentStatus, resetCart, resetInfo, isValid]);
+
   const messages: Record<string,string> = {
     PAID: 'Maksu onnistui',
     CANCELLED: 'Maksu epäonnistui',
@@ -59,19 +61,45 @@ const CallbackPage = () => {
   }
   let message = messages[paymentStatus]
 
-  if(isValid===false) message = "Virheellinen pyyntö";
-
+  if(isValid === false) return (
+    <Wrapper>
+    <h1>Virheellinen pyyntö</h1>
+    <p>
+      Maksussanne tapathui virhe, emmekä voineet varmistaa tietoja. Olkaa hyvä ja tehkää uusi tilaus.
+    </p>
+    <p>
+      Jos virhe toistuu, ottakaa yhteyttä sähköpostitse osoitteeseen liputsalo at rwbk piste fi.
+    </p>
+    <Button onClick={() => history.push('/maksu')}>Palaa tilaukseen</Button>
+    </Wrapper>
+  );
   return (
-    <div>
+    <Wrapper>
       <h1>{message}</h1>
-      { paymentStatus === 'CANCELLED' ? 
-        <Button onClick={() => history.push('/maksu')}>Palaa maksuun</Button> : null
+      { paymentStatus === 'CANCELLED' ? (
+        <>
+          <p>
+            Maksunne keskeytyi. Olkaa hyvä ja tehkää uusi tilaus.
+          </p>
+          <p>
+            Ongelmatilanteissa ottakaa yhteyttä sähköpostitse osoitteeseen liputsalo at rwbk piste fi.
+          </p>
+          <Button onClick={() => history.push('/maksu')}>Palaa tilaukseen</Button>
+        </>
+      ) : null
       }
-      {paymentStatus === 'PAID' && isValid ? 
-      <p>Lippunne lähetetään teille sähköpostilla 1-4 arkipäivän kuluessa</p>
+      {paymentStatus === 'PAID' ?
+      <>
+        <p>Tilauksenne on valmis! Teille on lähetetty sähköposti, jossa on tilauksenne yhteenveto.</p>
+        <p>Käsiteltyämme kaikki tilaukset, teille lähetetään lippunne.</p>
+      </>
       : null}
-    </div>
+    </Wrapper>
   );
 }
+const Wrapper = styled.div`
+  max-width: ${props => props.theme.commonWidth};
+`
+
 
 export default CallbackPage

@@ -22,6 +22,7 @@ const Instructions = () => (
         <li>Saapuessasi konserttiin tai sen väliajalla muista hakea mahdollisesti tilaamasi äänilevyt levynmyyntitiskiltämme.</li>
       </ol>
     </div>
+    <p>Ongelma tilanteissa ottakaa yhteyttä liputsalo at rwbk piste fi</p>
     <Link to="/">Takaisin tilaamaan</Link>
   </Section>
 );
