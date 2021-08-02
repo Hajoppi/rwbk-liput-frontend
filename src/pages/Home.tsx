@@ -12,6 +12,7 @@ const Home = () => {
   const { state } = useContext(TimeContext)
   if (state === 'NONE') return(
     <>
+      <h1>Retuperän WBK:n konserttilipputilaus</h1>
       <p>Lahjakorttien lunastus alkaa 6.9.2021</p>
       <p>Lipunmyynti alkaa 13.9.2021</p>
     </>
