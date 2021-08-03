@@ -11,11 +11,17 @@ const Home = () => {
   const history = useHistory();
   const { state } = useContext(TimeContext)
   if (state === 'NONE') return(
-    <>
+    <ClosedWrapper>
       <h1>Retuperän WBK:n konserttilipputilaus</h1>
+      <p>
+        Retuperän WBK laittaa Finlandia-talon remonttikuntoon suurkonsertissa 5. marraskuuta 2021.
+        Talon akkusatiivisten ominaisuuksien (epä)selvitystyöryhmän pääkonsulttina toimii Retuperän WBK:n
+        taiteellinen harhaanjohtaja Audio Dubbado, eräs aikamme johtavista kapellimestareista.
+      </p>
+      <br></br>
       <p>Lahjakorttien lunastus alkaa 6.9.2021</p>
       <p>Lipunmyynti alkaa 13.9.2021</p>
-    </>
+    </ClosedWrapper>
     );
   if(state === 'ENDED') return(
     <p>
@@ -49,6 +55,10 @@ const Home = () => {
     </>
   );
 }
+
+const ClosedWrapper = styled(Wrapper)`
+  text-align: center;
+`
 
 const Total = styled.div`
   font-weight: bold;
