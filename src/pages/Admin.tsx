@@ -1,48 +1,84 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components';
 import { AdminContext } from '../contexts/AdminContext';
-import { Button } from '../styles/Styles';
+import { Button, Element, Wrapper, Label } from '../styles/Styles';
 
-const Orders = styled.div`
-  position: relative;
-  display: block;
-  width: 100%;
-  max-width: 768px;
-`;
-const Item = styled.div`
-  flex: 1;
-`
+
 const Flex = styled.div`
   display: flex;
   position: relative;
   width: 100%;
+  justify-content: flex-start;
 `;
 
-const Admin = () => {
-  const { orders } = useContext(AdminContext);
+const StyledButton = styled(Button)`
+  font-size: 1rem;
+`
+
+const FilteredOrders = () => {
   const history = useHistory();
+  const { orders } = useContext(AdminContext);
+  const [invoice, setInvoice] = useState(false);
+  const [postal, setPostal] = useState(false);
+  const handleInvoice = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setInvoice(checked);
+  }
+  const handlePostal = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setPostal(checked);
+  }
+  const filterOrders = () => {
+    let result = [...orders];
+    if(invoice) result = result.filter(item => item.invoice)
+    if(postal) result = result.filter(item => item.postal)
+    return result;
+  }
   return (
-    <>
-    <Orders>
+    <Wrapper>
+      <Label>
+        Postitus
+        <input 
+          type="checkbox"
+          checked={postal}
+          onChange={handlePostal} />
+      </Label>
+      <Label>
+        Laskutus
+        <input 
+          type="checkbox"
+          checked={invoice}
+          onChange={handleInvoice} />
+      </Label>
       <Flex>
-        <Item><b>Päivämäärä</b></Item>
-        <Item><b>Lippuja</b></Item>
-        <Item><b>status</b></Item>
-        <Item></Item>
+        <Element flex={1}><b>Päivämäärä</b></Element>
+        <Element flex={1}><b>Postitus</b></Element>
+        <Element flex={1}><b>Laskutus</b></Element>
+        <Element flex={1}><b>Lippuja ilman paikkoja</b></Element>
+        <Element flex={1}></Element>
       </Flex>
-      {orders.map((order) => {
+      {filterOrders().map(order => {
         return (
         <Flex key={order.id}>
-          <Item>{new Date(order.created).toLocaleDateString()}</Item>
-          <Item>{order.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)}</Item>
-          <Item>{order.status}</Item>
-          <Item><Button onClick={() => history.push(`/admin/order/${order.id}`)}>Place</Button></Item>
+          <Element flex={1}>{new Date(order.created).toLocaleDateString()}</Element>
+          <Element flex={1}>{order.postal ? 'Kyllä' : 'Ei'}</Element>
+          <Element flex={1}>{order.invoice ? 'Kyllä' : 'Ei'}</Element>
+          <Element flex={1}>{order.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)}/{order.tickets.length}</Element>
+          <Element flex={1}><StyledButton onClick={() => history.push(`/admin/order/${order.id}`)}>Avaa</StyledButton></Element>
         </Flex>
         );
       })}
-    </Orders>
-    </>
+    </Wrapper>
+
+  )
+}
+
+const Admin = () => {
+  return (
+    <Wrapper>
+      <FilteredOrders></FilteredOrders>
+    </Wrapper>
   )
 }
 

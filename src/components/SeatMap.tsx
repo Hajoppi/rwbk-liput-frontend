@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import permantoSeats from '../assets/permanto.json';
 import parvekeSeats from '../assets/parveke.json';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { proxy } from '../utils/axios';
+import { AdminContext } from '../contexts/AdminContext';
 
 const generateSeats = (row: number[]) => {
   const [end, start] = row;
@@ -26,19 +27,20 @@ type Ticket = {
 
 type SeatProp = {
   taken: boolean;
+  reserved: boolean;
 }
 
 const Seat = styled.span<SeatProp>`
-  font-size: 1rem;
+  font-size: 0.75rem;
   height: 24px;
-  width: 40px;
-  margin: 3px;
+  width: 28px;
+  margin: 2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   border: 1px solid black;
-  background-color: ${props => props.taken ? 'red' : props.theme.backgroundColor};
+  background-color: ${props => props.reserved ? 'yellow' : props.taken ? 'red' : props.theme.backgroundColor};
 `
 const Row = styled.span`
 `
@@ -82,33 +84,56 @@ const sections = [
 ] as const;
 
 type Sections = typeof sections[number];
+
+const sectionPairs: Sections[][]  = [
+  ['permantoA', 'permantoBVasen'],
+  ['permantoBOikea', 'permantoCVasen'],
+  ['permantoCOikea', 'permantoD'],
+  ['parvekeA'],
+  ['parvekeBVasen'],
+  ['parvekeBKeski'],
+  ['parvekeBOikea', 'parvekeCVasen'],
+  ['parvekeCKeski'],
+  ['parvekeCOikea','parvekeDVasen'],
+  ['parvekeDOikea'],
+];
+
 type Locations = 'permanto' | 'parveke';
+
 
 type SectionPropType = {
   setTicketPlace: (seat: number, row: number, location: string) => void;
-  section: Sections;
+  sections: Sections[];
+  tickets: Ticket[];
   takenSeats: Ticket[];
 }
-const SelectedSection = ({ section, takenSeats, setTicketPlace }: SectionPropType) => {
-  const allSeats = {...parvekeSeats, ...permantoSeats};
-  const seatNumbers = takenSeats.map(seat => seat.seat_number);
-  const seats = [...allSeats[section]].map((row,index) => (
-    <div key={`${section}-${index+1}`}>
+const SelectedSection = ({ sections, takenSeats, tickets, setTicketPlace }: SectionPropType) => {
+  const combinedSeats = {...parvekeSeats, ...permantoSeats};
+  const takenSeatNumbers = takenSeats.map(seat => seat.seat_number);
+  const reservedSeatNumbers = tickets.map(seat => seat.seat_number);
+  const seats2 = [...combinedSeats[sections[0]]].map((_,index) =>(
+    <div key={`${sections[0]}-${index+1}`}>
       <b>{index+1}</b>
-      <Row >
-        {generateSeats(row).map(seat => 
-          <Seat
-            taken={seatNumbers.indexOf(seat) > -1}
-            key={`${section}-${seat}`}
-            onClick={() => setTicketPlace(seat, index+1, section)}>
-              {seat}
-          </Seat>)}
+      <Row>
+        {sections.map(s => {
+          return(
+            generateSeats(combinedSeats[s][index]).map(seat => 
+              <Seat
+                taken={takenSeatNumbers.indexOf(seat) > -1}
+                reserved={reservedSeatNumbers.indexOf(seat) > -1}
+                key={`${s}-${seat}`}
+                onClick={() => setTicketPlace(seat, index+1, s)}>
+                  {seat}
+              </Seat>)
+            )
+        }).reverse()}
       </Row>
     </div>
-  ));
+    )
+ );
   return (
     <Section>
-    {seats.reverse()}
+    {seats2.reverse()}
   </Section>
   )
 }
@@ -118,12 +143,15 @@ type PropType = {
 }
 
 const SeatMap = ({ticket}: PropType) => {
-  const [section, setSection] = useState<Sections>('permantoBVasen');
+  const {selectedOrder, selectOrder} = useContext(AdminContext);
+  const [section, setSection] = useState<Sections[]>(sectionPairs[0]);
   const [location, setLocation] = useState<Locations>('permanto');
   const [takenSeats, setTakenSeats] = useState<Ticket[]>([]);
   const handleSectionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSection = e.target.value as Sections;
-    setSection(newSection);
+    const sectionPair = sectionPairs.find(pair => pair.indexOf(newSection) > -1);
+    if (!sectionPair) return;
+    setSection(sectionPair);
   }
   const setTicketPlace = (seat: number, row: number, location: string) => {
     proxy.post(`/admin/tickets`, {
@@ -132,25 +160,32 @@ const SeatMap = ({ticket}: PropType) => {
       row_number: row,
       location,
     }).then(() => {
-      proxy.get<Ticket[]>(`/admin/tickets/${section}`).then((response) => {
-        setTakenSeats(response.data);
-      });
-    }).catch();
+      const updatedOrder = {...selectedOrder};
+      const t = selectedOrder.tickets.find(nt => nt.id === ticket.id);
+      if(!t) return;
+      t.seat_number = seat;
+      t.row_number = row;
+      t.location = location;
+      selectOrder(updatedOrder);
+    }).catch(() => {});
   }
   useEffect(() => {
-    proxy.get<Ticket[]>(`/admin/tickets/${section}`).then((response) => {
-      setTakenSeats(response.data);
+    const promises = section.map(s => proxy.get<Ticket[]>(`/admin/tickets/${s}`).then(response => {
+      return response.data;
+    }));
+    Promise.all(promises).then(data => {
+      setTakenSeats(data.flat());
     });
   },[section]);
   const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const location = e.target.value as Locations
     setLocation(location);
-    setSection(location === 'permanto' ? 'permantoBVasen' : 'parvekeA');
+    setSection(location === 'permanto' ? sectionPairs[0] : sectionPairs[3]);
   }
   const commonRadioParams = {
     onChange: handleSectionChange,
     name: 'section',
-    type: 'radio',
+    type: 'checkbox',
   }
   return (
     <All>
@@ -161,11 +196,11 @@ const SeatMap = ({ticket}: PropType) => {
       <Select>
         {
         sections
-          .filter(s => s.indexOf(location) >= 0)
+          .filter(s => s.indexOf(location) >= 0).reverse()
           .map(s =>(
             <Label key={s}>
               {s}<br></br>
-              <input {...commonRadioParams} value={s} checked={s===section} />
+              <input {...commonRadioParams} value={s} checked={section.indexOf(s) > -1} />
             </Label>
           )
           )
@@ -173,8 +208,9 @@ const SeatMap = ({ticket}: PropType) => {
       </Select>
       <SelectedSection
         takenSeats={takenSeats}
+        tickets={selectedOrder.tickets}
         setTicketPlace={setTicketPlace}
-        section={section}
+        sections={section}
         />
     </All>
 

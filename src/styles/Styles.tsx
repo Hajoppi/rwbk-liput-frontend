@@ -50,6 +50,10 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
+export const Element = styled.div<{flex: number}>`
+  flex: ${props => props.flex};
+  position: relative;
+`;
 
 export const Button = styled.button`
   position: relative;

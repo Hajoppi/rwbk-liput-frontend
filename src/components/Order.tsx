@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import styled from "styled-components";
-import { Button } from "../styles/Styles";
+import { Button, Element } from "../styles/Styles";
 import { CartContext } from '../contexts/CartContext';
 
 const Order = () => {
@@ -41,10 +41,7 @@ const Order = () => {
   )
 };
 
-export const Element = styled.div<{flex: number}>`
-  flex: ${props => props.flex};
-  position: relative;
-`;
+
 
 const Header = styled(Element)`
   font-weight: bold;
