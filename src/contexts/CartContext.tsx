@@ -137,11 +137,12 @@ const CartProvider: React.FC = ({ children }) => {
 
   const resetCart = useCallback(() => {
     if(cart.some(item => item.amount > 0)) {
-      let newCart = [...cart];
+      let newCart = [...cart].filter(item => item.id !== '60571');
       newCart.forEach(item => item.amount = 0);
       updateCart(newCart);
     }
     setGiftCards([]);
+    setPaymentByInvoice(false);
     sessionStorage.removeItem('cart');
   },[cart]);
   

@@ -158,6 +158,7 @@ const Payment = () => {
     if (cart.length > 0 && cartTotal === 0) history.push('/');
     if (!customerInfo.firstName.length) history.push('/yhteystiedot');
     const orderNumber = sessionStorage.getItem('order') || '';
+    if(cart.length === 0) return;
     proxy.post<Record<string,string>>('/order/create',
       {
         cart: cart.filter(item => item.amount > 0),
