@@ -2,7 +2,7 @@ import React, { createContext, useEffect, useState, useMemo, useCallback } from 
 import { proxy } from "../utils/axios";
 
 
-type CartItem = {
+export type CartItem = {
   id: string;
   name: string;
   cost: number;
@@ -55,21 +55,30 @@ const cartContextDefault: CartContextType = {
 export const CartContext = createContext<CartContextType>(cartContextDefault);
 
 const CartProvider: React.FC = ({ children }) => {
-  const storage = sessionStorage.getItem('cart');
-  const savedCart = storage ? JSON.parse(storage) as CartItem[] : cartContextDefault.cart;
-  const [cart, updateCart] = useState<CartItem[]>(savedCart);
+  const [cart, updateCart] = useState<CartItem[]>(cartContextDefault.cart);
   const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
   const [ paymentByInvoice, setPaymentByInvoice ] = useState(cartContextDefault.paymentByInvoice);
 
   useEffect(() => {
-    if(cart.length === 0) {
-      proxy.get<CartItem[]>('/order/tickets').then(response => {
-        const tickets = response.data.map(ticket=> ({...ticket, amount: 0, maxAmount: ticket.amount}));
-        updateCart(tickets);
-      }).catch(() => {
-      });
-    }
-  },[cart.length]);
+    const storage = sessionStorage.getItem('cart');
+    const savedCart = storage ? JSON.parse(storage) as CartItem[] : cartContextDefault.cart;
+    fetchTicketsAndUpdate(savedCart);
+  },[]);
+
+  const fetchTicketsAndUpdate = (savedCart: CartItem[]) => {
+    proxy.get<CartItem[]>('/order/tickets').then(response => {
+      const tickets = response.data.map(ticket=> ({...ticket, amount: 0, maxAmount: ticket.amount}));
+      const updatedAmounts = tickets.map(ticket => {
+        const savedAmount = savedCart.find(item => item.id === ticket.id)?.amount || 0;
+        return {
+          ...ticket,
+          amount: savedAmount,
+        }
+      })
+      updateCart(updatedAmounts);
+    }).catch(() => {
+    });
+  }
 
   const saveCart = (ticketId: string, amount: number): void => {
     const newCart = [...cart];
@@ -79,7 +88,9 @@ const CartProvider: React.FC = ({ children }) => {
       .filter(item=>item.id !== ticket.id)
       .reduce((a,b) => a + b.amount, 0);
     if(amount + amountOfOtherTickets > MAX_ORDER_LIMIT) return;
-    ticket.amount = Math.max(0,amount);
+
+    // 0 < newAmount < maximum amount left
+    ticket.amount = Math.min(Math.max(0, amount), ticket.maxAmount); 
     if (ticket.amount === 0) {
       const giftCardsFiltered = giftCards.filter( card => card.type !== ticket.id);
       setGiftCards(giftCardsFiltered);
@@ -125,11 +136,14 @@ const CartProvider: React.FC = ({ children }) => {
   const cartIsEmpty = cart.every(item => item.amount === 0);
 
   const resetCart = useCallback(() => {
-    let newCart = cartContextDefault.cart;
-    updateCart(newCart);
+    if(cart.some(item => item.amount > 0)) {
+      let newCart = [...cart];
+      newCart.forEach(item => item.amount = 0);
+      updateCart(newCart);
+    }
     setGiftCards([]);
     sessionStorage.removeItem('cart');
-  },[]);
+  },[cart]);
   
   const itemsSetters = useMemo(() => ({ resetCart }), [resetCart])
   const cartTotal = 

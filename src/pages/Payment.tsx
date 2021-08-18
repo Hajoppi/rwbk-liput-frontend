@@ -119,7 +119,7 @@ const Payment = () => {
   const [ isSubmitting, setSubmitting ] = useState(false);
   const [ error, setError ] = useState('');
   const [ orderId, setOrderId ] = useState('');
-  const { cart, giftCards, paymentByInvoice, setPaymentByInvoice } = useContext(CartContext);
+  const { cart, cartTotal, giftCards, paymentByInvoice, setPaymentByInvoice } = useContext(CartContext);
   const [ formFields, setFormFields ] = useState<Record<string,string>>({});
   const history = useHistory();
 
@@ -155,7 +155,7 @@ const Payment = () => {
     });
   }
   useEffect(() => {
-    if (!cart.length) history.push('/');
+    if (cart.length > 0 && cartTotal === 0) history.push('/');
     if (!customerInfo.firstName.length) history.push('/yhteystiedot');
     const orderNumber = sessionStorage.getItem('order') || '';
     proxy.post<Record<string,string>>('/order/create',
@@ -170,10 +170,12 @@ const Payment = () => {
       setOrderId(data.ORDER_NUMBER);
       setFormFields(data);
     }).catch(() => {
+      const ticketAmountsCorrect = cart.every(item => item.amount <= item.maxAmount);
+      if(!ticketAmountsCorrect) return setError('Haluamiasi lippuja ei ole riittävästi saatavilla');
       setError('Ostoskorissa on virhe');
       setSubmitting(true);
     });
-  },[cart, customerInfo, history, giftCards]);
+  },[cart, cartTotal, customerInfo, history, giftCards]);
   
 
   return (

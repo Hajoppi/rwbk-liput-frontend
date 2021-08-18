@@ -1,14 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import {Button} from '../styles/Styles';
-import { CartContext } from '../contexts/CartContext';
-
-type CartItem = {
-  id: string;
-  name: string;
-  cost: number;
-  amount: number;
-}
+import {Button, Label} from '../styles/Styles';
+import { CartContext, CartItem } from '../contexts/CartContext';
 
 type PropsType = {
   item: CartItem;
@@ -28,7 +21,12 @@ const Ticket = (props: PropsType) => {
   const amount = cart.find(ticket => ticket.id === item.id)?.amount || 0;
   return (
     <Wrapper>
-      <Element>{item.name}</Element>
+      <Element>
+        {item.name}
+        {item.maxAmount < 30 && <div>
+          <Label>lipputyyppi on vähissä</Label>
+        </div>}
+      </Element>
       <Element>{item.cost}€</Element>
       <AmountWrapper>
         <LeftAmountButton aria-label="lisää" onClick={() =>saveCart(item.id, amount - 1)}><Minus/></LeftAmountButton>
