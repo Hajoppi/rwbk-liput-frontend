@@ -5,7 +5,8 @@ import styled from "styled-components";
 import { Button } from "../styles/Styles";
 
 import SeatMap from '../components/SeatMap';
-import { AdminContext }  from "../contexts/AdminContext";
+import { AdminContext, orderComplete }  from "../contexts/AdminContext";
+import { proxy } from "../utils/axios";
 
 type Ticket = {
   id: string;
@@ -43,6 +44,35 @@ const PlaceOrder = () => {
     if (ticket.id === selectedTicket?.id) result = undefined;
     setSelectedTicket(result);
   };
+
+  const sendOrderTickets = () => {
+    proxy.post('/admin/order/tickets', { orderId }).then(() => {
+      const newOrder = { ...selectedOrder };
+      newOrder.tickets_sent = true;
+      selectOrder(newOrder);
+    }).catch(() => {
+    })
+  }
+
+  const downloadTickets = () => {
+    proxy.get(`/admin/order/tickets/${orderId}`,{responseType: 'blob'}).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'liput.pdf');
+      document.body.appendChild(link);
+      link.click();
+    })
+  }
+
+  const sendOrderInvoice = () => {
+    proxy.post('/admin/order/invoice', { orderId }).then(() => {
+      const newOrder = { ...selectedOrder };
+      newOrder.invoice_sent = true;
+      selectOrder(newOrder);
+    }).catch(() => {
+    })
+  }
   useEffect(() => {
       if (orders.length === 0) return;
       const order = orders.find(item => item.id === orderId);
@@ -53,6 +83,7 @@ const PlaceOrder = () => {
   return (
     <div>
       <Flex>
+        {orderComplete(selectedOrder) && <b>Tilaus on valmis</b>}
       <Section>
         <h2>Asiakkaan tiedot</h2>
         <div>{selectedOrder.id}</div>
@@ -88,11 +119,15 @@ const PlaceOrder = () => {
       </Section>
       <Section>
         <h2>Toiminnot</h2>
-        <Button disabled={unPlacedTickets > 0}>Lähetä liput</Button>
-        <Button disabled={unPlacedTickets > 0}>Lataa liput</Button>
+        <Button onClick={sendOrderTickets} disabled={unPlacedTickets > 0 || selectedOrder.tickets_sent}>Lähetä liput</Button>
+        <Button onClick={downloadTickets} disabled={unPlacedTickets > 0}>Lataa liput</Button>
         <br></br>
-        <Button disabled={selectedOrder.invoice}>Lähetä lasku</Button>
-        <Button disabled={selectedOrder.invoice}>Lataa lasku</Button>
+        {selectedOrder.invoice && (
+          <>
+            <Button onClick={sendOrderInvoice} disabled={selectedOrder.invoice_sent}>Lähetä lasku</Button>
+            <Button disabled={selectedOrder.invoice}>Lataa lasku</Button>
+          </>
+        )}
       </Section>
     </div>
   );

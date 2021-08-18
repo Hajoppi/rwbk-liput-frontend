@@ -4,6 +4,7 @@ import { proxy } from '../utils/axios';
 
 export interface AdminContextType {
   orders: Order[],
+  completeOrders: Order[],
   selectedOrder: Order,
   getOrders: () => void;
   selectOrder: (order: Order) => void;
@@ -11,6 +12,7 @@ export interface AdminContextType {
 
 const adminContextDefault: AdminContextType = {
   orders: [],
+  completeOrders: [],
   selectedOrder: {
     id: '',
     status: '',
@@ -26,6 +28,9 @@ const adminContextDefault: AdminContextType = {
     tickets: [],
     invoice: false,
     postal: false,
+    invoice_sent: false,
+    post_sent: false,
+    tickets_sent: false,
   },
   getOrders: () => null,
   selectOrder: () => null,
@@ -55,16 +60,27 @@ export type Order = {
   tickets: Ticket[];
   invoice: boolean;
   postal: boolean;
+  invoice_sent: boolean;
+  post_sent: boolean;
+  tickets_sent: boolean;
 }
+
+export const orderComplete = (order: Order) =>
+  order.invoice === order.invoice_sent
+  && order.postal === order.post_sent
+  && order.tickets_sent;
 
 export const AdminContext = createContext<AdminContextType>(adminContextDefault);
 
 const AdminProvider: React.FC = ({ children }) => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [completeOrders, setCompleteOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order>(adminContextDefault.selectedOrder);
   const getOrders = () => {
     proxy.get<Order[]>('/admin/orders').then((response) => {
-      const filteredOrders = response.data.filter(item => item.status === 'PAID');
+      const filteredOrders = response.data
+      const completeFiltered = response.data.filter(orderComplete)
+      setCompleteOrders(completeFiltered);
       setOrders(filteredOrders);
     });
   }
@@ -76,7 +92,7 @@ const AdminProvider: React.FC = ({ children }) => {
   },[])
 
   return (
-    <AdminContext.Provider value={{orders, getOrders, selectedOrder, selectOrder}}>
+    <AdminContext.Provider value={{orders,completeOrders, getOrders, selectedOrder, selectOrder}}>
       {children}
     </AdminContext.Provider>
   );

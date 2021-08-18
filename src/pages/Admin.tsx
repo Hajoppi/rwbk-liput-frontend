@@ -18,9 +18,10 @@ const StyledButton = styled(Button)`
 
 const FilteredOrders = () => {
   const history = useHistory();
-  const { orders } = useContext(AdminContext);
+  const { orders, completeOrders } = useContext(AdminContext);
   const [invoice, setInvoice] = useState(false);
   const [postal, setPostal] = useState(false);
+  const [complete, setComplete] = useState(false);
   const handleInvoice = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setInvoice(checked);
@@ -29,10 +30,15 @@ const FilteredOrders = () => {
     const { checked } = event.target;
     setPostal(checked);
   }
+  const handleComplete = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setComplete(checked);
+  }
   const filterOrders = () => {
     let result = [...orders];
     if(invoice) result = result.filter(item => item.invoice)
     if(postal) result = result.filter(item => item.postal)
+    if(complete) return completeOrders;
     return result;
   }
   return (
@@ -50,6 +56,13 @@ const FilteredOrders = () => {
           type="checkbox"
           checked={invoice}
           onChange={handleInvoice} />
+      </Label>
+      <Label>
+        Valmiit
+        <input 
+          type="checkbox"
+          checked={complete}
+          onChange={handleComplete} />
       </Label>
       <Flex>
         <Element flex={1}><b>Päivämäärä</b></Element>
