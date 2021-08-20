@@ -64,6 +64,16 @@ const PlaceOrder = () => {
       link.click();
     })
   }
+  const downloadInvoice = () => {
+    proxy.get(`/admin/order/invoice/${orderId}`, {responseType: 'blob'}).then(response => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'lasku.pdf');
+      document.body.appendChild(link);
+      link.click();
+    })
+  };
 
   const sendOrderInvoice = () => {
     proxy.post('/admin/order/invoice', { orderId }).then(() => {
@@ -125,7 +135,7 @@ const PlaceOrder = () => {
         {selectedOrder.invoice && (
           <>
             <Button onClick={sendOrderInvoice} disabled={selectedOrder.invoice_sent}>Lähetä lasku</Button>
-            <Button disabled={selectedOrder.invoice}>Lataa lasku</Button>
+            <Button onClick={downloadInvoice} disabled={!selectedOrder.invoice}>Lataa lasku</Button>
           </>
         )}
       </Section>
