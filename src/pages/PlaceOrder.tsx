@@ -2,7 +2,7 @@ import { useParams, useHistory } from "react-router-dom";
 
 import { useEffect, useState, useContext } from 'react';
 import styled from "styled-components";
-import { Button } from "../styles/Styles";
+import { Button, Label } from "../styles/Styles";
 
 import SeatMap from '../components/SeatMap';
 import { AdminContext, orderComplete }  from "../contexts/AdminContext";
@@ -58,6 +58,18 @@ const PlaceOrder = () => {
     });
   }
 
+  const sendOrderInvoice = () => {
+    setSending(true);
+    proxy.post('/admin/order/invoice', { orderId }).then(() => {
+      const newOrder = { ...selectedOrder };
+      newOrder.invoice_sent = true;
+      selectOrder(newOrder);
+    }).catch(() => {
+    }).finally(() => {
+      setSending(false);
+    });
+  }
+
   const downloadTickets = () => {
     setSending(true);
     proxy.get(`/admin/order/tickets/${orderId}`,{responseType: 'blob'}).then(response => {
@@ -85,28 +97,30 @@ const PlaceOrder = () => {
     });
   };
 
-  const sendOrderInvoice = () => {
+  const updatePostSent = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
     setSending(true);
-    proxy.post('/admin/order/invoice', { orderId }).then(() => {
+    proxy.post(`/admin/order/postal`, { orderId, postalStatus: checked }).then(() => {
       const newOrder = { ...selectedOrder };
-      newOrder.invoice_sent = true;
+      newOrder.post_sent = checked;
       selectOrder(newOrder);
     }).catch(() => {
     }).finally(() => {
       setSending(false);
     });
   }
+
   useEffect(() => {
       if (orders.length === 0) return;
       const order = orders.find(item => item.id === orderId);
       if (!order) return history.push('/admin');
       selectOrder(order);
-  },[orders, orderId, selectOrder, history]);
+  },[orders, selectOrder, orderId, history]);
 
   return (
     <div>
+        {orderComplete(selectedOrder) && <h2><b>Tilaus on valmis</b></h2>}
       <Flex>
-        {orderComplete(selectedOrder) && <b>Tilaus on valmis</b>}
       <Section>
         <h2>Asiakkaan tiedot</h2>
         <div>{selectedOrder.id}</div>
@@ -142,14 +156,22 @@ const PlaceOrder = () => {
       </Section>
       <Section>
         <h2>Toiminnot</h2>
+        {selectedOrder.postal && (
+          <div>
+            <Label>
+              Postitettu
+              <input type="checkbox" checked={selectedOrder.post_sent} onChange={updatePostSent}/>
+            </Label>
+          </div>
+        )}
         <Button onClick={sendOrderTickets} disabled={unPlacedTickets > 0 || selectedOrder.tickets_sent || sending}>Lähetä liput</Button>
         <Button onClick={downloadTickets} disabled={unPlacedTickets > 0 || sending}>Lataa liput</Button>
         <br></br>
         {selectedOrder.invoice && (
-          <>
+          <div>
             <Button onClick={sendOrderInvoice} disabled={selectedOrder.invoice_sent || sending}>Lähetä lasku</Button>
             <Button onClick={downloadInvoice} disabled={!selectedOrder.invoice || sending}>Lataa lasku</Button>
-          </>
+          </div>
         )}
       </Section>
     </div>

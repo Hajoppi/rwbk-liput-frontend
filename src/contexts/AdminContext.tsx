@@ -1,10 +1,11 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useMemo, useCallback } from "react";
 
 import { proxy } from '../utils/axios';
 
 export interface AdminContextType {
   orders: Order[],
   completeOrders: Order[],
+  inCompleteOrders: Order[],
   selectedOrder: Order,
   getOrders: () => void;
   selectOrder: (order: Order) => void;
@@ -13,6 +14,7 @@ export interface AdminContextType {
 const adminContextDefault: AdminContextType = {
   orders: [],
   completeOrders: [],
+  inCompleteOrders: [],
   selectedOrder: {
     id: '',
     status: '',
@@ -75,24 +77,33 @@ export const AdminContext = createContext<AdminContextType>(adminContextDefault)
 const AdminProvider: React.FC = ({ children }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [completeOrders, setCompleteOrders] = useState<Order[]>([]);
+  const [inCompleteOrders, setInCompleteOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order>(adminContextDefault.selectedOrder);
   const getOrders = () => {
     proxy.get<Order[]>('/admin/orders').then((response) => {
-      const filteredOrders = response.data
-      const completeFiltered = response.data.filter(orderComplete)
+      const filteredOrders = response.data;
+      const inCompleteFiltered = response.data.filter(order => !orderComplete(order));
+      const completeFiltered = response.data.filter(orderComplete);
       setCompleteOrders(completeFiltered);
+      setInCompleteOrders(inCompleteFiltered);
       setOrders(filteredOrders);
     });
   }
-  const selectOrder = (order: Order) => {
+  const selectOrder = useCallback((order: Order) => {
     setSelectedOrder(order);
-  }
+  },[]);
   useEffect(() => {
     getOrders();
   },[])
-
+  const itemsSetters = useMemo(() => ({ selectOrder }), [selectOrder])
   return (
-    <AdminContext.Provider value={{orders,completeOrders, getOrders, selectedOrder, selectOrder}}>
+    <AdminContext.Provider value={{
+      orders,
+      completeOrders,
+      inCompleteOrders,
+      getOrders,
+      selectedOrder,
+      ...itemsSetters}}>
       {children}
     </AdminContext.Provider>
   );

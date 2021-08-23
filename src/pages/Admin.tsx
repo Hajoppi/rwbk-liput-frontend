@@ -18,7 +18,7 @@ const StyledButton = styled(Button)`
 
 const FilteredOrders = () => {
   const history = useHistory();
-  const { orders, completeOrders } = useContext(AdminContext);
+  const { inCompleteOrders, completeOrders } = useContext(AdminContext);
   const [invoice, setInvoice] = useState(false);
   const [postal, setPostal] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -35,7 +35,7 @@ const FilteredOrders = () => {
     setComplete(checked);
   }
   const filterOrders = () => {
-    let result = complete ? [...completeOrders] : [...orders];
+    let result = complete ? [...completeOrders] : [...inCompleteOrders];
     if(invoice) result = result.filter(item => item.invoice)
     if(postal) result = result.filter(item => item.postal)
     return result;
