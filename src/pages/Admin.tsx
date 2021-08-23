@@ -35,10 +35,9 @@ const FilteredOrders = () => {
     setComplete(checked);
   }
   const filterOrders = () => {
-    let result = [...orders];
+    let result = complete ? [...orders] : [...completeOrders];
     if(invoice) result = result.filter(item => item.invoice)
     if(postal) result = result.filter(item => item.postal)
-    if(complete) return completeOrders;
     return result;
   }
   return (

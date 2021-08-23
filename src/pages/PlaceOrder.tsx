@@ -38,6 +38,7 @@ const PlaceOrder = () => {
   const history = useHistory();
   const { orderId } = useParams<{orderId?: string}>();
   const [ selectedTicket, setSelectedTicket ] = useState<Ticket>();
+  const [sending, setSending] = useState(false);
   const unPlacedTickets = selectedOrder.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)
   const selectTicket = (ticket: Ticket) => {
     let result: Ticket | undefined = ticket;
@@ -46,15 +47,19 @@ const PlaceOrder = () => {
   };
 
   const sendOrderTickets = () => {
+    setSending(true);
     proxy.post('/admin/order/tickets', { orderId }).then(() => {
       const newOrder = { ...selectedOrder };
       newOrder.tickets_sent = true;
       selectOrder(newOrder);
     }).catch(() => {
-    })
+    }).finally(() => {
+      setSending(false);
+    });
   }
 
   const downloadTickets = () => {
+    setSending(true);
     proxy.get(`/admin/order/tickets/${orderId}`,{responseType: 'blob'}).then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -62,9 +67,12 @@ const PlaceOrder = () => {
       link.setAttribute('download', 'liput.pdf');
       document.body.appendChild(link);
       link.click();
-    })
+    }).finally(() => {
+      setSending(false);
+    });
   }
   const downloadInvoice = () => {
+    setSending(true);
     proxy.get(`/admin/order/invoice/${orderId}`, {responseType: 'blob'}).then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -72,16 +80,21 @@ const PlaceOrder = () => {
       link.setAttribute('download', 'lasku.pdf');
       document.body.appendChild(link);
       link.click();
-    })
+    }).finally(() => {
+      setSending(false);
+    });
   };
 
   const sendOrderInvoice = () => {
+    setSending(true);
     proxy.post('/admin/order/invoice', { orderId }).then(() => {
       const newOrder = { ...selectedOrder };
       newOrder.invoice_sent = true;
       selectOrder(newOrder);
     }).catch(() => {
-    })
+    }).finally(() => {
+      setSending(false);
+    });
   }
   useEffect(() => {
       if (orders.length === 0) return;
@@ -129,13 +142,13 @@ const PlaceOrder = () => {
       </Section>
       <Section>
         <h2>Toiminnot</h2>
-        <Button onClick={sendOrderTickets} disabled={unPlacedTickets > 0 || selectedOrder.tickets_sent}>Lähetä liput</Button>
-        <Button onClick={downloadTickets} disabled={unPlacedTickets > 0}>Lataa liput</Button>
+        <Button onClick={sendOrderTickets} disabled={unPlacedTickets > 0 || selectedOrder.tickets_sent || sending}>Lähetä liput</Button>
+        <Button onClick={downloadTickets} disabled={unPlacedTickets > 0 || sending}>Lataa liput</Button>
         <br></br>
         {selectedOrder.invoice && (
           <>
-            <Button onClick={sendOrderInvoice} disabled={selectedOrder.invoice_sent}>Lähetä lasku</Button>
-            <Button onClick={downloadInvoice} disabled={!selectedOrder.invoice}>Lataa lasku</Button>
+            <Button onClick={sendOrderInvoice} disabled={selectedOrder.invoice_sent || sending}>Lähetä lasku</Button>
+            <Button onClick={downloadInvoice} disabled={!selectedOrder.invoice || sending}>Lataa lasku</Button>
           </>
         )}
       </Section>
