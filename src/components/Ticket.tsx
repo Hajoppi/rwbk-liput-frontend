@@ -21,13 +21,15 @@ const Ticket = (props: PropsType) => {
   const amount = cart.find(ticket => ticket.id === item.id)?.amount || 0;
   return (
     <Wrapper>
-      <Element>
-        {item.name}
-        {item.maxAmount < 30 && <div>
-          <Label>lipputyyppi on vähissä</Label>
-        </div>}
-      </Element>
-      <Element>{item.cost}€</Element>
+      <InfoWrapper>
+        <Element>
+          {item.name}
+          {item.maxAmount < 30 && <div>
+            <Label>lipputyyppi on vähissä</Label>
+          </div>}
+        </Element>
+        <Element>{item.cost}€</Element>
+      </InfoWrapper>
       <AmountWrapper>
         <LeftAmountButton aria-label="lisää" onClick={() =>saveCart(item.id, amount - 1)}><Minus/></LeftAmountButton>
         <Amount
@@ -43,6 +45,21 @@ const Ticket = (props: PropsType) => {
   );
 };
 
+const InfoWrapper = styled.div`
+  display: flex;
+  flex: 2;
+  @media only screen and (max-width: ${props => props.theme.commonWidth}) {
+    flex-direction: column;
+    flex: 1;
+  }
+`;
+
+export const Element = styled.div`
+  position: relative;
+  flex: 1;
+  font-size: 1.25rem;
+`;
+
 const Minus = styled.span`
   display: block;
   height: 0rem;
@@ -50,27 +67,49 @@ const Minus = styled.span`
   margin: auto;
   border-top: 3px solid black;
 `
+const AmountWrapper = styled.div`
+  position: relative;
+  flex: 1;
+  justify-content: center;
+  max-width: 240px;
+  width: 100%;
+  height: 3rem;
+  align-self: flex-end;
+  @media only screen and (max-width: 400px) {
+    max-width: 128px;
+  }
+`;
 
 const RightAmountButton = styled(Button)`
+  position: relative;
+  display: block;
+  float: left;
   padding: 0;
   height: 100%;
-  width: 100%;
-  flex: 1;
+  width: 33%;
   font-size: 2rem;
   border-left: none;
   border-radius: 0 5px 5px 0;
 `;
 
+const Amount = styled.input`
+  position: relative;
+  border: 2px solid ${props => props.theme.neutralLight};
+  width: 33%;
+  float: left;
+  font-size: 1.5rem;
+  height: 100%;
+  text-align: center;
+  background: transparent;
+  &:focus {
+    outline-width: 0;
+  }
+`
+
 const LeftAmountButton = styled(RightAmountButton)`
   border: 2px solid ${props => props.theme.neutralLight};
   border-right: none;
   border-radius: 5px 0 0 5px;
-`
-
-export const Element = styled.div`
-  position: relative;
-  flex: 1;
-  font-size: 1.25rem;
 `;
 
 const Wrapper = styled.div`
@@ -82,41 +121,7 @@ const Wrapper = styled.div`
   &:last-child {
     border-bottom: none;
   }
-  @media only screen and (max-width: ${props => props.theme.commonWidth}) {
-    flex-direction: column;
-    flex-wrap: wrap;
-    height: 3rem;
-    padding: 8px 16px;
-    align-items: initial;
-  }
-`;
 
-const AmountWrapper = styled(Element)`
-  position: relative;
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  max-width: 240px;
-  width: 100%;
-  height: 3rem;
-  align-self: flex-end;
-  @media only screen and (max-width: 500px) {
-    max-width: 128px;
-  }
 `;
-
-const Amount = styled.input`
-  position: relative;
-  border: 2px solid ${props => props.theme.neutralLight};
-  flex: 1;
-  width: 100%;
-  font-size: 1.5rem;
-  height: 100%;
-  text-align: center;
-  background: transparent;
-  &:focus {
-    outline-width: 0;
-  }
-`
 
 export default Ticket
