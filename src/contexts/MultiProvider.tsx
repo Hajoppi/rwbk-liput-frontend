@@ -6,17 +6,17 @@ import TimeProvider from './TimeContext';
 import { theme } from '../styles/Styles';
 
 const MultiProvider: React.FC = ({children}) => (
+  <TimeProvider>
   <CartProvider>
   <ContactProvider>
   <AuthProvider>
-  <TimeProvider>
   <ThemeProvider theme={theme}>
     {children}
   </ThemeProvider>
-  </TimeProvider>
   </AuthProvider>
   </ContactProvider>
   </CartProvider>
+  </TimeProvider>
 );
 
 export default MultiProvider;

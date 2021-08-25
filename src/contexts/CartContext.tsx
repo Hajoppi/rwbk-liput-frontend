@@ -1,5 +1,13 @@
-import React, { createContext, useEffect, useState, useMemo, useCallback } from "react";
+import React, {
+  createContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useContext }
+from "react";
 import { proxy } from "../utils/axios";
+import { TimeContext } from "./TimeContext";
 
 
 export type CartItem = {
@@ -55,15 +63,17 @@ const cartContextDefault: CartContextType = {
 export const CartContext = createContext<CartContextType>(cartContextDefault);
 
 const CartProvider: React.FC = ({ children }) => {
+  const { state } = useContext(TimeContext);
   const [cart, updateCart] = useState<CartItem[]>(cartContextDefault.cart);
   const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
   const [ paymentByInvoice, setPaymentByInvoice ] = useState(cartContextDefault.paymentByInvoice);
 
   useEffect(() => {
+    if(state === 'ENDED' || state === 'NONE') return;
     const storage = sessionStorage.getItem('cart');
     const savedCart = storage ? JSON.parse(storage) as CartItem[] : cartContextDefault.cart;
     fetchTicketsAndUpdate(savedCart);
-  },[]);
+  },[state]);
 
   const fetchTicketsAndUpdate = (savedCart: CartItem[]) => {
     proxy.get<CartItem[]>('/order/tickets').then(response => {
@@ -133,7 +143,7 @@ const CartProvider: React.FC = ({ children }) => {
     return result.length > 0;
   }
 
-  const cartIsEmpty = cart.every(item => item.amount === 0);
+  const cartIsEmpty = cart.length > 0 && cart.every(item => item.amount === 0);
 
   const resetCart = useCallback(() => {
     if(cart.some(item => item.amount > 0)) {

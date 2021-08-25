@@ -18,7 +18,7 @@ const TimeProvider: React.FC = ({ children }) => {
   useEffect(() => {
     proxy.get<STATE>('/time').then(response => {
       setState(response.data);
-    }).catch();
+    }).catch(() => {});
   },[]);
   return (
     <TimeContext.Provider value={{state}}>
