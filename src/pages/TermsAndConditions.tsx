@@ -47,8 +47,9 @@ const TermsAndConditions = () => {
       </p>
       <h2>Verkkopankit</h2>
       <p>
-      Verkkopankkimaksamiseen liittyvän maksunvälityspalvelun toteuttaa Paytrail Oyj (2122839-7) yhteistyössä
-      suomalaisten pankkien ja luottolaitosten kanssa. Käyttäjän kannalta palvelu toimii aivan kuten perinteinen verkkomaksaminenkin.
+      Maksunvälityspalvelun toteuttajana ja maksupalveluntarjoajana toimii Paytrail Oyj (2122839-7)
+      yhteistyössä suomalaisten pankkien ja luottolaitosten kanssa. Paytrail Oyj näkyy maksun saajana tiliotteella
+      tai korttilaskulla ja välittää maksun kauppiaalle.
       </p>
       <Link to={route}>Takaisin tilaamaan</Link>
     </Section>
