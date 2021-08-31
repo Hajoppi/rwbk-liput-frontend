@@ -33,8 +33,8 @@ jobs:
             StrictHostKeyChecking no
           END
       - name: pull
-        run: ssh production 'docker-compose pull liput_frontend'
+        run: ssh production 'cd ./production && docker-compose pull liput_frontend'
       - name: restart
-        run: ssh production 'docker-compose up -d --force-recreate liput_frontend'
+        run: ssh production 'cd ./production && docker-compose up -d --force-recreate liput_frontend'
 
 
