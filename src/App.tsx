@@ -21,7 +21,11 @@ const Admin = React.lazy(() => import('./pages/Admin'));
 const Login = React.lazy(() => import('./pages/Login'));
 const PlaceOrder = React.lazy(() => import('./pages/PlaceOrder'));
 
+const allowedUrls = ['liput.rwbk.fi','localhost','127.0.0.1'];
+const correctOrigin = allowedUrls.some(url => window.location.origin.indexOf(url) >= 0);
+
 const App = () => {
+  if (!correctOrigin) return <div>Ei näin</div>
   return (
     <React.Suspense fallback={<span>Loading...</span>}>
       <Router>
