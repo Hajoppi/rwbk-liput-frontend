@@ -2,6 +2,8 @@ FROM node:12-alpine as builder
 
 WORKDIR /app
 
+ARG api_location=https://liput.rwbk.fi/api
+ENV REACT_APP_API_LOCATION=$api_location
 
 COPY package.json .
 COPY package-lock.json .
