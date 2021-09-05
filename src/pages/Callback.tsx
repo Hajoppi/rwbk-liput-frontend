@@ -91,7 +91,7 @@ const CallbackPage = () => {
       {paymentStatus === 'PAID' ?
       <>
         <p>Tilauksenne on valmis! Teille on lähetetty sähköposti, jossa on tilauksenne yhteenveto.</p>
-        <p>Käsiteltyämme kaikki tilaukset, teille lähetetään lippunne.</p>
+        <p>Käsiteltyämme kaikki tilaukset teille lähetetään lippunne.</p>
       </>
       : null}
     </Wrapper>
