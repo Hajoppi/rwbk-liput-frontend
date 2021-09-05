@@ -200,6 +200,7 @@ const Payment = () => {
       Haluan maksaa laskulla
       <Checkbox type="checkbox" checked={paymentByInvoice} onChange={(event) => setPaymentByInvoice(event.target.checked)}/>
     </Label>
+    <br></br>
     <Label>
       Olen lukenut <StyledLink to={
         {

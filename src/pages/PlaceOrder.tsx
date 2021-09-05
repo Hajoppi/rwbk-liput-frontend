@@ -141,10 +141,10 @@ const PlaceOrder = () => {
             <span>{ticket.name}</span>&nbsp;
             <span>{ticket.seat_number !== null ? 
               `${ticket.location}, Rivi:${ticket.row_number}, Paikka:${ticket.seat_number}`: 'plassaamaton'}</span>&nbsp;
-            <StyledButton
+            {!selectedOrder.tickets_sent && <StyledButton
               selected={selectedTicket?.id === ticket.id}
               onClick={() => selectTicket(ticket)}>Valitse
-            </StyledButton>
+            </StyledButton>}
           </div>
         ))}
       </Section>

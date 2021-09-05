@@ -39,8 +39,8 @@ const Seat = styled.span<SeatProp>`
   align-items: center;
   justify-content: center;
   text-align: center;
-  border: 1px solid black;
-  background-color: ${props => props.reserved ? 'yellow' : props.taken ? 'red' : props.theme.backgroundColor};
+  border: 1px solid ${props => props.theme.textColor};
+  background-color: ${props => props.reserved ? 'hsl(100,80%,30%)' : props.taken ? 'red' : 'transparent'};
 `
 const Row = styled.span`
 `
