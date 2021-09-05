@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Wrapper, NavigationButton, Input, Label  } from '../styles/Styles';
 import { ContactContext } from "../contexts/ContactContext";
 import { useFormInput } from '../hooks/useFormInput';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { CartContext } from '../contexts/CartContext';
 import { TimeContext } from '../contexts/TimeContext';
 

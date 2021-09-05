@@ -1,4 +1,4 @@
-import React from 'react';
+import { Suspense, lazy } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,15 +12,15 @@ import MultiProvider from './contexts/MultiProvider';
 import { GlobalStyle } from './styles/Styles';
 
 
-const TermsAndConditions = React.lazy(() => import('./pages/TermsAndConditions'));
-const Instructions = React.lazy(() => import('./pages/Instruction'));
-const Contact = React.lazy(() => import('./pages/Contact'));
-const Home = React.lazy(() => import('./pages/Home'));
-const Callback = React.lazy(() => import('./pages/Callback'));
-const Payment = React.lazy(() => import('./pages/Payment'));
-const Admin = React.lazy(() => import('./pages/Admin'));
-const Login = React.lazy(() => import('./pages/Login'));
-const PlaceOrder = React.lazy(() => import('./pages/PlaceOrder'));
+const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
+const Instructions = lazy(() => import('./pages/Instruction'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Home = lazy(() => import('./pages/Home'));
+const Callback = lazy(() => import('./pages/Callback'));
+const Payment = lazy(() => import('./pages/Payment'));
+const Admin = lazy(() => import('./pages/Admin'));
+const Login = lazy(() => import('./pages/Login'));
+const PlaceOrder = lazy(() => import('./pages/PlaceOrder'));
 
 const allowedUrls = ['liput.rwbk.fi','localhost','127.0.0.1'];
 const correctOrigin = allowedUrls.some(url => window.location.origin.indexOf(url) >= 0);
@@ -28,7 +28,7 @@ const correctOrigin = allowedUrls.some(url => window.location.origin.indexOf(url
 const App = () => {
   if (!correctOrigin) return <div>Ei näin</div>
   return (
-    <React.Suspense fallback={<span>Loading...</span>}>
+    <Suspense fallback={<span>Loading...</span>}>
       <Router>
         <GlobalStyle/>
         <Header/>
@@ -60,7 +60,7 @@ const App = () => {
                 <PlaceOrder />
             </ProtectedRoute>
             <Route path="/kirjaudu">
-                <Login />
+              <Login />
             </Route>
             <Route path="/">
               <Home />
@@ -69,7 +69,7 @@ const App = () => {
          <Footer/>
         </MultiProvider>
       </Router>
-    </React.Suspense>
+    </Suspense>
   );
 }
 

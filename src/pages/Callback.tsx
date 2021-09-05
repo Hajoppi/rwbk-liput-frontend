@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {useHistory, useLocation} from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { proxy } from '../utils/axios';
 import { ContactContext } from "../contexts/ContactContext";
 import { CartContext } from "../contexts/CartContext";
