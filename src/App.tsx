@@ -7,6 +7,7 @@ import {
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import Images from './components/Images';
 import MultiProvider from './contexts/MultiProvider';
 import { GlobalStyle } from './styles/Styles';
 
@@ -32,6 +33,7 @@ const App = () => {
         <GlobalStyle/>
         <Header/>
         <MultiProvider>
+        <Images/>
           <Switch>
             <Route path="/yhteystiedot">
               <Contact />
