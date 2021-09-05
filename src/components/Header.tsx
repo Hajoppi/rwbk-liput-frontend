@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import logo from '../assets/rwbk_logo.png';
+import logo from '../assets/rwbk_logo-min.png';
 import { useHistory } from 'react-router-dom';
 
 const HeaderComponent = () => {
