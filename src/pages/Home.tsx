@@ -41,7 +41,7 @@ const Home = () => {
       </p>
       <p>Valitkaa haluamanne lippujen määrä kustakin lippuluokasta.
         Mikäli ostatte eri lippuluokan lippuja, huomatkaa, että eri lippuluokan liput
-        plaseerataan katsomossa eri paikkoille lukuunottamatta opiskelija ja II-luokan lippuja, jotka voidaan plaseerta yhteen.</p>
+        plaseerataan katsomossa eri paikkoille lukuunottamatta opiskelija ja II-luokan lippuja, jotka voidaan plaseerata yhteen.</p>
       <p>
         Jos olet epävarma kuinka toimia, ole hyvä ja <StyledLink to="/ohjeet">katso tarkemmat ohjeet.</StyledLink>
       </p>

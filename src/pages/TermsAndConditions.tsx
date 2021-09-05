@@ -128,8 +128,8 @@ const Terms = () => (
     Palautamme lipuista saamamme hinnan vain, jos saamme liput myytyä eteenpäin.
   </p>
   <p>
-    Mikäli tapahtuman osallistujamäärää joudutaan rajoittamaan terveyssyistä johtuen,
-    pidätämme oikeuden palauttaa tai muuttaa lippuja satunnaisesti valituilta ostajilta.
+    Mikäli tapahtuman osallistujamäärää joudutaan rajoittamaan ulkoisista tekijöistä johtuen,
+    pidätämme oikeuden palauttaa lippuja sekä vaihtaa istumapaikkoja.
   </p>
   <p>
     Yhden tilauksen maksimilippumäärä on kolmekymmentä (30) lippua.
