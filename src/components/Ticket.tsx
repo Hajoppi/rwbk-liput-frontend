@@ -65,7 +65,7 @@ const Minus = styled.span`
   height: 0rem;
   width: 1rem;
   margin: auto;
-  border-top: 3px solid black;
+  border-top: 3px solid ${props => props.theme.textColor};
 `
 const AmountWrapper = styled.div`
   position: relative;
@@ -93,6 +93,7 @@ const RightAmountButton = styled(Button)`
 `;
 
 const Amount = styled.input`
+  color: ${props => props.theme.textColor};
   position: relative;
   border: 2px solid ${props => props.theme.neutralLight};
   width: 33%;

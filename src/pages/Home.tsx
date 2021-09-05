@@ -40,7 +40,7 @@ const Home = () => {
       Tilaus tapahtuu allaolevalla lomakkeella, jonka jälkeen käsittelemme kaikki tilaukset ja lähetämme liput valitsemallanne toimitustavalla.
       </p>
       <p>
-        Jos olet epävarma kuinka toimia, ole hyvä ja <Link to="/ohjeet">katso tarkemmat ohjeet.</Link>
+        Jos olet epävarma kuinka toimia, ole hyvä ja <StyledLink to="/ohjeet">katso tarkemmat ohjeet.</StyledLink>
       </p>
       {state === 'PRESALE' && <p>Lahjakorttien lunastus on alkanut. Jos sinulla on lahjakortti, voit tilata lippuja.</p>}
     </Wrapper>
@@ -65,5 +65,7 @@ const Total = styled.div`
   font-size: 1.5rem;
   padding: 2rem;
 `
-
+const StyledLink = styled(Link)`
+  color: ${props => props.theme.linkColor};
+`
 export default Home;

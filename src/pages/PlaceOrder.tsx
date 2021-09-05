@@ -26,7 +26,7 @@ const StyledButton = styled(Button)<StyleProps>`
   padding: 0.25rem;
   background-color:
     ${props => props.selected ?
-    props.theme.neutralActive : props.theme.backgroundColor};
+    props.theme.neutralActive : 'transparent'};
 `;
 
 const Section = styled.div`
