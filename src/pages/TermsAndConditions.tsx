@@ -199,10 +199,11 @@ const Button = styled.button<{underline?: boolean}>`
   font-size: 1rem;
   margin: 0.5rem;
   background: transparent;
+  color: ${props => props.theme.textColor};
   border: none;
   cursor: pointer;
   transition: all .1s ease-in-out;
-  border-bottom: 1px solid ${props => props.underline ? 'black' : 'transparent'};
+  border-bottom: 1px solid ${props => props.underline ? props.theme.textColor : 'transparent'};
 `;
 
 export default TermsAndConditions;

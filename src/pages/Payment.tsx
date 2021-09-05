@@ -77,7 +77,13 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
     <StyledGiftCard>
       <Label>
       Lahjakortti
-      <StyledInput type="text" name="giftCard" value={giftCard} onChange={handleGiftCardChange}></StyledInput>
+      <StyledInput
+        type="text"
+        name="giftCard"
+        value={giftCard}
+        onChange={handleGiftCardChange}
+        placeholder="Lahjakortin koodi tähän"
+      ></StyledInput>
       </Label>
       <Error>{giftCardError}</Error>
       <GiftCardButton
@@ -257,7 +263,7 @@ const OrderInformation = styled.div`
 `;
 
 const StyledInput = styled(Input)`
-  border: solid 2px ${props => props.theme.neutralLight};
+  border: solid 1px ${props => props.theme.textColor};
   margin: 0;
 `;
 

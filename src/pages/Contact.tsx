@@ -42,44 +42,44 @@ const ContactForm = () => {
     history.push('/maksu');
   }
   return (
-    <form onSubmit={handleSubmit}>
+    <>
+    <form>
       <Label>
-        Etunimi
-        <Input {...firstName}   type="text" name="firstname"   placeholder="Etunimi"       required/>
+        Etunimi*
+        <Input {...firstName} type="text" name="firstname" required/>
       </Label>
       <Label>
-        Sukunimi
-        <Input {...lastName}    type="text" name="lastname"   placeholder="Sukunimi"      required/>
+        Sukunimi*
+        <Input {...lastName} type="text" name="lastname" required/>
       </Label>
       <Label>
-        Sähköposti
-        <Input {...email}       type="email" name="email"  placeholder="Sähköposti"    required/>
+        Sähköposti*
+        <Input {...email} type="email" name="email" required/>
       </Label>
       <Label>
-        Postiosoite
-        <Input {...address}     type="text"  name="address" placeholder="Postiosoite"   required/>
+        Postiosoite*
+        <Input {...address} type="text"  name="address" required/>
       </Label>
       <Label>
-        Postinumero
-        <Input {...postalCode}  type="text"  name="postal_code" placeholder="Postinumero"   required/>
+        Postinumero*
+        <Input {...postalCode}type="text"  name="postal_code" required/>
       </Label>
       <Label>
-        Postitoimipaikka
-        <Input {...city}        type="text"  name="city" placeholder="Postitoimipaikka"required/>
+        Postitoimipaikka*
+        <Input {...city} type="text"  name="city" required/>
       </Label>
       <Label>
-        Puhelinnumero
+        Puhelinnumero* (ilman välilöyntejä)
         <Input {...phone}
               type="tel"
               title="Varmista että puhelinnumerossa ei ole välilyöntejä"
-              placeholder="Puhelinnumero"
               pattern="[0-9+\-]*"
               name="phone"
               required/>
       </Label>
       <Label>
         Erityistoiveet
-        <TextArea {...extra}    placeholder="Erityistoiveita"/>
+        <TextArea {...extra}/>
       </Label>
       <br/>
       <Label>
@@ -88,11 +88,12 @@ const ContactForm = () => {
           <option value="finland">Suomi</option>
         </Select>
       </Label>
-      <NavigationButtons>
-        <NavigationButton onClick={(e: React.FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
-        <NavigationButton disabled={!formReady}>Seuraava</NavigationButton>
-      </NavigationButtons>
     </form>
+    <NavigationButtons>
+    <NavigationButton onClick={(e: React.FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
+    <NavigationButton onClick={handleSubmit} disabled={!formReady}>Seuraava</NavigationButton>
+    </NavigationButtons>
+  </>
   );
 }
 

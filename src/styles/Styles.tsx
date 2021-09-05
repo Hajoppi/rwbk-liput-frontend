@@ -3,7 +3,7 @@ import background from '../assets/bg.png'
 export const theme = {
   backgroundColor: "hsl(0,0%,100%)",
   // textColor: "hsl(0,100%,50%)",
-  linkColor: "hsl(0, 60%,55%)",
+  linkColor: "hsl(0, 100%, 60%)",
   textColor: "hsl(0,0%,100%)",
   neutral: "hsl(0,0%,40%)",
   error: "hsl(0,40%,50%)",
@@ -105,7 +105,8 @@ export const Input = styled.input`
   width: 100%;
   margin-bottom: 32px;
   ::placeholder{
-    color: transparent;
+    color: ${theme.neutralLight};
+    font-size: 1rem;
   }
   &:focus {
     outline-width: 0;
