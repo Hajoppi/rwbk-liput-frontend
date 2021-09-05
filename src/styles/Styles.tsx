@@ -1,9 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
-import tanko from '../assets/tanko.svg';
-import palomies from '../assets/palomies.svg';
-import cello from '../assets/cello.svg';
-
 export const theme = {
   backgroundColor: "hsl(0,0%,10%);",
   linkColor: "hsl(0, 100%, 60%)",
@@ -26,18 +22,6 @@ export const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     color: ${theme.textColor};
     background-color: ${theme.backgroundColor};
-    /*background-image:
-      linear-gradient(to bottom, 
-      ${theme.bgGradient}, 
-      ${theme.bgGradient}),
-      url(${palomies}), url(${cello}), url(${tanko});
-    background-position: center, left, center, right;
-    background-repeat: repeat, no-repeat, no-repeat, no-repeat;
-    background-size: 100% auto, 33% auto, 33% auto, 33% auto;
-    @media only screen and (max-width: ${theme.commonWidth}) {
-      background-position: center, 50% 15%, 50% 55%, bottom;
-      background-size: 100% 100%, auto 33%, auto 33%, auto 33%;
-    }*/
   }
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
