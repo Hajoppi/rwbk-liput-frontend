@@ -2,8 +2,9 @@ import styled, { createGlobalStyle } from 'styled-components';
 import background from '../assets/bg.png'
 export const theme = {
   backgroundColor: "hsl(0,0%,100%)",
-  light: "hsl(120,100%,100%)",
-  textColor: "hsl(0,0%,10%)",
+  // textColor: "hsl(0,100%,50%)",
+  linkColor: "hsl(0, 60%,55%)",
+  textColor: "hsl(0,0%,100%)",
   neutral: "hsl(0,0%,40%)",
   error: "hsl(0,40%,50%)",
   neutralLight: "hsl(0,0%,70%)",
@@ -21,11 +22,12 @@ export const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: ${theme.textColor};
-    background-image:
+    background: hsl(0,0%,10%);
+    /*background-image:
       linear-gradient(to bottom, 
       ${theme.bgGradient}, 
       ${theme.bgGradient}),
-      url(${background});
+      url(${background});*/
   }
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
@@ -62,6 +64,7 @@ export const Button = styled.button`
   border: 2px solid ${theme.neutralLight};
   border-radius: 5px;
   padding: 0.5rem;
+  color: ${theme.textColor};
   @media (hover: hover) {
     &:hover:enabled {
       background: ${theme.neutralLight};
@@ -88,6 +91,7 @@ export const NavigationButton = styled(Button)`
 
 export const Label = styled.label`
   color: ${props => props.theme.neutral};
+  color: ${props => props.theme.textColor};
   font-size: 1rem;
 `;
 

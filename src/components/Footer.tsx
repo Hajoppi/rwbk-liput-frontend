@@ -49,7 +49,7 @@ const FooterComponent = () => {
 };
 
 const StyledLink = styled(Link)`
-  color: ${theme.neutral};
+  color: ${theme.linkColor};
 `
 const Footer = styled.footer`
 `;

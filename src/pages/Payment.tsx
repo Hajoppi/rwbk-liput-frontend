@@ -119,7 +119,7 @@ const Payment = () => {
   const [ isSubmitting, setSubmitting ] = useState(false);
   const [ error, setError ] = useState('');
   const [ orderId, setOrderId ] = useState('');
-  const { cart, cartTotal, giftCards, paymentByInvoice, setPaymentByInvoice } = useContext(CartContext);
+  const { cart, cartIsEmpty, cartTotal, giftCards, paymentByInvoice, setPaymentByInvoice } = useContext(CartContext);
   const [ formFields, setFormFields ] = useState<Record<string,string>>({});
   const history = useHistory();
 
@@ -155,7 +155,7 @@ const Payment = () => {
     });
   }
   useEffect(() => {
-    if (cart.length > 0 && cartTotal === 0) history.push('/');
+    if (cartIsEmpty) history.push('/');
     if (!customerInfo.firstName.length) history.push('/yhteystiedot');
     const orderNumber = sessionStorage.getItem('order') || '';
     if(cart.length === 0) return;
@@ -176,7 +176,7 @@ const Payment = () => {
       setError('Ostoskorissa on virhe');
       setSubmitting(true);
     });
-  },[cart, cartTotal, customerInfo, history, giftCards]);
+  },[cart, cartIsEmpty, cartTotal, customerInfo, history, giftCards]);
   
 
   return (

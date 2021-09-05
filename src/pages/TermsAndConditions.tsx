@@ -181,7 +181,7 @@ const TermsAndConditions = () => {
         <Button underline={!showTerms} onClick={() => setShowTerms(false)}>Tietosuojaseloste</Button>
       </Buttons>
       {showTerms ? <Terms /> : <GDPR />}
-      <Link to={route}>Takaisin tilaamaan</Link>
+      <StyledLink to={route}>Takaisin tilaamaan</StyledLink>
     </Section>
   );
 };
@@ -190,7 +190,11 @@ const Buttons = styled.div`
   margin: auto;
   display: flex;
   justify-content: center;
-`
+`;
+
+const StyledLink = styled(Link)`
+  color: ${props => props.theme.linkColor};
+`;
 const Button = styled.button<{underline?: boolean}>`
   font-size: 1rem;
   margin: 0.5rem;

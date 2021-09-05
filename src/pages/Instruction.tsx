@@ -23,12 +23,15 @@ const Instructions = () => (
       </ol>
     </div>
     <p>Ongelma tilanteissa ottakaa yhteyttä liputsalo at rwbk piste fi</p>
-    <Link to="/">Takaisin tilaamaan</Link>
+    <StyledLink to="/">Takaisin tilaamaan</StyledLink>
   </Section>
 );
 
 const Section = styled.section`
   max-width: ${props => props.theme.commonWidth};
+`;
+const StyledLink = styled(Link)`
+  color: ${props => props.theme.linkColor};
 `;
 
 export default Instructions;
