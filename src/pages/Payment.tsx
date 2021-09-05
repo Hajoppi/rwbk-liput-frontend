@@ -239,7 +239,7 @@ const Checkbox = styled.input`
   background: transparent;
 `
 const StyledLink = styled(Link)`
-  color: ${props => props.theme.neutral};
+  color: ${props => props.theme.linkColor};
 `;
 
 const Error = styled.div`

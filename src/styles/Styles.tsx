@@ -2,7 +2,6 @@ import styled, { createGlobalStyle } from 'styled-components';
 import background from '../assets/bg.png'
 export const theme = {
   backgroundColor: "hsl(0,0%,100%)",
-  // textColor: "hsl(0,100%,50%)",
   linkColor: "hsl(0, 100%, 60%)",
   textColor: "hsl(0,0%,100%)",
   neutral: "hsl(0,0%,40%)",
