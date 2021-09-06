@@ -6,7 +6,6 @@ import { ContactContext } from "../contexts/ContactContext";
 import { useFormInput } from '../hooks/useFormInput';
 import { useHistory } from 'react-router-dom';
 import { CartContext } from '../contexts/CartContext';
-import { TimeContext } from '../contexts/TimeContext';
 
 const ContactForm = () => {
   const history = useHistory();
@@ -99,8 +98,7 @@ const ContactForm = () => {
 
 const Contact = () => {
   const { cartIsEmpty } = useContext(CartContext);
-  const { state } = useContext(TimeContext);
-  if (cartIsEmpty || state ==='ENDED' || state === 'NONE') return <Redirect to="/"/>
+  if (cartIsEmpty) return <Redirect to="/"/>
   return (
     <Wrapper>
       <h1>Yhteystiedot</h1>
