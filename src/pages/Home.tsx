@@ -35,6 +35,10 @@ const Home = () => {
     <>
     <Wrapper>
       <h1>Retuperän WBK:n konserttilipputilaus</h1>
+      {state === 'PRESALE' && <p><b>
+          Lahjakorttien lunastus on alkanut, joten tarvitset lahjakortin tehdäksesi tilauksen. 
+          Yleinen lipunmyynti aukeaa 13.9.
+      </b></p>}
       <p>
       Tervetuloa tilaamaan lippuja Retuperän WBK:n konserttiin! Konsertti järjestetään Finlandia-talossa 5.11.2021 klo 19:33.
       Tilaus tapahtuu allaolevalla lomakkeella, minkä jälkeen käsittelemme kaikki tilaukset ja lähetämme liput valitsemallanne toimitustavalla.
@@ -45,7 +49,6 @@ const Home = () => {
       <p>
         Jos olet epävarma kuinka toimia, ole hyvä ja <StyledLink to="/ohjeet">katso tarkemmat ohjeet.</StyledLink>
       </p>
-      {state === 'PRESALE' && <p>Lahjakorttien lunastus on alkanut. Jos sinulla on lahjakortti, voit tilata lippuja.</p>}
     </Wrapper>
     <Wrapper>
       <h2>Konserttiliput</h2>
