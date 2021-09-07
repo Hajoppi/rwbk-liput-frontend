@@ -43,11 +43,11 @@ const Home = () => {
       Tervetuloa tilaamaan lippuja Retuperän WBK:n konserttiin! Konsertti järjestetään Finlandia-talossa 5.11.2021 klo 19:33.
       Tilaus tapahtuu allaolevalla lomakkeella, minkä jälkeen käsittelemme kaikki tilaukset ja lähetämme liput valitsemallanne toimitustavalla.
       </p>
+      <p>Tilaamalla liput yhdellä tilauksella seurueesi kanssa varmistatte, että saatte parhaimmat paikat toistenne vierestä</p>
       <p>Valitkaa haluamanne lippujen määrä kustakin lippuluokasta.
         Mikäli ostatte eri lippuluokan lippuja, huomatkaa, että eri lippuluokan liput
         plaseerataan katsomossa eri paikkoille lukuunottamatta opiskelija ja II-luokan lippuja, jotka voidaan plaseerata yhteen.
       </p>
-      <p>Tilaamalla liput yhdellä tilauksella seurueesi kanssa varmistatte, että saatte parhaimmat paikat toistenne vierestä</p>
       <p>
         Jos olet epävarma kuinka toimia, ole hyvä ja <StyledLink to="/ohjeet">katso tarkemmat ohjeet.</StyledLink>
       </p>
