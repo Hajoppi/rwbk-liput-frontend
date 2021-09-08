@@ -7,15 +7,15 @@ import { theme } from '../styles/Styles';
 
 const MultiProvider: React.FC = ({children}) => (
   <TimeProvider>
+  <AuthProvider>
   <CartProvider>
   <ContactProvider>
-  <AuthProvider>
   <ThemeProvider theme={theme}>
     {children}
   </ThemeProvider>
-  </AuthProvider>
   </ContactProvider>
   </CartProvider>
+  </AuthProvider>
   </TimeProvider>
 );
 

@@ -8,15 +8,15 @@ import { Wrapper, Label, Input, TextArea, Button, Error } from '../../styles/Sty
 import { proxy } from '../../utils/axios';
 
 const Contacts = () => {
-  const { updateInfo } = useContext(ContactContext)
-  const firstName = useFormInput('');
-  const lastName = useFormInput('');
-  const email = useFormInput('');
-  const address = useFormInput('');
-  const postalCode = useFormInput('');
-  const phone = useFormInput('');
-  const city = useFormInput('');
-  const extra = useFormInput('');
+  const { customerInfo, updateInfo } = useContext(ContactContext);
+  const firstName = useFormInput(customerInfo.firstName);
+  const lastName = useFormInput(customerInfo.lastName);
+  const email = useFormInput(customerInfo.email);
+  const address = useFormInput(customerInfo.address);
+  const postalCode = useFormInput(customerInfo.postalCode);
+  const phone = useFormInput(customerInfo.phone);
+  const city = useFormInput(customerInfo.city);
+  const extra = useFormInput(customerInfo.extra);
   useEffect(() => {
     updateInfo({
       firstName: firstName.value,

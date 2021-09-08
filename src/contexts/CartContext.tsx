@@ -7,6 +7,7 @@ import React, {
   useContext }
 from "react";
 import { proxy } from "../utils/axios";
+import { AuthContext } from "./AuthContext";
 import { TimeContext } from "./TimeContext";
 
 
@@ -28,7 +29,6 @@ export type GiftCard = {
   type: string;
 }
 
-const MAX_ORDER_LIMIT = 30;
 
 export interface CartContextType {
   cart: CartItem[];
@@ -64,9 +64,15 @@ export const CartContext = createContext<CartContextType>(cartContextDefault);
 
 const CartProvider: React.FC = ({ children }) => {
   const { state } = useContext(TimeContext);
+  const { loggedIn } = useContext(AuthContext);
   const [cart, updateCart] = useState<CartItem[]>(cartContextDefault.cart);
   const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
   const [ paymentByInvoice, setPaymentByInvoice ] = useState(cartContextDefault.paymentByInvoice);
+  const [orderLimit, setOrderLimit] = useState(30);
+
+  useEffect(() => {
+    setOrderLimit(loggedIn ? 999 : 30);
+  },[loggedIn]);
 
   useEffect(() => {
     if(state === 'ENDED' || state === 'NONE') return;
@@ -97,7 +103,7 @@ const CartProvider: React.FC = ({ children }) => {
     const amountOfOtherTickets = newCart
       .filter(item=>item.id !== ticket.id)
       .reduce((a,b) => a + b.amount, 0);
-    if(amount + amountOfOtherTickets > MAX_ORDER_LIMIT) return;
+    if(amount + amountOfOtherTickets > orderLimit) return;
 
     // 0 < newAmount < maximum amount left
     ticket.amount = Math.min(Math.max(0, amount), ticket.maxAmount); 
