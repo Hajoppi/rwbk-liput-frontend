@@ -1,8 +1,9 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { AdminContext } from '../contexts/AdminContext';
-import { Button, Element, Wrapper, Label } from '../styles/Styles';
+import { AdminContext } from '../../contexts/AdminContext';
+import { Button, Element, Wrapper, Label } from '../../styles/Styles';
 
 
 const Flex = styled.div`
@@ -15,6 +16,9 @@ const Flex = styled.div`
 const StyledButton = styled(Button)`
   font-size: 1rem;
 `
+const StyledLink = styled(Link)`
+  color: ${props => props.theme.linkColor};
+`;
 
 const FilteredOrders = () => {
   const history = useHistory();
@@ -65,6 +69,7 @@ const FilteredOrders = () => {
       </Label>
       <Flex>
         <Element flex={1}><b>Päivämäärä</b></Element>
+        <Element flex={2}><b>Nimi</b></Element>
         <Element flex={1}><b>Postitus</b></Element>
         <Element flex={1}><b>Laskutus</b></Element>
         <Element flex={1}><b>Lippuja ilman paikkoja</b></Element>
@@ -74,6 +79,7 @@ const FilteredOrders = () => {
         return (
         <Flex key={order.id}>
           <Element flex={1}>{new Date(order.created).toLocaleDateString()}</Element>
+          <Element flex={2}>{order.firstname} {order.lastname}</Element>
           <Element flex={1}>{order.postal ? 'Kyllä' : 'Ei'}</Element>
           <Element flex={1}>{order.invoice ? 'Kyllä' : 'Ei'}</Element>
           <Element flex={1}>{order.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)}/{order.tickets.length}</Element>
@@ -89,6 +95,7 @@ const FilteredOrders = () => {
 const Admin = () => {
   return (
     <Wrapper>
+      <StyledLink to="/admin/create">Luo tilaus</StyledLink>
       <FilteredOrders></FilteredOrders>
     </Wrapper>
   )

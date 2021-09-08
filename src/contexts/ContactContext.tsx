@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useMemo, useCallback } from "react";
 
 
 export type CustomerInfo = {
@@ -40,18 +40,19 @@ const ContactProvider: React.FC = ({ children }) => {
   const savedInfo = storage ? JSON.parse(storage) as CustomerInfo : contactContextDefault.customerInfo
   const [customerInfo, setInfo] = useState<CustomerInfo>(savedInfo);
   
-  const updateInfo = (customerInfo: CustomerInfo) => {
+  const updateInfo = useCallback((customerInfo: CustomerInfo) => {
     sessionStorage.setItem('info', JSON.stringify(customerInfo))
     setInfo(customerInfo);
-  }
+  },[])
 
-  const resetInfo = () => {
+  const resetInfo = useCallback(() => {
     setInfo(contactContextDefault.customerInfo);
     sessionStorage.removeItem('info');
     sessionStorage.removeItem('order');
-  }
+  },[]);
+  const itemSetters = useMemo(() => ({updateInfo, resetInfo}),[updateInfo, resetInfo]);
   return (
-    <ContactContext.Provider value={{customerInfo, updateInfo, resetInfo}}>
+    <ContactContext.Provider value={{customerInfo, ...itemSetters}}>
       {children}
     </ContactContext.Provider>
   );

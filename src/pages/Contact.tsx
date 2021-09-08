@@ -1,7 +1,7 @@
 import { Redirect } from 'react-router-dom';
 import { useContext } from 'react';
 import styled from "styled-components";
-import { Wrapper, NavigationButton, Input, Label  } from '../styles/Styles';
+import { Wrapper, NavigationButton, Input, Label, TextArea, Select } from '../styles/Styles';
 import { ContactContext } from "../contexts/ContactContext";
 import { useFormInput } from '../hooks/useFormInput';
 import { useHistory } from 'react-router-dom';
@@ -112,38 +112,6 @@ const NavigationButtons = styled.div`
   justify-content: center;
 `
 
-const TextArea = styled.textarea`
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  display: block;
-  background: transparent;
-  border: solid 2px ${props => props.theme.neutralLight};
-  color: ${props => props.theme.textColor};
-  font-size: 1.5rem;
-  ::placeholder{
-    color: transparent;
-  }
-  padding: 8px;
-  margin-top: 8px;
-  resize: none;
-  width: 100%;
-  height: 200px;
-  &:focus {
-    outline-width: 0;
-    border-color: ${props => props.theme.neutralActive};
-  }
-`;
 
-const Select = styled.select`
-  display: block;
-  background: transparent;
-  border: solid 2px ${props => props.theme.neutralLight};
-  color: ${props => props.theme.textColor};
-  font-size: 1.5rem;
-  padding: 8px;
-  margin: 8px 0 32px 0;
-  width: 100%;
-`
 
 export default Contact

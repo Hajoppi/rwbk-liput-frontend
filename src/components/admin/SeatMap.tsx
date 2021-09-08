@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import permantoSeats from '../assets/permanto.json';
-import parvekeSeats from '../assets/parveke.json';
+import permantoSeats from '../../assets/permanto.json';
+import parvekeSeats from '../../assets/parveke.json';
 import React, { useContext, useEffect, useState } from 'react';
-import { proxy } from '../utils/axios';
-import { AdminContext } from '../contexts/AdminContext';
+import { proxy } from '../../utils/axios';
+import { AdminContext } from '../../contexts/AdminContext';
 
 const generateSeats = (row: number[]) => {
   const [end, start] = row;

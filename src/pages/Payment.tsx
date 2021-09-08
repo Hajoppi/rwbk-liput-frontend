@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Order from '../components/Order';
-import { Button, Input, Label, NavigationButton } from '../styles/Styles';
+import { Button, Input, Label, NavigationButton, Error } from '../styles/Styles';
 import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
 import { CartContext, GiftCard } from "../contexts/CartContext";
 import { proxy } from '../utils/axios';
@@ -242,14 +242,6 @@ const Checkbox = styled.input`
 const StyledLink = styled(Link)`
   color: ${props => props.theme.linkColor};
 `;
-
-const Error = styled.div`
-  color: ${props => props.theme.error};
-  font-weight: 600;
-  height: 1rem;
-  font-size: 1rem;
-  margin: 5px 0;
-`
 
 const GiftCardButton = styled(Button)`
   font-size: 1rem;

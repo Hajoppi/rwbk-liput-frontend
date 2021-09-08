@@ -1,11 +1,11 @@
 import { useParams, useHistory } from "react-router-dom";
 import { useEffect, useState, useContext } from 'react';
 import styled from "styled-components";
-import { Button, Label } from "../styles/Styles";
+import { Button, Label } from "../../styles/Styles";
 
-import SeatMap from '../components/SeatMap';
-import { AdminContext, orderComplete } from "../contexts/AdminContext";
-import { proxy } from "../utils/axios";
+import SeatMap from '../../components/admin/SeatMap';
+import { AdminContext, orderComplete } from "../../contexts/AdminContext";
+import { proxy } from "../../utils/axios";
 
 type Ticket = {
   id: string;

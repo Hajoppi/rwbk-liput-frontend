@@ -18,11 +18,12 @@ const Contact = lazy(() => import('./pages/Contact'));
 const Home = lazy(() => import('./pages/Home'));
 const Callback = lazy(() => import('./pages/Callback'));
 const Payment = lazy(() => import('./pages/Payment'));
-const Admin = lazy(() => import('./pages/Admin'));
-const Login = lazy(() => import('./pages/Login'));
-const PlaceOrder = lazy(() => import('./pages/PlaceOrder'));
+const Admin = lazy(() => import('./pages/admin/Admin'));
+const Login = lazy(() => import('./pages/admin/Login'));
+const PlaceOrder = lazy(() => import('./pages/admin/PlaceOrder'));
+const AdminCreate = lazy(() => import('./pages/admin/Create'));
 
-const allowedUrls = ['liput.rwbk.fi','localhost','127.0.0.1'];
+const allowedUrls = ['liput.rwbk.fi', 'localhost', '127.0.0.1'];
 const correctOrigin = allowedUrls.some(url => window.location.origin.indexOf(url) >= 0);
 
 const App = () => {
@@ -58,6 +59,9 @@ const App = () => {
             </ProtectedRoute>
             <ProtectedRoute path="/admin/order/:orderId" exact>
                 <PlaceOrder />
+            </ProtectedRoute>
+            <ProtectedRoute path="/admin/create" exact>
+              <AdminCreate />
             </ProtectedRoute>
             <Route path="/kirjaudu">
               <Login />
