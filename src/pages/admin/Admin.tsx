@@ -21,6 +21,7 @@ const FilteredOrders = () => {
   const { inCompleteOrders, completeOrders } = useContext(AdminContext);
   const [invoice, setInvoice] = useState(false);
   const [postal, setPostal] = useState(false);
+  const [admin, setAdmin] = useState(false);
   const [complete, setComplete] = useState(false);
   const handleInvoice = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
@@ -30,14 +31,19 @@ const FilteredOrders = () => {
     const { checked } = event.target;
     setPostal(checked);
   }
+  const handleAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setAdmin(checked);
+  }
   const handleComplete = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setComplete(checked);
   }
   const filterOrders = () => {
     let result = complete ? [...completeOrders] : [...inCompleteOrders];
-    if(invoice) result = result.filter(item => item.invoice)
-    if(postal) result = result.filter(item => item.postal)
+    if(invoice) result = result.filter(item => item.invoice);
+    if(postal) result = result.filter(item => item.postal);
+    if(admin) result = result.filter(item => item.admin_created);
     return result;
   }
   return (
@@ -55,6 +61,13 @@ const FilteredOrders = () => {
           type="checkbox"
           checked={invoice}
           onChange={handleInvoice} />
+      </Label>
+      <Label>
+        Itse luodut
+        <input 
+          type="checkbox"
+          checked={admin}
+          onChange={handleAdmin} />
       </Label>
       <Label>
         Valmiit

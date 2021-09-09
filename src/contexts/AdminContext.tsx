@@ -33,6 +33,7 @@ const adminContextDefault: AdminContextType = {
     invoice_sent: false,
     post_sent: false,
     tickets_sent: false,
+    admin_created: false,
   },
   getOrders: () => null,
   selectOrder: () => null,
@@ -65,6 +66,7 @@ export type Order = {
   invoice_sent: boolean;
   post_sent: boolean;
   tickets_sent: boolean;
+  admin_created: boolean;
 }
 
 export const orderComplete = (order: Order) =>
