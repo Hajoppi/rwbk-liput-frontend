@@ -109,6 +109,19 @@ const PlaceOrder = () => {
     });
   }
 
+  const updateInvoiceSent = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setSending(true);
+    proxy.post(`/admin/order/invoicestatus`, { orderId, invoiceStatus: checked }).then(() => {
+      const newOrder = { ...selectedOrder };
+      newOrder.invoice_sent = checked;
+      selectOrder(newOrder);
+    }).catch(() => {
+    }).finally(() => {
+      setSending(false);
+    });
+  }
+
   useEffect(() => {
       if (orders.length === 0) return;
       const order = orders.find(item => item.id === orderId);
@@ -160,6 +173,14 @@ const PlaceOrder = () => {
             <Label>
               Postitettu
               <input type="checkbox" checked={selectedOrder.post_sent} onChange={updatePostSent}/>
+            </Label>
+          </div>
+        )}
+        {selectedOrder.invoice && (
+          <div>
+            <Label>
+              Laskutettu
+              <input type="checkbox" checked={selectedOrder.invoice_sent} onChange={updateInvoiceSent}/>
             </Label>
           </div>
         )}
