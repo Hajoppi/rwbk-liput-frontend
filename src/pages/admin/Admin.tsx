@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { AdminContext } from '../../contexts/AdminContext';
 import { Button, Element, Wrapper, Label } from '../../styles/Styles';
@@ -16,9 +15,6 @@ const Flex = styled.div`
 const StyledButton = styled(Button)`
   font-size: 1rem;
 `
-const StyledLink = styled(Link)`
-  color: ${props => props.theme.linkColor};
-`;
 
 const FilteredOrders = () => {
   const history = useHistory();
