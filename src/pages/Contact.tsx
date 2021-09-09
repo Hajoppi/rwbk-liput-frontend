@@ -42,7 +42,7 @@ const ContactForm = () => {
   }
   return (
     <>
-    <form>
+    <form onSubmit={handleSubmit}>
       <Label>
         Etunimi*
         <Input {...firstName} type="text" name="firstname" required/>
@@ -87,11 +87,11 @@ const ContactForm = () => {
           <option value="finland">Suomi</option>
         </Select>
       </Label>
-    </form>
-    <NavigationButtons>
-    <NavigationButton onClick={(e: React.FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
-    <NavigationButton onClick={handleSubmit} disabled={!formReady}>Seuraava</NavigationButton>
+      <NavigationButtons>
+        <NavigationButton type="submit" disabled={!formReady}>Seuraava</NavigationButton>
+       <NavigationButton onClick={(e: React.FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
     </NavigationButtons>
+    </form>
   </>
   );
 }
@@ -110,6 +110,7 @@ const Contact = () => {
 const NavigationButtons = styled.div`
   display: flex;
   justify-content: center;
+  flex-direction: row-reverse;
 `
 
 

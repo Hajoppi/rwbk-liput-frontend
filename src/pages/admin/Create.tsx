@@ -39,6 +39,7 @@ const Contacts = () => {
     phone.value,
     postalCode.value,
   ]);
+
   return (
     <form>
       <Label>
