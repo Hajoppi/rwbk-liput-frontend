@@ -93,10 +93,11 @@ const FilteredOrders = () => {
 }
 
 const Admin = () => {
+  const history = useHistory();
   return (
     <Wrapper>
-      <StyledLink to="/admin/create">Luo tilaus</StyledLink>
-      <FilteredOrders></FilteredOrders>
+      <Button onClick={() => history.push('/admin/create')}>Luo tilaus</Button>
+      <FilteredOrders />
     </Wrapper>
   )
 }
