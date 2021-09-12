@@ -37,7 +37,7 @@ const Home = () => {
         <h1>Retuperän WBK:n konserttilipputilaus</h1>
         {state === 'PRESALE' && <p><b>
           Konserttilahjakorttien lunastus on alkanut, joten tarvitset lahjakortin tehdäksesi tilauksen.
-          Yleinen lipunmyynti aukeaa 13.9. klo 18:30
+          Yleinen lipunmyynti aukeaa 13.9. klo 01:32
         </b></p>}
         <p>
         Tervetuloa tilaamaan lippuja Retuperän WBK:n konserttiin! Konsertti järjestetään Finlandia-talossa 5.11.2021 klo 19:33.
