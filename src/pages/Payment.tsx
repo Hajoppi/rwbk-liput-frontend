@@ -161,8 +161,8 @@ const Payment = () => {
     });
   }
   useEffect(() => {
-    if (cartIsEmpty) history.push('/');
-    if (!customerInfo.firstName.length) history.push('/yhteystiedot');
+    if (cartIsEmpty) return history.push('/');
+    if (!customerInfo.firstName.length) return history.push('/yhteystiedot');
     const orderNumber = sessionStorage.getItem('order') || '';
     if(cart.length === 0) return;
     proxy.post<Record<string,string>>('/order/create',
