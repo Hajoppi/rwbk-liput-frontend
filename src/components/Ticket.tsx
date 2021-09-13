@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import {Button, Label} from '../styles/Styles';
 import { CartContext, CartItem } from '../contexts/CartContext';
@@ -12,7 +12,7 @@ const Ticket = (props: PropsType) => {
   const { item } = props;
   const {cart, saveCart} = useContext(CartContext);
 
-  const updateAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateAmount = (event: ChangeEvent<HTMLInputElement>) => {
     const number = Number(event.target.value);
     event.target.value = String(number);
     saveCart(item.id, number);

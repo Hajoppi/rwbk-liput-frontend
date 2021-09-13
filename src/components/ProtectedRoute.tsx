@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { Route, Redirect, RouteProps } from 'react-router-dom';
+import { FC, useContext } from 'react';
+import styled from 'styled-components';
+import { Route, Redirect, RouteProps, Link} from 'react-router-dom';
 import { AuthContext } from "../contexts/AuthContext";
 import AdminProvider from '../contexts/AdminContext';
 
 import { proxy } from '../utils/axios';
-
-const ProtectedRoute: React.FC<RouteProps> = ({children, ...rest}) => {
+const ProtectedRoute: FC<RouteProps> = ({children, ...rest}) => {
   const { logout } = useContext(AuthContext);
   proxy.interceptors.response.use(
     response => response,
@@ -19,9 +19,26 @@ const ProtectedRoute: React.FC<RouteProps> = ({children, ...rest}) => {
   const { loggedIn } = useContext(AuthContext);
   return loggedIn ? (
     <AdminProvider>
+      <Navbar>
+        <StyledLink to='/admin/'>Tilaukset</StyledLink>
+        <StyledLink to='/admin/general'>Yleistiedot</StyledLink>
+        <StyledLink to='/admin/create'>Luo tilaus</StyledLink>
+      </Navbar>
       <Route {...rest}>{children}</Route>
     </AdminProvider>
   ) : <Redirect to="/kirjaudu"/>
 }
+
+const StyledLink = styled(Link)`
+  font-size: 1.5rem;
+  color: ${props => props.theme.linkColor};
+  margin: 12px 4px;
+`;
+
+const Navbar = styled.nav`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+`;
 
 export default ProtectedRoute;

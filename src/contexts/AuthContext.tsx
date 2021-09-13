@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import { FC, createContext, useState } from "react";
 import { proxy } from '../utils/axios';
 
 export interface AuthContextType {
@@ -15,7 +15,7 @@ const authContextDefault: AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType>(authContextDefault);
 
-const ContactProvider: React.FC = ({ children }) => {
+const ContactProvider: FC = ({ children }) => {
   const storage = localStorage.getItem('token');
   const [loggedIn, setLoggedIn] = useState(storage ? true: authContextDefault.loggedIn);
   

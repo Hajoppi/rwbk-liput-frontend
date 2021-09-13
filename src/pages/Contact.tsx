@@ -1,5 +1,5 @@
 import { Redirect } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, FormEvent } from 'react';
 import styled from "styled-components";
 import { Wrapper, NavigationButton, Input, Label, TextArea, Select } from '../styles/Styles';
 import { ContactContext } from "../contexts/ContactContext";
@@ -26,7 +26,7 @@ const ContactForm = () => {
                   && postalCode.value
                   && phone.value
                   && city.value;
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     updateInfo({
       firstName: firstName.value,
@@ -89,7 +89,7 @@ const ContactForm = () => {
       </Label>
       <NavigationButtons>
         <NavigationButton type="submit" disabled={!formReady}>Seuraava</NavigationButton>
-       <NavigationButton onClick={(e: React.FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
+       <NavigationButton onClick={(e: FormEvent) => {e.preventDefault(); history.push('/')}}>Takaisin</NavigationButton>
     </NavigationButtons>
     </form>
   </>

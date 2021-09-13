@@ -22,6 +22,7 @@ const Admin = lazy(() => import('./pages/admin/Admin'));
 const Login = lazy(() => import('./pages/admin/Login'));
 const PlaceOrder = lazy(() => import('./pages/admin/PlaceOrder'));
 const AdminCreate = lazy(() => import('./pages/admin/Create'));
+const GeneralAdmin = lazy(() => import('./pages/admin/General'));
 
 const allowedUrls = ['liput.rwbk.fi', 'localhost', '127.0.0.1'];
 const correctOrigin = allowedUrls.some(url => window.location.origin.indexOf(url) >= 0);
@@ -62,6 +63,9 @@ const App = () => {
             </ProtectedRoute>
             <ProtectedRoute path="/admin/create" exact>
               <AdminCreate />
+            </ProtectedRoute>
+            <ProtectedRoute path="/admin/general" exact>
+              <GeneralAdmin />
             </ProtectedRoute>
             <Route path="/kirjaudu">
               <Login />

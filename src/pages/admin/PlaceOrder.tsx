@@ -1,5 +1,5 @@
 import { useParams, useHistory } from "react-router-dom";
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, ChangeEvent } from 'react';
 import styled from "styled-components";
 import { Button, Label } from "../../styles/Styles";
 
@@ -96,7 +96,7 @@ const PlaceOrder = () => {
     });
   };
 
-  const updatePostSent = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updatePostSent = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setSending(true);
     proxy.post(`/admin/order/postal`, { orderId, postalStatus: checked }).then(() => {
@@ -109,7 +109,7 @@ const PlaceOrder = () => {
     });
   }
 
-  const updateInvoiceSent = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateInvoiceSent = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setSending(true);
     proxy.post(`/admin/order/invoicestatus`, { orderId, invoiceStatus: checked }).then(() => {

@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import { FC, createContext, useEffect, useState } from "react";
 import { proxy } from "../utils/axios";
 
 export type STATE = 'NONE' | 'PRESALE' | 'SALE' | 'ENDED';
@@ -13,7 +13,7 @@ const timeContextDefault: TimeContextType = {
 
 export const TimeContext = createContext<TimeContextType>(timeContextDefault);
 
-const TimeProvider: React.FC = ({ children }) => {
+const TimeProvider: FC = ({ children }) => {
   const [state, setState] = useState<STATE>(timeContextDefault.state);
   useEffect(() => {
     proxy.get<STATE>('/time').then(response => {
