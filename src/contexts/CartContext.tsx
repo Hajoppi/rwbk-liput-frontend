@@ -1,4 +1,5 @@
-import React, {
+import {
+  FC,
   createContext,
   useEffect,
   useState,
@@ -62,7 +63,7 @@ const cartContextDefault: CartContextType = {
 
 export const CartContext = createContext<CartContextType>(cartContextDefault);
 
-const CartProvider: React.FC = ({ children }) => {
+const CartProvider: FC = ({ children }) => {
   const { state } = useContext(TimeContext);
   const { loggedIn } = useContext(AuthContext);
   const [cart, updateCart] = useState<CartItem[]>(cartContextDefault.cart);

@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { ThemeProvider } from 'styled-components';
 import CartProvider from './CartContext';
 import ContactProvider from './ContactContext';
@@ -5,7 +6,7 @@ import AuthProvider from './AuthContext';
 import TimeProvider from './TimeContext';
 import { theme } from '../styles/Styles';
 
-const MultiProvider: React.FC = ({children}) => (
+const MultiProvider: FC = ({children}) => (
   <TimeProvider>
   <AuthProvider>
   <CartProvider>

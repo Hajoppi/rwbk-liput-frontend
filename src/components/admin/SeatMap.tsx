@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import permantoSeats from '../../assets/permanto.json';
 import parvekeSeats from '../../assets/parveke.json';
-import React, { useContext, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { proxy } from '../../utils/axios';
 import { AdminContext } from '../../contexts/AdminContext';
 
@@ -147,7 +147,7 @@ const SeatMap = ({ticket}: PropType) => {
   const [section, setSection] = useState<Sections[]>(sectionPairs[0]);
   const [location, setLocation] = useState<Locations>('permanto');
   const [takenSeats, setTakenSeats] = useState<Ticket[]>([]);
-  const handleSectionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSectionChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newSection = e.target.value as Sections;
     const sectionPair = sectionPairs.find(pair => pair.indexOf(newSection) > -1);
     if (!sectionPair) return;
@@ -170,14 +170,14 @@ const SeatMap = ({ticket}: PropType) => {
     }).catch(() => {});
   }
   useEffect(() => {
-    const promises = section.map(s => proxy.get<Ticket[]>(`/admin/tickets/${s}`).then(response => {
+    const promises = section.map(s => proxy.get<Ticket[]>(`/admin/tickets/seats/${s}`).then(response => {
       return response.data;
     }));
     Promise.all(promises).then(data => {
       setTakenSeats(data.flat());
     });
   },[section]);
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLocationChange = (e: ChangeEvent<HTMLInputElement>) => {
     const location = e.target.value as Locations
     setLocation(location);
     setSection(location === 'permanto' ? sectionPairs[0] : sectionPairs[3]);

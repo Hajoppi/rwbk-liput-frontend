@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useMemo, useCallback } from "react";
+import { FC, createContext, useEffect, useState, useMemo, useCallback } from "react";
 
 import { proxy } from '../utils/axios';
 
@@ -76,7 +76,7 @@ export const orderComplete = (order: Order) =>
 
 export const AdminContext = createContext<AdminContextType>(adminContextDefault);
 
-const AdminProvider: React.FC = ({ children }) => {
+const AdminProvider: FC = ({ children }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [completeOrders, setCompleteOrders] = useState<Order[]>([]);
   const [inCompleteOrders, setInCompleteOrders] = useState<Order[]>([]);

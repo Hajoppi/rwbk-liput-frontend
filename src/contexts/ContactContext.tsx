@@ -1,4 +1,4 @@
-import React, { createContext, useState, useMemo, useCallback } from "react";
+import { FC, createContext, useState, useMemo, useCallback } from "react";
 
 
 export type CustomerInfo = {
@@ -35,7 +35,7 @@ const contactContextDefault: ContactContextType = {
 
 export const ContactContext = createContext<ContactContextType>(contactContextDefault);
 
-const ContactProvider: React.FC = ({ children }) => {
+const ContactProvider: FC = ({ children }) => {
   const storage = sessionStorage.getItem('info')
   const savedInfo = storage ? JSON.parse(storage) as CustomerInfo : contactContextDefault.customerInfo
   const [customerInfo, setInfo] = useState<CustomerInfo>(savedInfo);

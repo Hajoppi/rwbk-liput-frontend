@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, ChangeEvent } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components';
 import { AdminContext } from '../../contexts/AdminContext';
@@ -23,19 +23,19 @@ const FilteredOrders = () => {
   const [postal, setPostal] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [complete, setComplete] = useState(false);
-  const handleInvoice = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInvoice = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setInvoice(checked);
   }
-  const handlePostal = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePostal = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setPostal(checked);
   }
-  const handleAdmin = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAdmin = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setAdmin(checked);
   }
-  const handleComplete = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleComplete = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
     setComplete(checked);
   }
@@ -102,10 +102,8 @@ const FilteredOrders = () => {
 }
 
 const Admin = () => {
-  const history = useHistory();
   return (
     <Wrapper>
-      <Button onClick={() => history.push('/admin/create')}>Luo tilaus</Button>
       <FilteredOrders />
     </Wrapper>
   )

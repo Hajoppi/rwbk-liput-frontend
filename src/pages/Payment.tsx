@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Order from '../components/Order';
 import { Button, Input, Label, NavigationButton, Error, Select } from '../styles/Styles';
@@ -69,7 +69,7 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
       setGiftCard('')
     })
   }
-  const handleGiftCardChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGiftCardChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setGiftCard(e.target.value);
   }
@@ -99,7 +99,7 @@ const PostalComponent = () => {
   const { addItemToCart, removeItemFromCart } = useContext(CartContext);
   const [postalAdded, setPostal] = useState(false);
 
-  const handlePostalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePostalChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {checked} = event.target;
     setPostal(checked);
     if (checked) return addItemToCart({
@@ -129,7 +129,7 @@ const Payment = () => {
   const [ formFields, setFormFields ] = useState<Record<string,string>>({});
   const history = useHistory();
 
-  const verifyPayment = (e: React.FormEvent<HTMLFormElement>) => {
+  const verifyPayment = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
     const form = e.currentTarget;
