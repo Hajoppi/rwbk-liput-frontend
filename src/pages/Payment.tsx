@@ -253,6 +253,7 @@ const StyledSelect = styled(Select)`
   font-size: 1rem;
   padding: 8px;
   margin: 0;
+  margin-bottom: 12px;
   min-width: 200px;
 `
 
