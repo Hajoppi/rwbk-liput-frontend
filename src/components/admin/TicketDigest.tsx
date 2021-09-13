@@ -10,10 +10,24 @@ type Tickets = {
 }[];
 
 const TicketDigest = () => {
-  const [tickets, setTickets] = useState<Tickets>([])
+  const [tickets, setTickets] = useState<Tickets>([]);
+  const [amount, setAmount] = useState(0);
+  const [left, setLeft] = useState(0);
+  const [max, setMax] = useState(0);
   useEffect(() => {
     proxy.get<Tickets>('/admin/tickets/numbers').then((response) => {
       const {data} = response;
+      let totalAmount = 0;
+      let totalLeft = 0;
+      let totalMax = 0;
+      data.forEach(item => {
+        totalAmount += item.amount;
+        totalLeft += item.left;
+        totalMax += item.max;
+      });
+      setAmount(totalAmount);
+      setLeft(totalLeft);
+      setMax(totalMax);
       setTickets(data);
     });
   },[]);
@@ -33,6 +47,12 @@ const TicketDigest = () => {
           <Element>{ticket.max}</Element>
         </Flex>
       )}
+      <Flex>
+        <Element><b>Yhteensä</b></Element>
+        <Element><b>{amount}</b></Element>
+        <Element><b>{left}</b></Element>
+        <Element><b>{max}</b></Element>
+      </Flex>
     </Wrapper>
 
   )
