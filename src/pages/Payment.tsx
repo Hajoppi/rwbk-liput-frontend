@@ -198,10 +198,10 @@ const Payment = () => {
     </OrderInformation>
     <Label>
       Maksutapa:
-      <Select onChange={(event) => setPaymentByInvoice(event.target.value === 'invoice')}>
+      <StyledSelect onChange={(event) => setPaymentByInvoice(event.target.value === 'invoice')}>
         <option value="web">Verkkomaksu</option>
         <option value="invoice">Lasku</option>
-      </Select>
+      </StyledSelect>
     </Label>
     <Label>
       Olen lukenut <StyledLink to={
@@ -247,6 +247,13 @@ const StyledLink = styled(Link)`
 
 const GiftCardButton = styled(Button)`
   font-size: 1rem;
+`
+
+const StyledSelect = styled(Select)`
+  font-size: 1rem;
+  padding: 8px;
+  margin: 0;
+  min-width: 200px;
 `
 
 const OrderInformation = styled.div`
