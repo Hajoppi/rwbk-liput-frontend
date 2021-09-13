@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Order from '../components/Order';
-import { Button, Input, Label, NavigationButton, Error } from '../styles/Styles';
+import { Button, Input, Label, NavigationButton, Error, Select } from '../styles/Styles';
 import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
 import { CartContext, GiftCard } from "../contexts/CartContext";
 import { proxy } from '../utils/axios';
@@ -197,10 +197,12 @@ const Payment = () => {
       </Section>
     </OrderInformation>
     <Label>
-      Haluan maksaa laskulla
-      <Checkbox type="checkbox" checked={paymentByInvoice} onChange={(event) => setPaymentByInvoice(event.target.checked)}/>
+      Maksutapa:
+      <Select onChange={(event) => setPaymentByInvoice(event.target.value === 'invoice')}>
+        <option value="web">Verkkomaksu</option>
+        <option value="invoice">Lasku</option>
+      </Select>
     </Label>
-    <br></br>
     <Label>
       Olen lukenut <StyledLink to={
         {
