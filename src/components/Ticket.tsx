@@ -24,7 +24,7 @@ const Ticket = (props: PropsType) => {
       <InfoWrapper>
         <Element>
           {item.name}
-          {item.maxAmount < 30 && <div>
+          {item.maxAmount < 30 && item.name !== 'Kannatus' && <div>
             <Label>lipputyyppi on vähissä</Label>
           </div>}
         </Element>
