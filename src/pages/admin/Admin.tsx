@@ -2,7 +2,8 @@ import { useContext, useState, ChangeEvent } from 'react';
 import { useHistory } from 'react-router';
 import styled from 'styled-components';
 import { AdminContext } from '../../contexts/AdminContext';
-import { Button, Element, Wrapper, Label } from '../../styles/Styles';
+import { CartContext } from '../../contexts/CartContext';
+import { Button, Element, Wrapper, Label, Select } from '../../styles/Styles';
 
 
 const Flex = styled.div`
@@ -14,12 +15,25 @@ const Flex = styled.div`
 
 const StyledButton = styled(Button)`
   font-size: 1rem;
+`;
+
+const StyledSelect = styled(Select)`
+  display: inline-block;
+  font-size: 1rem;
+  padding: 8px;
+  margin: 0;
+  margin-left: 8px;
+  margin-bottom: 12px;
+  max-width: 200px;
 `
+
 
 const FilteredOrders = () => {
   const history = useHistory();
   const { inCompleteOrders, completeOrders } = useContext(AdminContext);
+  const { cart } = useContext(CartContext);
   const [invoice, setInvoice] = useState(false);
+  const [ticketType, setTicketType] = useState('all');
   const [postal, setPostal] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [complete, setComplete] = useState(false);
@@ -39,11 +53,17 @@ const FilteredOrders = () => {
     const { checked } = event.target;
     setComplete(checked);
   }
+  const handleTicketTypes = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target
+    setTicketType(value);
+  }
   const filterOrders = () => {
     let result = complete ? [...completeOrders] : [...inCompleteOrders];
     if(invoice) result = result.filter(item => item.invoice);
     if(postal) result = result.filter(item => item.postal);
     if(admin) result = result.filter(item => item.admin_created);
+    if(ticketType !== 'all') result = result.filter(item => 
+      item.tickets.some(ticket => ticket.name === ticketType));
     return result;
   }
   return (
@@ -76,6 +96,15 @@ const FilteredOrders = () => {
           checked={complete}
           onChange={handleComplete} />
       </Label>
+      <Label>
+      Lippuluokka
+      <StyledSelect onChange={handleTicketTypes}>
+        <option value="all">Kaikki</option>
+        {cart.map(item => (
+        <option key={item.id} value={item.name}>{item.name}</option>
+        ))}
+      </StyledSelect>
+    </Label>
       <Flex>
         <Element flex={1}><b>Päivämäärä</b></Element>
         <Element flex={2}><b>Nimi</b></Element>
