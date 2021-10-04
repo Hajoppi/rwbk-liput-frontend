@@ -192,7 +192,7 @@ const Payment = () => {
       <ContactComponent customerInfo={customerInfo}/>
       <Section>
         <Order />
-        <PostalComponent/>
+        { /*<PostalComponent/>*/ }
         <GiftCardComponent orderId={orderId} isSubmitting={isSubmitting} />
       </Section>
     </OrderInformation>
