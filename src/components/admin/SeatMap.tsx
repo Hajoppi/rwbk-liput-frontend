@@ -3,7 +3,8 @@ import permantoSeats from '../../assets/permanto.json';
 import parvekeSeats from '../../assets/parveke.json';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { proxy } from '../../utils/axios';
-import { AdminContext } from '../../contexts/AdminContext';
+import { AdminContext, Order } from '../../contexts/AdminContext';
+import SeatModal from './SeatModal';
 
 const generateSeats = (row: number[]) => {
   const [end, start] = row;
@@ -109,8 +110,12 @@ type SectionPropType = {
 }
 const SelectedSection = ({ sections, takenSeats, tickets, setTicketPlace }: SectionPropType) => {
   const combinedSeats = {...parvekeSeats, ...permantoSeats};
-  const takenSeatNumbers = takenSeats.map(seat => seat.seat_number);
-  const reservedSeatNumbers = tickets.map(seat => seat.seat_number);
+  const takenSeatNumbers = takenSeats
+    .filter(seat => sections.some(section => section === seat.location))
+    .map(seat => seat.seat_number);
+  const reservedSeatNumbers = tickets
+    .filter(seat => sections.some(section => section === seat.location))
+    .map(seat => seat.seat_number);
   const seats2 = [...combinedSeats[sections[0]]].map((_,index) =>(
     <div key={`${sections[0]}-${index+1}`}>
       <b>{index+1}</b>
@@ -147,19 +152,46 @@ const SeatMap = ({ticket}: PropType) => {
   const [section, setSection] = useState<Sections[]>(sectionPairs[0]);
   const [location, setLocation] = useState<Locations>('permanto');
   const [takenSeats, setTakenSeats] = useState<Ticket[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalOrder, setModalOrder] = useState<Order | undefined>(undefined);
+  const [modalTicket, setModalTicket] = useState<Ticket | undefined>(undefined);
   const handleSectionChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newSection = e.target.value as Sections;
     const sectionPair = sectionPairs.find(pair => pair.indexOf(newSection) > -1);
     if (!sectionPair) return;
     setSection(sectionPair);
   }
+  const removeTicketPlace = () => {
+    proxy.delete(`/admin/tickets/${ticket.id}`).then(() => {
+      const updatedOrder = {...selectedOrder};
+      const t = selectedOrder.tickets.find(nt => nt.id === ticket.id);
+      if(!t) return;
+      t.seat_number = undefined;
+      t.row_number = undefined;
+      t.location = undefined;
+      selectOrder(updatedOrder);
+    });
+  };
   const setTicketPlace = (seat: number, row: number, location: string) => {
-    proxy.post(`/admin/tickets`, {
+    if (
+      ticket.seat_number === seat 
+      && ticket.row_number === row 
+      && ticket.location === location) {
+        return removeTicketPlace();
+      }
+    proxy.post<{order: Order, ticket: Ticket} | undefined>(`/admin/tickets`, {
       id: ticket.id,
       seat_number: seat,
       row_number: row,
       location,
-    }).then(() => {
+    }).then((response) => {
+      const {data} = response;
+      if(data) {
+        setModalVisible(true);
+        setModalOrder(data.order);
+        setModalTicket(data.ticket);
+        return;
+      }
       const updatedOrder = {...selectedOrder};
       const t = selectedOrder.tickets.find(nt => nt.id === ticket.id);
       if(!t) return;
@@ -176,7 +208,7 @@ const SeatMap = ({ticket}: PropType) => {
     Promise.all(promises).then(data => {
       setTakenSeats(data.flat());
     });
-  },[section]);
+  },[section, selectedOrder]);
   const handleLocationChange = (e: ChangeEvent<HTMLInputElement>) => {
     const location = e.target.value as Locations
     setLocation(location);
@@ -189,6 +221,12 @@ const SeatMap = ({ticket}: PropType) => {
   }
   return (
     <All>
+      {modalVisible && modalOrder && modalTicket && 
+        <SeatModal 
+          close={() => setModalVisible(false)} 
+          order={modalOrder}
+          ticket={modalTicket}
+          /> }
       <Select>
         <input onChange={handleLocationChange} type="radio" value="permanto"  name="location" checked={location==='permanto'}/>Permanto
         <input onChange={handleLocationChange} type="radio" value="parveke"  name="location" checked={location==='parveke'}/>Parveke

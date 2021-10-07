@@ -151,7 +151,7 @@ const PlaceOrder = () => {
         {selectedOrder.tickets.map(ticket => (
           <div key={ticket.id}>
             <span>{ticket.name}</span>&nbsp;
-            <span>{ticket.seat_number !== null ? 
+            <span>{ticket.seat_number !== null && ticket.seat_number !== undefined ? 
               `${ticket.location}, Rivi:${ticket.row_number}, Paikka:${ticket.seat_number}`: 'plassaamaton'}</span>&nbsp;
             {!selectedOrder.tickets_sent && <StyledButton
               selected={selectedTicket?.id === ticket.id}
