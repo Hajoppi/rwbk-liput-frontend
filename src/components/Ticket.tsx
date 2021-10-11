@@ -7,6 +7,14 @@ type PropsType = {
   item: CartItem;
 }
 
+const TicketInfoText = ({item}: {item: CartItem}) => {
+  if (item.maxAmount === 0)
+    return <Label>lipputyyppi on loppunut</Label>
+  if (item.maxAmount < 30 && item.name !== 'Kannatus' )
+    return <Label>lipputyyppi on vähissä</Label>
+  return null
+}
+
 
 const Ticket = (props: PropsType) => {
   const { item } = props;
@@ -24,9 +32,7 @@ const Ticket = (props: PropsType) => {
       <InfoWrapper>
         <Element>
           {item.name}
-          {item.maxAmount < 30 && item.name !== 'Kannatus' && <div>
-            <Label>lipputyyppi on vähissä</Label>
-          </div>}
+          <TicketInfoText item={item}/>
         </Element>
         <Element>{item.cost} €</Element>
       </InfoWrapper>
