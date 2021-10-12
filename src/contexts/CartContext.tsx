@@ -10,7 +10,7 @@ from "react";
 import { proxy } from "../utils/axios";
 import { AuthContext } from "./AuthContext";
 import { TimeContext } from "./TimeContext";
-
+import { maxSharedAmount } from "../utils/sharedTicketQuotas";
 
 export type CartItem = {
   id: string;
@@ -107,7 +107,7 @@ const CartProvider: FC = ({ children }) => {
     if(amount + amountOfOtherTickets > orderLimit) return;
 
     // 0 < newAmount < maximum amount left
-    ticket.amount = Math.min(Math.max(0, amount), ticket.maxAmount); 
+    ticket.amount = Math.min(Math.max(0, amount), maxSharedAmount(ticket, cart));
     if (ticket.amount === 0) {
       const giftCardsFiltered = giftCards.filter( card => card.type !== ticket.id);
       setGiftCards(giftCardsFiltered);
