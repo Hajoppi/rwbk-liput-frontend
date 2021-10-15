@@ -2,15 +2,17 @@ import { useContext, ChangeEvent } from 'react';
 import styled from 'styled-components';
 import {Button, Label} from '../styles/Styles';
 import { CartContext, CartItem } from '../contexts/CartContext';
+import { maxSharedAmount } from '../utils/sharedTicketQuotas';
 
 type PropsType = {
   item: CartItem;
 }
 
-const TicketInfoText = ({item}: {item: CartItem}) => {
-  if (item.maxAmount === 0)
+const TicketInfoText = ({item, cart}: {item: CartItem, cart: CartItem[]}) => {
+  const maxAmount = maxSharedAmount(item, cart)
+  if (maxAmount === 0)
     return <div><Label>lipputyyppi on loppunut</Label></div>
-  if (item.maxAmount < 30 && item.name !== 'Kannatus' )
+  if (maxAmount < 30 )
     return <div><Label>lipputyyppi on vähissä</Label></div>
   return null;
 }
@@ -18,7 +20,7 @@ const TicketInfoText = ({item}: {item: CartItem}) => {
 
 const Ticket = (props: PropsType) => {
   const { item } = props;
-  const {cart, saveCart} = useContext(CartContext);
+  const { cart, saveCart } = useContext(CartContext);
 
   const updateAmount = (event: ChangeEvent<HTMLInputElement>) => {
     const number = Number(event.target.value);
@@ -32,7 +34,7 @@ const Ticket = (props: PropsType) => {
       <InfoWrapper>
         <Element>
           {item.name}
-          <TicketInfoText item={item}/>
+          <TicketInfoText item={item} cart={cart}/>
         </Element>
         <Element>{item.cost} €</Element>
       </InfoWrapper>
