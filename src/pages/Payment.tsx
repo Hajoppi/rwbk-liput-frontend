@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import Order from '../components/Order';
-import { Button, Input, Label, NavigationButton, Error, Select } from '../styles/Styles';
+import { Button, Input, Label, NavigationButton, Error, Select, Checkbox } from '../styles/Styles';
 import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
 import { CartContext, GiftCard } from "../contexts/CartContext";
 import { proxy } from '../utils/axios';
@@ -95,29 +95,7 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
   )
 }
 
-const PostalComponent = () => {
-  const { addItemToCart, removeItemFromCart } = useContext(CartContext);
-  const [postalAdded, setPostal] = useState(false);
 
-  const handlePostalChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const {checked} = event.target;
-    setPostal(checked);
-    if (checked) return addItemToCart({
-        amount: 1,
-        cost: 3,
-        id: '60571',
-        maxAmount: 0,
-        name: 'Postitus'
-      });
-    removeItemFromCart('60571');
-  }
-  return(
-    <Label>
-      Haluan saada liput myös postitettuna (3€)
-    <Checkbox type="checkbox" checked={postalAdded} onChange={handlePostalChange}/>
-  </Label>
-  )
-}
 
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
@@ -192,7 +170,6 @@ const Payment = () => {
       <ContactComponent customerInfo={customerInfo}/>
       <Section>
         <Order />
-        { /*<PostalComponent/>*/ }
         <GiftCardComponent orderId={orderId} isSubmitting={isSubmitting} />
       </Section>
     </OrderInformation>
@@ -236,11 +213,7 @@ const StyledGiftCard = styled.div`
   }
 `;
 
-const Checkbox = styled.input`
-  height: 1rem;
-  width: 1rem;
-  background: transparent;
-`
+
 const StyledLink = styled(Link)`
   color: ${props => props.theme.linkColor};
 `;

@@ -51,6 +51,12 @@ export const Element = styled.div<{flex: number}>`
   position: relative;
 `;
 
+export const Checkbox = styled.input`
+  height: 1rem;
+  width: 1rem;
+  background: transparent;
+`
+
 export const Button = styled.button`
   position: relative;
   font-size: 1.5rem;
