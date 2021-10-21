@@ -1,9 +1,9 @@
 import { useContext, useState, ChangeEvent } from 'react';
-import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { AdminContext } from '../../contexts/AdminContext';
 import { CartContext } from '../../contexts/CartContext';
-import { Button, Element, Wrapper, Label, Select } from '../../styles/Styles';
+import { Element, Wrapper, Label, Select } from '../../styles/Styles';
 
 
 const Flex = styled.div`
@@ -11,10 +11,6 @@ const Flex = styled.div`
   position: relative;
   width: 100%;
   justify-content: flex-start;
-`;
-
-const StyledButton = styled(Button)`
-  font-size: 1rem;
 `;
 
 const StyledSelect = styled(Select)`
@@ -26,10 +22,12 @@ const StyledSelect = styled(Select)`
   margin-bottom: 12px;
   max-width: 200px;
 `
+const StyledLink = styled(Link)`
+  color: ${props => props.theme.linkColor};
+`;
 
 
 const FilteredOrders = () => {
-  const history = useHistory();
   const { inCompleteOrders, completeOrders } = useContext(AdminContext);
   const { cart } = useContext(CartContext);
   const [invoice, setInvoice] = useState(false);
@@ -127,7 +125,7 @@ const FilteredOrders = () => {
           <Element flex={1}>{order.tickets_sent ? 'Kyllä' : 'Ei'}</Element>
           <Element flex={1}>{order.admin_created ? 'Kyllä' : 'Ei'}</Element>
           <Element flex={1}>{order.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)}/{order.tickets.length}</Element>
-          <Element flex={1}><StyledButton onClick={() => history.push(`/admin/order/${order.id}`)}>Avaa</StyledButton></Element>
+          <Element flex={1}><StyledLink to={`/admin/order/${order.id}`}>Avaa</StyledLink></Element>
         </Flex>
         );
       })}
