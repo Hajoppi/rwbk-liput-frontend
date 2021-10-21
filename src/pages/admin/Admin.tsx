@@ -11,6 +11,11 @@ const Flex = styled.div`
   position: relative;
   width: 100%;
   justify-content: flex-start;
+  border-bottom: 1px solid;
+  padding: 8px 0;
+  &:last-child {
+    border: none;
+  }
 `;
 
 const StyledSelect = styled(Select)`
