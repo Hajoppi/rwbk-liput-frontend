@@ -112,6 +112,7 @@ const FilteredOrders = () => {
         <Element flex={1}><b>Laskutus</b></Element>
         <Element flex={1}><b>Laskutettu</b></Element>
         <Element flex={1}><b>Liputettu</b></Element>
+        <Element flex={1}><b>Admin</b></Element>
         <Element flex={1}><b>Lippuja ilman paikkoja</b></Element>
         <Element flex={1}></Element>
       </Flex>
@@ -124,6 +125,7 @@ const FilteredOrders = () => {
           <Element flex={1}>{order.invoice ? 'Kyllä' : 'Ei'}</Element>
           <Element flex={1}>{order.invoice_sent ? 'Kyllä' : 'Ei'}</Element>
           <Element flex={1}>{order.tickets_sent ? 'Kyllä' : 'Ei'}</Element>
+          <Element flex={1}>{order.admin_created ? 'Kyllä' : 'Ei'}</Element>
           <Element flex={1}>{order.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)}/{order.tickets.length}</Element>
           <Element flex={1}><StyledButton onClick={() => history.push(`/admin/order/${order.id}`)}>Avaa</StyledButton></Element>
         </Flex>
