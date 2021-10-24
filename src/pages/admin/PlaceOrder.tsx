@@ -108,6 +108,18 @@ const PlaceOrder = () => {
       setSending(false);
     });
   }
+  const updateTicketsSent = (event: ChangeEvent<HTMLInputElement>) => {
+    const { checked } = event.target;
+    setSending(true);
+    proxy.post(`/admin/order/tickets/send`, { orderId, ticketStatus: checked }).then(() => {
+      const newOrder = { ...selectedOrder };
+      newOrder.tickets_sent = checked;
+      selectOrder(newOrder);
+    }).catch(() => {
+    }).finally(() => {
+      setSending(false);
+    });
+  }
 
   const updateInvoiceSent = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
@@ -176,6 +188,12 @@ const PlaceOrder = () => {
             </Label>
           </div>
         )}
+        <div>
+          <Label>
+            Liputettu
+            <input type="checkbox" checked={selectedOrder.tickets_sent} onChange={updateTicketsSent}/>
+          </Label>
+        </div>
         {selectedOrder.invoice && (
           <div>
             <Label>
