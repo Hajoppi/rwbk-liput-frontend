@@ -28,7 +28,8 @@ const Home = () => {
       <h1>Retuperän WBK:n konserttilipputilaus</h1>
       <p>
       Konsertti on loppuunmyyty.
-      Lippuja voi ostaa vielä rajatuissa määrissä konserttipaikalta konserttipäivänä klo 18:30 alkaen.
+      Peruutus paikkoja voitte tiedustella osoitteesta liputsalo (at) rwbk.fi.
+      Olemme tällöin yhteydessä teihin, mikäli lippuja vapautuu vielä myyntiin.
       </p>
     </CenterWrapper>
   );
