@@ -24,11 +24,13 @@ const Home = () => {
     </CenterWrapper>
     );
   if(state === 'ENDED') return(
-    <p>
-    Sähköinen lipunmyynti konserttiin on nyt sulkeutunut.
-    Lippuja voi ostaa vielä rajatuissa määrissä konserttipaikalta konserttipäivänä klo 18:30 alkaen. 
-    Voit myös varata liput itsellesi ja seuralaisillesi sähköpostitse osoitteesta liput@rwbk.fi.
-    </p>
+    <CenterWrapper>
+      <h1>Retuperän WBK:n konserttilipputilaus</h1>
+      <p>
+      Konsertti on loppuunmyyty.
+      Lippuja voi ostaa vielä rajatuissa määrissä konserttipaikalta konserttipäivänä klo 18:30 alkaen.
+      </p>
+    </CenterWrapper>
   );
 
   return (
