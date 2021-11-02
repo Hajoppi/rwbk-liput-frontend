@@ -39,8 +39,8 @@ const adminContextDefault: AdminContextType = {
   selectOrder: () => null,
 }
 
-type Ticket = {
-  id: string;
+export type Ticket = {
+  id: number;
   name: string;
   seat_number?: number;
   row_number?: number;

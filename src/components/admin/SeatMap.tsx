@@ -3,8 +3,8 @@ import permantoSeats from '../../assets/permanto.json';
 import parvekeSeats from '../../assets/parveke.json';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { proxy } from '../../utils/axios';
-import { AdminContext, Order } from '../../contexts/AdminContext';
-import SeatModal from './SeatModal';
+import { AdminContext, Order, Ticket } from '../../contexts/AdminContext';
+import Modal from './Modal';
 
 const generateSeats = (row: number[]) => {
   const [end, start] = row;
@@ -14,15 +14,6 @@ const generateSeats = (row: number[]) => {
   );
   if (end > start) nums.reverse();
   return nums;
-}
-
-type Ticket = {
-  id: string;
-  name: string;
-  seat_number?: number;
-  row_number?: number;
-  location?: string;
-  created: string;
 }
 
 
@@ -222,11 +213,15 @@ const SeatMap = ({ticket}: PropType) => {
   return (
     <All>
       {modalVisible && modalOrder && modalTicket && 
-        <SeatModal 
+        <Modal
           close={() => setModalVisible(false)} 
-          order={modalOrder}
-          ticket={modalTicket}
-          /> }
+          >
+            <p>Aikasempi plassattu</p>
+            <div>Nimi: {modalOrder.firstname} {modalOrder.lastname}</div>
+            <div>Lippu: {modalTicket.name}</div>
+            <div>Email: {modalOrder.email}</div>
+            <div>Lisätiedot: {modalOrder.extra}</div>
+          </Modal> }
       <Select>
         <input onChange={handleLocationChange} type="radio" value="permanto"  name="location" checked={location==='permanto'}/>Permanto
         <input onChange={handleLocationChange} type="radio" value="parveke"  name="location" checked={location==='parveke'}/>Parveke

@@ -4,17 +4,11 @@ import styled from "styled-components";
 import { Button, Label } from "../../styles/Styles";
 
 import SeatMap from '../../components/admin/SeatMap';
-import { AdminContext, orderComplete } from "../../contexts/AdminContext";
-import { proxy } from "../../utils/axios";
+import TransferTicket from "../../components/admin/TransferTicket";
+import Modal from "../../components/admin/Modal";
 
-type Ticket = {
-  id: string;
-  name: string;
-  seat_number?: number;
-  row_number?: number;
-  location?: string;
-  created: string;
-}
+import { AdminContext, Ticket, orderComplete } from "../../contexts/AdminContext";
+import { proxy } from "../../utils/axios";
 
 type StyleProps = {
   selected: boolean;
@@ -37,6 +31,7 @@ const PlaceOrder = () => {
   const history = useHistory();
   const { orderId } = useParams<{orderId?: string}>();
   const [ selectedTicket, setSelectedTicket ] = useState<Ticket>();
+  const [modalVisible, setModalVisible] = useState(false);
   const [sending, setSending] = useState(false);
   const unPlacedTickets = selectedOrder.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)
   const selectTicket = (ticket: Ticket) => {
@@ -134,6 +129,15 @@ const PlaceOrder = () => {
     });
   }
 
+  const showTransferModal = (ticket: Ticket) => {
+    selectTicket(ticket);
+    setModalVisible(true);
+  }
+  const closeTransferModal = () => {
+    setSelectedTicket(undefined);
+    setModalVisible(false);
+  }
+
   useEffect(() => {
       if (orders.length === 0) return;
       const order = orders.find(item => item.id === orderId);
@@ -144,6 +148,11 @@ const PlaceOrder = () => {
   return (
     <div>
         {orderComplete(selectedOrder) && <h2><b>Tilaus on valmis</b></h2>}
+        {modalVisible
+        && selectedTicket !== undefined
+        && <Modal close={closeTransferModal}>
+          <TransferTicket ticket={selectedTicket}></TransferTicket>
+          </Modal>}
       <Flex>
       <Section>
         <h2>Asiakkaan tiedot</h2>
@@ -169,12 +178,15 @@ const PlaceOrder = () => {
               selected={selectedTicket?.id === ticket.id}
               onClick={() => selectTicket(ticket)}>Valitse
             </StyledButton>}
+            <StyledButton selected={false} onClick={() => showTransferModal(ticket)}>
+              Siirrä
+            </StyledButton>
           </div>
         ))}
       </Section>
       </Flex>
       <Section>
-      {selectedTicket !== undefined ? (
+      {(selectedTicket !== undefined && !modalVisible) ? (
           <SeatMap ticket={selectedTicket} />
         ): null}
       </Section>

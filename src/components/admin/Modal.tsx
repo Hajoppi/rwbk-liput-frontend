@@ -1,20 +1,9 @@
 import styled from "styled-components"
+import { FC }from "react";
 import { Button } from "../../styles/Styles";
-import { Order } from '../../contexts/AdminContext';
 
-
-type Ticket = {
-  id: string;
-  name: string;
-  seat_number?: number;
-  row_number?: number;
-  location?: string;
-  created: string;
-}
 
 type PropType = {
-  order: Order,
-  ticket: Ticket,
   close: () => void;
 }
 
@@ -30,6 +19,7 @@ const ModalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 `;
 
 const Container = styled.div`
@@ -42,18 +32,13 @@ const CloseButton = styled(Button)`
   top: 32px;
 `;
 
-const SeatModal = ({order, ticket, close}: PropType) => {
+const SeatModal: FC<PropType> = ( {close, children} ) => {
   return (
     <ModalWrapper>
       <CloseButton onClick={close}> X </CloseButton>
       <Container>
-        <p>Aikasempi plassattu</p>
-        <div>Nimi: {order.firstname} {order.lastname}</div>
-        <div>Lippu: {ticket.name}</div>
-        <div>Email: {order.email}</div>
-        <div>Lisätiedot: {order.extra}</div>
+        {children}
       </Container>
-      <Button onClick={close}>Poistu</Button>
     </ModalWrapper>
   )
 }
