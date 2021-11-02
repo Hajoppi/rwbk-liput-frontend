@@ -76,7 +76,7 @@ const CartProvider: FC = ({ children }) => {
   },[loggedIn]);
 
   useEffect(() => {
-    if(state === 'ENDED' || state === 'NONE') return;
+    // if(state === 'ENDED' || state === 'NONE') return;
     const storage = sessionStorage.getItem('cart');
     const savedCart = storage ? JSON.parse(storage) as CartItem[] : cartContextDefault.cart;
     fetchTicketsAndUpdate(savedCart);
