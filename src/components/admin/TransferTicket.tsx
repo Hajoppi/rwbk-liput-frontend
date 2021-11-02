@@ -10,6 +10,14 @@ const StyledButton = styled(Button)`
   background-color: transparent;
 `;
 
+
+const Orders = styled.div`
+  height: 100%;
+  overflow: scroll;
+`;
+const Container = styled.div`
+  height: 100%;
+`
 const TransferTicket = ( {ticket}: {ticket: Ticket}) => {
   const { inCompleteOrders, completeOrders } = useContext(AdminContext);
   const [ success, setSuccess] = useState('');
@@ -31,7 +39,7 @@ const TransferTicket = ( {ticket}: {ticket: Ticket}) => {
   }
 
   return (
-    <div>
+    <Container>
       <div>
         Lippu: {ticket.name}
       </div>
@@ -40,15 +48,17 @@ const TransferTicket = ( {ticket}: {ticket: Ticket}) => {
           {success}
         </b>
       </div>
-      Valitse kohdetilaus alta
+      <p>Valitse kohdetilaus alta</p>
       <Input type="text" placeholder="Tilauksen nimi" onChange={handleSearchChange}/>
-      {orders.map(order => 
-        <div key={order.id}>
-          {order.firstname} {order.lastname}
-          <StyledButton onClick={() => transferTicket(order.id)}>Valitse</StyledButton>
-        </div>
-      )}
-    </div>
+      <Orders>
+        {orders.map(order => 
+          <div key={order.id}>
+            {order.firstname} {order.lastname}
+            <StyledButton onClick={() => transferTicket(order.id)}>Valitse</StyledButton>
+          </div>
+        )}
+      </Orders>
+    </Container>
   );
 }
 
