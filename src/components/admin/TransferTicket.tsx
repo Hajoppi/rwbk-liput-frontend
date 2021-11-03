@@ -12,7 +12,7 @@ const StyledButton = styled(Button)`
 
 
 const Orders = styled.div`
-  height: 100%;
+  height: 70%;
   overflow-y: scroll;
 `;
 const Container = styled.div`
