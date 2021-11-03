@@ -13,10 +13,10 @@ const StyledButton = styled(Button)`
 
 const Orders = styled.div`
   height: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
 `;
 const Container = styled.div`
-  height: 100%;
+  height: 90vh;
 `
 const TransferTicket = ( {ticket}: {ticket: Ticket}) => {
   const { inCompleteOrders, completeOrders } = useContext(AdminContext);
