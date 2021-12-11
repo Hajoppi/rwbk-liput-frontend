@@ -1,12 +1,14 @@
 import styled, { keyframes } from 'styled-components';
 import logo from '../assets/rwbk_logo-min.png';
 import { useHistory } from 'react-router-dom';
+import Timer from './Timer';
 
 const HeaderComponent = () => {
   const history = useHistory();
   return (
     <Header>
       <Logo src={logo} alt="RWBK logo" onClick={() => history.push('/')}></Logo>
+      <Timer></Timer>
     </Header> 
   )
 };

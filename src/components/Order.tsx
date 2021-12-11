@@ -14,12 +14,12 @@ const Order = () => {
         <Header flex={1}></Header>
       </Cart>
       {cart.map( item => {
-        if (!item.amount) return null;
+        if (!item.quantity) return null;
         return (
-        <Cart key={item.id}>
+        <Cart key={item.type_id}>
         <Element flex={4}>{item.name}</Element>
-        <Element flex={2}>{item.amount}</Element>
-        <Element flex={2}>{(item.amount)*item.cost} €</Element>
+        <Element flex={2}>{item.quantity}</Element>
+        <Element flex={2}>{(item.quantity)*item.cost} €</Element>
         <Element flex={1}></Element>
         </Cart>
         );

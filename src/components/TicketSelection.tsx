@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { CartContext } from '../contexts/CartContext';
 import { Wrapper } from '../styles/Styles';
 import Ticket from '../components/Ticket';
+import { ItemContext } from '../contexts/ItemContext';
 
 
 const Total = styled.div`
@@ -14,10 +15,11 @@ const Total = styled.div`
 `;
 
 const TicketSelection = () => {
-  const { cart, cartTotal } = useContext(CartContext);
+  const { cartTotal } = useContext(CartContext);
+  const { availableItems } = useContext(ItemContext);
   return (
     <Wrapper>
-      {cart.map( (ticket) => (
+      {availableItems.map( (ticket) => (
         <Ticket item={ticket} key={ticket.id}></Ticket>
       ))}
     <Total>Yhteensä: {cartTotal} €</Total>

@@ -1,23 +1,20 @@
 import {
   FC,
   createContext,
-  useEffect,
   useState,
   useMemo,
   useCallback,
-  useContext }
-from "react";
+  useEffect,
+} from "react";
 import { proxy } from "../utils/axios";
-import { AuthContext } from "./AuthContext";
-import { TimeContext } from "./TimeContext";
-import { maxSharedAmount } from "../utils/sharedTicketQuotas";
+import { Item } from "./ItemContext";
 
 export type CartItem = {
-  id: string;
+  type_id: string;
   name: string;
   cost: number;
-  amount: number;
-  maxAmount: number;
+  quantity: number;
+  limit: number;
 }
 
 type GiftCardsAddResult = 'OK' | 'NOMATCH' | 'DUPLICATE';
@@ -30,13 +27,13 @@ export type GiftCard = {
   type: string;
 }
 
-
 export interface CartContextType {
+  orderId: string | undefined;
   cart: CartItem[];
+  created: Date | undefined;
   giftCards: GiftCard[];
   paymentByInvoice: boolean;
-  saveCart: (ticketId: string, amount: number) => void;
-  addItemToCart: (item: CartItem) => void;
+  addItemToCart: (item: Item) => void;
   removeItemFromCart: (itemId: string) => void;
   addGiftCard: (giftCard: GiftCard) => GiftCardsAddResult;
   removeGiftCard: (itemId: string) => boolean;
@@ -47,10 +44,11 @@ export interface CartContextType {
 }
 
 const cartContextDefault: CartContextType = {
+  orderId: undefined,
+  created: undefined,
   cart: [],
   giftCards: [],
   paymentByInvoice: false,
-  saveCart: () => null,
   resetCart: () => null,
   cartIsEmpty: true,
   setPaymentByInvoice: () => null,
@@ -64,85 +62,26 @@ const cartContextDefault: CartContextType = {
 export const CartContext = createContext<CartContextType>(cartContextDefault);
 
 const CartProvider: FC = ({ children }) => {
-  const { state } = useContext(TimeContext);
-  const { loggedIn } = useContext(AuthContext);
-  const [cart, updateCart] = useState<CartItem[]>(cartContextDefault.cart);
-  const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
+  const [ orderId, setOrderId] = useState<undefined | string>(cartContextDefault.orderId);
+  const [ created, setCreated ] = useState<undefined | Date>(undefined);
+  const [ itemsFetched, setItemsFetched] = useState(false);
+  const [ cart, setCart ] = useState<CartItem[]>(cartContextDefault.cart);
+  const [ giftCards, setGiftCards ] = useState<GiftCard[]>([]);
   const [ paymentByInvoice, setPaymentByInvoice ] = useState(cartContextDefault.paymentByInvoice);
-  const [orderLimit, setOrderLimit] = useState(30);
-
-  useEffect(() => {
-    setOrderLimit(loggedIn ? 999 : 30);
-  },[loggedIn]);
-
-  useEffect(() => {
-    // if(state === 'ENDED' || state === 'NONE') return;
-    const storage = sessionStorage.getItem('cart');
-    const savedCart = storage ? JSON.parse(storage) as CartItem[] : cartContextDefault.cart;
-    fetchTicketsAndUpdate(savedCart);
-  },[state]);
-
-  const fetchTicketsAndUpdate = (savedCart: CartItem[]) => {
-    proxy.get<CartItem[]>('/order/tickets').then(response => {
-      const tickets = response.data.map(ticket=> ({...ticket, amount: 0, maxAmount: ticket.amount}));
-      const updatedAmounts = tickets.map(ticket => {
-        const savedAmount = savedCart.find(item => item.id === ticket.id)?.amount || 0;
-        return {
-          ...ticket,
-          amount: savedAmount,
-        }
-      })
-      updateCart(updatedAmounts);
-    }).catch(() => {
-    });
-  }
-
-  const saveCart = (ticketId: string, amount: number): void => {
-    const newCart = [...cart];
-    const ticket = newCart.find(ticket => ticket.id === ticketId);
-    if (!ticket) return;
-    const amountOfOtherTickets = newCart
-      .filter(item=>item.id !== ticket.id)
-      .reduce((a,b) => a + b.amount, 0);
-    if(amount + amountOfOtherTickets > orderLimit) return;
-
-    // 0 < newAmount < maximum amount left
-    ticket.amount = Math.min(Math.max(0, amount), maxSharedAmount(ticket, cart));
-    if (ticket.amount === 0) {
-      const giftCardsFiltered = giftCards.filter( card => card.type !== ticket.id);
-      setGiftCards(giftCardsFiltered);
-    }
-    sessionStorage.setItem('cart', JSON.stringify(newCart));
-    updateCart(newCart);
-  };
 
   const addGiftCard = (giftCard: GiftCard) => {
     const itemAlreadyExists = giftCards.some(card => card.id === giftCard.id);
-    const cartCount = cart.find(item => item.id === giftCard.type)?.amount || 0;
+    const cartCount = cart.find(item => item.type_id === giftCard.type)?.quantity || 0;
     const existingCount = giftCards.filter(card => card.type === giftCard.type).length;
     const result = 
       itemAlreadyExists ? 'DUPLICATE' :
       (cartCount === 0 || existingCount >= cartCount) ? 'NOMATCH' : 'OK'
-    if(result === 'OK'){
+    if (result === 'OK'){
       const newCards = [...giftCards, giftCard];
       setGiftCards(newCards);
     }
     return result;
   }
-
-  const addItemToCart = (item: CartItem) => {
-    const newCart = [...cart, item]
-    updateCart(newCart);
-  }
-
-  const removeItemFromCart = (itemId: string) => {
-    const index = cart.findIndex(card => card.id === itemId);
-    const newCart = [...cart];
-    const result = newCart.splice(index, 1);
-    updateCart(newCart);
-    return result.length > 0;
-  }
-
   const removeGiftCard = (giftCardId: string) => {
     const index = giftCards.findIndex(card => card.id === giftCardId);
     const newCards = [...giftCards];
@@ -151,37 +90,130 @@ const CartProvider: FC = ({ children }) => {
     return result.length > 0;
   }
 
-  const cartIsEmpty = cart.length > 0 && cart.every(item => item.amount === 0);
+  const removeItemFromCart = (itemId: string) => {
+    setCart(prevCart => 
+      prevCart.reduce((ack, item) => {
+        if (item.type_id === itemId) {
+          if(item.quantity === 1) return ack;
+          return [...ack, {...item, quantity: item.quantity -1}];
+        } else {
+          return [...ack, item]
+        }
+      },[] as CartItem[]),
+    );
+  };
+
+  const addItemToCart = (item: Item) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find(cartItem => cartItem.type_id === item.id);
+      if(existingItem) {
+        return prevCart.map(prevItem => 
+          prevItem.type_id === item.id ?
+          {...prevItem, quantity: prevItem.quantity + 1}
+          : prevItem
+        );
+      }
+      return [...prevCart, {...item, type_id: item.id, quantity: 1}];
+    });
+  };
+  
 
   const resetCart = useCallback(() => {
-    if(cart.some(item => item.amount > 0)) {
-      let newCart = [...cart].filter(item => item.id !== '60571');
-      newCart.forEach(item => item.amount = 0);
-      updateCart(newCart);
-    }
+    setCart([]);
     setGiftCards([]);
     setPaymentByInvoice(false);
-    sessionStorage.removeItem('cart');
-  },[cart]);
+    setCreated(undefined);
+    sessionStorage.removeItem('orderId');
+    setOrderId('');
+  },[]);
+
+  const itemsSetters = useMemo(() => (
+    { resetCart}),
+    [resetCart]
+  );
+  proxy.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.response?.status === 418) {
+        return itemsSetters.resetCart();
+      }
+      return Promise.reject(error);
+    }
+  );
+  useEffect(() => {
+    if (created !== undefined || !orderId) return
+    proxy.get(`/order2/${orderId}/created`).then((response) => {
+      const { time } = response.data;
+      setCreated(new Date(time));
+      const timeLeft = Math.max(new Date(time).getTime() + 3*60*1000 - Date.now(),0);
+      setTimeout(() => itemsSetters.resetCart(), timeLeft);
+    }).catch(() => {
+      itemsSetters.resetCart();
+    });
+  },[created, itemsSetters, orderId])
+
+  // Check on load, if we have an active cart for this order
+  useEffect(() => {
+    if(orderId === undefined) return;
+    if(orderId && !itemsFetched) {
+        proxy.get<CartItem[]>(`/order2/cart/${orderId}`, {
+        }).then(response => {
+          setCart(response.data);
+          setItemsFetched(true);
+        });
+    }
+  },[orderId, itemsFetched, setItemsFetched]);
   
-  const itemsSetters = useMemo(() => ({ resetCart }), [resetCart])
+  // Update the cart to server on each mutation to the cart
+  useEffect(() => {
+    if(!itemsFetched || !orderId) return;
+    proxy.put('/order2/cart', {
+      orderId,
+      cart,
+    });
+  },[orderId, cart, itemsFetched]);
+
+  // If there is no cart, create one to server
+  useEffect(() => {
+    if (cart.length > 0 && orderId === '') {
+      proxy.post('/order2/create', {
+        orderId,
+        cart,
+      }).then(response => {
+        sessionStorage.setItem('orderId', response.data.orderId);
+        setOrderId(response.data.orderId);
+      });
+    }
+  },[cart, orderId]);
+
+  useEffect(() => {
+    setOrderId(previousId => {
+      if (previousId) return previousId;
+      return sessionStorage.getItem('orderId') || '';
+    })
+  }, [setOrderId]);
+
+  const cartIsEmpty = itemsFetched && cart.length === 0;
+
   const cartTotal = 
-    cart.reduce((a,b) => a + b.amount*b.cost,0)
+    cart.reduce((a,b) => a + b.quantity*b.cost,0)
     - giftCards.reduce((a,b) => a + b.balance,0);
+
   return (
     <CartContext.Provider value={
       {
+        orderId,
         cart,
         giftCards,
+        created,
         paymentByInvoice,
         setPaymentByInvoice,
-        saveCart,
         cartTotal,
         ...itemsSetters,
-        addGiftCard,
-        removeGiftCard,
         addItemToCart,
         removeItemFromCart,
+        addGiftCard,
+        removeGiftCard,
         cartIsEmpty,
       }}>
       {children}

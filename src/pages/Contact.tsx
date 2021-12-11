@@ -9,7 +9,7 @@ import { CartContext } from '../contexts/CartContext';
 
 const ContactForm = () => {
   const history = useHistory();
-  const {customerInfo, updateInfo} = useContext(ContactContext);
+  const { customerInfo, updateInfo } = useContext(ContactContext);
   const firstName = useFormInput(customerInfo.firstName)
   const lastName = useFormInput(customerInfo.lastName)
   const email = useFormInput(customerInfo.email)
@@ -38,7 +38,7 @@ const ContactForm = () => {
       phone: phone.value,
       postalCode: postalCode.value,
     });
-    history.push('/maksu');
+    history.push('/yhteenveto');
   }
   return (
     <>

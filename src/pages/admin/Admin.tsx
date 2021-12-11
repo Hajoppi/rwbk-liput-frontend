@@ -126,7 +126,7 @@ const FilteredOrders = () => {
           <StyledSelect onChange={handleTicketTypes}>
             <option value="all">Kaikki</option>
             {cart.map(item => (
-            <option key={item.id} value={item.name}>{item.name}</option>
+            <option key={item.type_id} value={item.name}>{item.name}</option>
             ))}
           </StyledSelect>
         </Label>

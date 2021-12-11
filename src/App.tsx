@@ -17,7 +17,8 @@ const Instructions = lazy(() => import('./pages/Instruction'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Home = lazy(() => import('./pages/Home'));
 const Callback = lazy(() => import('./pages/Callback'));
-const Payment = lazy(() => import('./pages/Payment'));
+const Summary = lazy(() => import('./pages/Summary'));
+const Checkout = lazy(() => import('./pages/Checkout'));
 const Admin = lazy(() => import('./pages/admin/Admin'));
 const Login = lazy(() => import('./pages/admin/Login'));
 const PlaceOrder = lazy(() => import('./pages/admin/PlaceOrder'));
@@ -33,15 +34,18 @@ const App = () => {
     <Suspense fallback={<span>Loading...</span>}>
       <Router>
         <GlobalStyle/>
-        <Header/>
         <MultiProvider>
+        <Header/>
         <Images/>
           <Switch>
             <Route path="/yhteystiedot">
               <Contact />
             </Route>
+            <Route path="/yhteenveto">
+              <Summary />
+            </Route>
             <Route path="/maksu">
-              <Payment />
+              <Checkout />
             </Route>
             <Route path="/ohjeet">
               <Instructions />

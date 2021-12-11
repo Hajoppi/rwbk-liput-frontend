@@ -1,4 +1,6 @@
-import { FC, createContext, useState, useMemo, useCallback } from "react";
+import { FC, createContext, useState, useMemo, useCallback, useContext, useEffect } from "react";
+import { proxy } from "../utils/axios";
+import { CartContext } from "./CartContext";
 
 
 export type CustomerInfo = {
@@ -36,19 +38,30 @@ const contactContextDefault: ContactContextType = {
 export const ContactContext = createContext<ContactContextType>(contactContextDefault);
 
 const ContactProvider: FC = ({ children }) => {
-  const storage = sessionStorage.getItem('info')
-  const savedInfo = storage ? JSON.parse(storage) as CustomerInfo : contactContextDefault.customerInfo
+  const { orderId } = useContext(CartContext);
+  const [ infoFetched, setFetched ] = useState(false);
+  const storage = sessionStorage.getItem('info');
+  const savedInfo = storage ? JSON.parse(storage) as CustomerInfo : contactContextDefault.customerInfo;
   const [customerInfo, setInfo] = useState<CustomerInfo>(savedInfo);
   
+  useEffect(() => {
+    if (!orderId || infoFetched) return
+    proxy.get(`order2/contact/${orderId}`).then(response => {
+      setInfo(response.data);
+      setFetched(true);
+    }).catch(() => {});
+  },[setFetched, infoFetched, orderId]);
+
   const updateInfo = useCallback((customerInfo: CustomerInfo) => {
-    sessionStorage.setItem('info', JSON.stringify(customerInfo))
+    proxy.put('order2/contact', {
+      orderId,
+      customerInfo,
+    });
     setInfo(customerInfo);
-  },[])
+  },[orderId]);
 
   const resetInfo = useCallback(() => {
     setInfo(contactContextDefault.customerInfo);
-    sessionStorage.removeItem('info');
-    sessionStorage.removeItem('order');
   },[]);
   const itemSetters = useMemo(() => ({updateInfo, resetInfo}),[updateInfo, resetInfo]);
   return (

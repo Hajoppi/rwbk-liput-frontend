@@ -1,15 +1,15 @@
-import { useContext, ChangeEvent } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
 import {Button, Label} from '../styles/Styles';
-import { CartContext, CartItem } from '../contexts/CartContext';
-import { maxSharedAmount } from '../utils/sharedTicketQuotas';
+import { CartContext } from '../contexts/CartContext';
+import { Item } from '../contexts/ItemContext';
 
 type PropsType = {
-  item: CartItem;
+  item: Item;
 }
 
-const TicketInfoText = ({item, cart}: {item: CartItem, cart: CartItem[]}) => {
-  const maxAmount = maxSharedAmount(item, cart)
+const TicketInfoText = ({item}: {item: Item}) => {
+  const maxAmount = item.limit;
   if (maxAmount === 0)
     return <div><Label>lipputyyppi on loppunut</Label></div>
   if (maxAmount < 30 )
@@ -20,34 +20,21 @@ const TicketInfoText = ({item, cart}: {item: CartItem, cart: CartItem[]}) => {
 
 const Ticket = (props: PropsType) => {
   const { item } = props;
-  const { cart, saveCart } = useContext(CartContext);
-
-  const updateAmount = (event: ChangeEvent<HTMLInputElement>) => {
-    const number = Number(event.target.value);
-    event.target.value = String(number);
-    saveCart(item.id, number);
-  };
-
-  const amount = cart.find(ticket => ticket.id === item.id)?.amount || 0;
+  const { cart, addItemToCart, removeItemFromCart } = useContext(CartContext);
+  const quantity = cart.find(cartItem => cartItem.type_id === item.id)?.quantity || 0;
   return (
     <Wrapper>
       <InfoWrapper>
         <Element>
           {item.name}
-          <TicketInfoText item={item} cart={cart}/>
+          <TicketInfoText item={item}/>
         </Element>
         <Element>{item.cost} €</Element>
       </InfoWrapper>
       <AmountWrapper>
-        <LeftAmountButton aria-label="lisää" onClick={() =>saveCart(item.id, amount - 1)}><Minus/></LeftAmountButton>
-        <Amount
-          type="number"
-          max="50"
-          min="0"
-          onChange={updateAmount}
-          aria-label="määrä"
-          value={amount} />
-        <RightAmountButton aria-label="vähennä" onClick={() =>saveCart(item.id, amount + 1)}>+</RightAmountButton>
+        <LeftAmountButton aria-label="lisää" onClick={() => removeItemFromCart(item.id)}><Minus/></LeftAmountButton>
+        <Quantity>{quantity}</Quantity>
+        <RightAmountButton aria-label="vähennä" onClick={() =>addItemToCart(item)}>+</RightAmountButton>
       </AmountWrapper>
     </Wrapper>
   );
@@ -77,6 +64,7 @@ const Minus = styled.span`
 `
 const AmountWrapper = styled.div`
   position: relative;
+  display: flex;
   flex: 1;
   justify-content: center;
   max-width: 240px;
@@ -100,12 +88,11 @@ const RightAmountButton = styled(Button)`
   border-radius: 0 5px 5px 0;
 `;
 
-const Amount = styled.input`
+const Quantity = styled.div`
   color: ${props => props.theme.textColor};
   position: relative;
   border: 2px solid ${props => props.theme.neutralLight};
   width: 33%;
-  float: left;
   font-size: 1.5rem;
   height: 100%;
   text-align: center;

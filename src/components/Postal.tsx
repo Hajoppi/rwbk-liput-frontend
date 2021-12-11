@@ -10,11 +10,10 @@ const PostalComponent = () => {
     const {checked} = event.target;
     setPostal(checked);
     if (checked) return addItemToCart({
-        amount: 1,
         cost: 3,
         id: '60571',
-        maxAmount: 0,
-        name: 'Postitus'
+        name: 'Postitus',
+        limit: 0,
       });
     removeItemFromCart('60571');
   }

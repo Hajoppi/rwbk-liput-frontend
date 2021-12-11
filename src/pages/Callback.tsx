@@ -13,10 +13,12 @@ const parseQueryString = (queryString: string): Record<string,string> =>
   return {...a, ...temp}
 },{});
 
+type CheckoutStatus = 'new' | 'ok' | 'fail' | 'pending' | 'delayed';
+
 const CallbackPage = () => {
   const queryString = useLocation().search;
   const history = useHistory();
-  const [paymentStatus, setPaymentStatus] = useState('LOADING')
+  const [paymentStatus, setPaymentStatus] = useState<CheckoutStatus>('pending')
   const [isValid, setValid] = useState<boolean | undefined>(undefined);
   const { resetInfo } = useContext(ContactContext);
   const { resetCart } = useContext(CartContext);
@@ -26,40 +28,43 @@ const CallbackPage = () => {
       history.push('/');
     }
     const parsed = parseQueryString(queryString);
-    if (parsed.STATUS === 'skip') {
-      proxy.post('/order/verifySkip', { orderId: parsed.ORDER_NUMBER }).then(() => {
+    if (parsed['checkout-status'] === 'skip') {
+      proxy.post('/order/verifySkip', { orderId: parsed['checkout-reference'] }).then(() => {
         setValid(true);
       }).catch(() => {
         setValid(false);
       }).finally(() => {
-        setPaymentStatus('PAID');
+        setPaymentStatus('ok');
       });
     }
     else {
-      proxy.post('/order/verify', { data: parsed }).then(() => {
-        setValid(true)
+      proxy.post('/payment/verify', { data: parsed }).then(() => {
+        setValid(true);
       }).catch(() => {
         setValid(false);
       }).finally(() => {
-        setPaymentStatus(parsed.STATUS);
+        setPaymentStatus(parsed['checkout-status'] as CheckoutStatus);
       });
     }
   },[queryString, history]);
 
   useEffect(() => {
-    if(paymentStatus === 'PAID' && isValid) {
+    if(paymentStatus === 'ok' && isValid) {
       resetCart();
       resetInfo();
-      sessionStorage.removeItem('order');
+      sessionStorage.removeItem('orderId');
     }
   },[paymentStatus, resetCart, resetInfo, isValid]);
 
-  const messages: Record<string,string> = {
-    PAID: 'Maksu onnistui',
-    CANCELLED: 'Maksu epäonnistui',
-    LOADING: 'Lataa'
+  const messages: Record<CheckoutStatus,string> = {
+    ok: 'Maksu onnistui',
+    fail: 'Maksu epäonnistui',
+    pending: 'Lataa',
+    new: 'Lataa',
+    delayed: 'Lataa',
   }
-  let message = messages[paymentStatus]
+
+  const message = messages[paymentStatus]
 
   if(isValid === false) return (
     <Wrapper>
@@ -70,13 +75,13 @@ const CallbackPage = () => {
     <p>
       Jos virhe toistuu, ottakaa yhteyttä sähköpostitse osoitteeseen liputsalo at rwbk piste fi.
     </p>
-    <Button onClick={() => history.push('/maksu')}>Palaa tilaukseen</Button>
+    <Button onClick={() => history.push('/yhteenveto')}>Palaa tilaukseen</Button>
     </Wrapper>
   );
   return (
     <Wrapper>
       <h1>{message}</h1>
-      { paymentStatus === 'CANCELLED' ? (
+      { paymentStatus === 'fail' ? (
         <>
           <p>
             Maksunne keskeytyi. Olkaa hyvä ja tehkää uusi tilaus.
@@ -84,11 +89,11 @@ const CallbackPage = () => {
           <p>
             Ongelmatilanteissa ottakaa yhteyttä sähköpostitse osoitteeseen liputsalo at rwbk piste fi.
           </p>
-          <Button onClick={() => history.push('/maksu')}>Palaa tilaukseen</Button>
+          <Button onClick={() => history.push('/yhteenveto')}>Palaa tilaukseen</Button>
         </>
       ) : null
       }
-      {paymentStatus === 'PAID' ?
+      {paymentStatus === 'ok' ?
       <>
         <p>Tilauksenne on valmis! Teille on lähetetty sähköposti, jossa on tilauksenne yhteenveto.</p>
         <p>Käsiteltyämme kaikki tilaukset teille lähetetään lippunne.</p>

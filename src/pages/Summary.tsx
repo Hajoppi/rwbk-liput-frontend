@@ -1,11 +1,10 @@
 import styled from 'styled-components';
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { useHistory, Link, Redirect } from 'react-router-dom';
 import Order from '../components/Order';
-import { Button, Input, Label, NavigationButton, Error, Select, Checkbox } from '../styles/Styles';
+import { Label, NavigationButton, Select, Checkbox } from '../styles/Styles';
 import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
-import { CartContext, GiftCard } from "../contexts/CartContext";
-import { proxy } from '../utils/axios';
+import { CartContext } from "../contexts/CartContext";
 
 const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
   <Section>
@@ -33,7 +32,7 @@ const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
 </Section>
 );
 
-const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orderId: string}) => {
+/*const GiftCardComponent = () => {
   const [ giftCardError, setGiftCardError ] = useState('');
   const { addGiftCard } = useContext(CartContext);
   const [ giftCard, setGiftCard ] = useState('');
@@ -93,76 +92,15 @@ const GiftCardComponent = ({isSubmitting, orderId}: {isSubmitting: boolean, orde
       </GiftCardButton>
   </StyledGiftCard>
   )
-}
-
-
+}*/
 
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
   const [ termsAccepted, setTermsAccepted ] = useState(false);
-  const [ isSubmitting, setSubmitting ] = useState(false);
-  const [ error, setError ] = useState('');
-  const [ orderId, setOrderId ] = useState('');
-  const { cart, cartIsEmpty, cartTotal, giftCards, paymentByInvoice, setPaymentByInvoice } = useContext(CartContext);
-  const [ formFields, setFormFields ] = useState<Record<string,string>>({});
+  const { cartIsEmpty, setPaymentByInvoice } = useContext(CartContext);
   const history = useHistory();
 
-  const verifyPayment = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitting(true);
-    const form = e.currentTarget;
-    proxy.post<string>('/order/start',
-      {
-        cart: cart.filter(item => item.amount > 0),
-        customerInfo,
-        orderNumber: orderId,
-        giftCards,
-        paymentByInvoice,
-      }).then((response) => {
-        const nextPaymentProcess = response.data;
-        if(nextPaymentProcess === 'skip'){
-          return history.push(`/success?STATUS=skip&ORDER_NUMBER=${orderId}`);
-        }
-        form.submit();
-        setSubmitting(false);
-    }).catch((error) => {
-      setSubmitting(false);
-      if (error && error.response) {
-        switch (error.response.status) {
-          case 404:
-            return setError('Tilaus on vanhentunut, päivitä sivu');
-          case 405:
-            return setError('Ennakkomyynnin aikana tarvitset lahjakortin tehdäksesi tilauksen');
-        }
-      }
-      setError('Tilauksen maksussa tapahtui virhe');
-    });
-  }
-  useEffect(() => {
-    if (cartIsEmpty) return history.push('/');
-    if (!customerInfo.firstName.length) return history.push('/yhteystiedot');
-    const orderNumber = sessionStorage.getItem('order') || '';
-    if(cart.length === 0) return;
-    proxy.post<Record<string,string>>('/order/create',
-      {
-        cart: cart.filter(item => item.amount > 0),
-        customerInfo,
-        orderNumber,
-        giftCards
-      }).then((response) => {
-      const { data } = response;
-      sessionStorage.setItem('order', data.ORDER_NUMBER);
-      setOrderId(data.ORDER_NUMBER);
-      setFormFields(data);
-    }).catch(() => {
-      const ticketAmountsCorrect = cart.every(item => item.amount <= item.maxAmount);
-      if(!ticketAmountsCorrect) return setError('Haluamiasi lippuja ei ole riittävästi saatavilla');
-      setError('Ostoskorissa on virhe');
-      setSubmitting(true);
-    });
-  },[cart, cartIsEmpty, cartTotal, customerInfo, history, giftCards]);
-  
-
+  if (cartIsEmpty) return <Redirect to="/"/>
   return (
     <>
     <h1>Tilauksesi</h1>
@@ -170,7 +108,6 @@ const Payment = () => {
       <ContactComponent customerInfo={customerInfo}/>
       <Section>
         <Order />
-        <GiftCardComponent orderId={orderId} isSubmitting={isSubmitting} />
       </Section>
     </OrderInformation>
     <Label>
@@ -190,37 +127,22 @@ const Payment = () => {
       </StyledLink>
       <Checkbox type="checkbox" checked={termsAccepted} onChange={(event) => setTermsAccepted(event.target.checked)}/>
     </Label>
-    <Error>{error}</Error>
     <NavigationButtons>
-      <NavigationButton disabled={isSubmitting} onClick={() => history.push('/yhteystiedot')}>Takaisin</NavigationButton>
-      <form onSubmit={verifyPayment} action="https://payment.paytrail.com/e2" method="post">
-        {
-          Object.keys(formFields).map((key) => 
-              <input name={key} type="hidden" value={formFields[key]} key={key} />
-            )
-        }
-        <NavigationButton disabled={isSubmitting || !termsAccepted} as="input" type="submit" value="Maksa"/>
-      </form>
+      <NavigationButton onClick={() => history.push('/yhteystiedot')}>Takaisin</NavigationButton>
+      <NavigationButton
+        disabled={!termsAccepted}
+        onClick={() => history.push('/maksu')}>
+          Maksa
+      </NavigationButton>
     </NavigationButtons>
     </>
   );
 }
 
-const StyledGiftCard = styled.div`
-  margin: 8px 0;
-  & > label> input {
-    width: 200px;
-  }
-`;
-
-
 const StyledLink = styled(Link)`
   color: ${props => props.theme.linkColor};
 `;
 
-const GiftCardButton = styled(Button)`
-  font-size: 1rem;
-`
 
 const StyledSelect = styled(Select)`
   font-size: 1rem;
@@ -236,11 +158,6 @@ const OrderInformation = styled.div`
   justify-content: space-evenly;
   width: 100%;
   max-width: ${props => props.theme.commonWidth};
-`;
-
-const StyledInput = styled(Input)`
-  border: solid 1px ${props => props.theme.textColor};
-  margin: 0;
 `;
 
 const NavigationButtons = styled.div`
