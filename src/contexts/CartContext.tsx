@@ -145,7 +145,7 @@ const CartProvider: FC = ({ children }) => {
     proxy.get(`/order2/${orderId}/created`).then((response) => {
       const { time } = response.data;
       setCreated(new Date(time));
-      const timeLeft = Math.max(new Date(time).getTime() + 3*60*1000 - Date.now(),0);
+      const timeLeft = Math.max(new Date(time).getTime() + 15*60*1000 - Date.now(),0);
       setTimeout(() => itemsSetters.resetCart(), timeLeft);
     }).catch(() => {
       itemsSetters.resetCart();

@@ -11,7 +11,7 @@ const Timer = () => {
   const seconds = Math.floor(time-minutes*60);
   useEffect(() => {
     if (!created) return;
-    setTime(Math.floor((created.getTime() + 3*1000*60 - Date.now())/1000));
+    setTime(Math.floor((created.getTime() + 15*1000*60 - Date.now())/1000));
     const intervalValue = setInterval(() => {
       const newTime = Math.floor((created.getTime() + 3*1000*60 - Date.now())/1000);
       setTime(newTime);
