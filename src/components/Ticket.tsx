@@ -32,7 +32,7 @@ const Ticket = (props: PropsType) => {
         <Element>{item.cost} €</Element>
       </InfoWrapper>
       <AmountWrapper>
-        <LeftAmountButton aria-label="lisää" onClick={() => removeItemFromCart(item.id)}><Minus/></LeftAmountButton>
+        <LeftAmountButton aria-label="lisää" onClick={() => removeItemFromCart(item)}><Minus/></LeftAmountButton>
         <Quantity>{quantity}</Quantity>
         <RightAmountButton aria-label="vähennä" onClick={() =>addItemToCart(item)}>+</RightAmountButton>
       </AmountWrapper>

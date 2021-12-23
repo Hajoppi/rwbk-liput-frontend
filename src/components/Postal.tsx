@@ -2,6 +2,13 @@ import { useContext, useState, ChangeEvent } from "react";
 import { CartContext } from "../contexts/CartContext";
 import { Label, Checkbox } from "../styles/Styles";
 
+
+const basePostalItem = {
+  cost: 3,
+  id: '60571',
+  name: 'Postitus',
+  limit: 0,
+}
 const PostalComponent = () => {
   const { addItemToCart, removeItemFromCart } = useContext(CartContext);
   const [postalAdded, setPostal] = useState(false);
@@ -9,13 +16,8 @@ const PostalComponent = () => {
   const handlePostalChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {checked} = event.target;
     setPostal(checked);
-    if (checked) return addItemToCart({
-        cost: 3,
-        id: '60571',
-        name: 'Postitus',
-        limit: 0,
-      });
-    removeItemFromCart('60571');
+    if (checked) return addItemToCart(basePostalItem);
+    removeItemFromCart(basePostalItem);
   }
   return(
     <Label>

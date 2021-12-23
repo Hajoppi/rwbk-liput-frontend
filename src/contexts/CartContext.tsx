@@ -34,7 +34,7 @@ export interface CartContextType {
   giftCards: GiftCard[];
   paymentByInvoice: boolean;
   addItemToCart: (item: Item) => void;
-  removeItemFromCart: (itemId: string) => void;
+  removeItemFromCart: (item: Item) => void;
   addGiftCard: (giftCard: GiftCard) => GiftCardsAddResult;
   removeGiftCard: (itemId: string) => boolean;
   setPaymentByInvoice: (status: boolean) => void;
@@ -90,31 +90,41 @@ const CartProvider: FC = ({ children }) => {
     return result.length > 0;
   }
 
-  const removeItemFromCart = (itemId: string) => {
-    setCart(prevCart => 
-      prevCart.reduce((ack, item) => {
-        if (item.type_id === itemId) {
-          if(item.quantity === 1) return ack;
-          return [...ack, {...item, quantity: item.quantity -1}];
-        } else {
-          return [...ack, item]
-        }
-      },[] as CartItem[]),
-    );
+  const createOrder = async () => {
+    const response = await proxy.post('/order2/create', {
+      orderId,
+    });
+    sessionStorage.setItem('orderId', response.data.orderId);
+    setOrderId(response.data.orderId);
+    return response.data.orderId;
+  };
+
+  const updateCart = async (item: Item, quantity: number) => {
+    let currentOrderId = orderId
+    try {
+      if (!currentOrderId)  currentOrderId = await createOrder();
+      const { data } = await proxy.put<CartItem[]>('/order2/cart', {
+        item: {
+          name: item.name,
+          cost: item.cost,
+          type_id: item.id,
+          quantity,
+        },
+        orderId: currentOrderId,
+      });
+      setCart(data);
+    } catch(error) {
+    }
+  }
+
+  const removeItemFromCart = (item: Item) => {
+    const previousQuantity = cart.find(cartItem => cartItem.type_id === item.id)?.quantity || 0;
+    updateCart(item, previousQuantity - 1);
   };
 
   const addItemToCart = (item: Item) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find(cartItem => cartItem.type_id === item.id);
-      if(existingItem) {
-        return prevCart.map(prevItem => 
-          prevItem.type_id === item.id ?
-          {...prevItem, quantity: prevItem.quantity + 1}
-          : prevItem
-        );
-      }
-      return [...prevCart, {...item, type_id: item.id, quantity: 1}];
-    });
+    const previousQuantity = cart.find(cartItem => cartItem.type_id === item.id)?.quantity || 0;
+    updateCart(item, previousQuantity + 1);
   };
   
 
@@ -131,15 +141,8 @@ const CartProvider: FC = ({ children }) => {
     { resetCart}),
     [resetCart]
   );
-  proxy.interceptors.response.use(
-    response => response,
-    error => {
-      if (error.response?.status === 418) {
-        return itemsSetters.resetCart();
-      }
-      return Promise.reject(error);
-    }
-  );
+
+  // If we have a cart, get the creation time. Then show and start timer
   useEffect(() => {
     if (created !== undefined || !orderId) return
     proxy.get(`/order2/${orderId}/created`).then((response) => {
@@ -164,28 +167,6 @@ const CartProvider: FC = ({ children }) => {
     }
   },[orderId, itemsFetched, setItemsFetched]);
   
-  // Update the cart to server on each mutation to the cart
-  useEffect(() => {
-    if(!itemsFetched || !orderId) return;
-    proxy.put('/order2/cart', {
-      orderId,
-      cart,
-    });
-  },[orderId, cart, itemsFetched]);
-
-  // If there is no cart, create one to server
-  useEffect(() => {
-    if (cart.length > 0 && orderId === '') {
-      proxy.post('/order2/create', {
-        orderId,
-        cart,
-      }).then(response => {
-        sessionStorage.setItem('orderId', response.data.orderId);
-        setOrderId(response.data.orderId);
-      });
-    }
-  },[cart, orderId]);
-
   useEffect(() => {
     setOrderId(previousId => {
       if (previousId) return previousId;
