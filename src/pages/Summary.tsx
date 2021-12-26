@@ -5,6 +5,7 @@ import Order from '../components/Order';
 import { Label, NavigationButton, Select, Checkbox } from '../styles/Styles';
 import { ContactContext, CustomerInfo } from "../contexts/ContactContext";
 import { CartContext } from "../contexts/CartContext";
+import GiftCardComponent from '../components/GiftCard';
 
 const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
   <Section>
@@ -32,67 +33,6 @@ const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
 </Section>
 );
 
-/*const GiftCardComponent = () => {
-  const [ giftCardError, setGiftCardError ] = useState('');
-  const { addGiftCard } = useContext(CartContext);
-  const [ giftCard, setGiftCard ] = useState('');
-  const submitGiftcard = () => {
-    proxy.post<GiftCard>('order/giftcard', {
-      code: giftCard,
-      orderId,
-    }).then((response) => {
-      const { data } = response;
-      const result = addGiftCard(data);
-      switch(result) {
-        case 'NOMATCH':
-          setGiftCardError('Ostoskorissa ei ole yhteensopivaa lippua');
-          break;
-        case 'DUPLICATE':
-          setGiftCardError('Olet jo lisännyt tämän lahjakortin');
-          break;
-        default:
-          setGiftCardError('');
-      }
-
-    }).catch((error) => {
-      if (error && error.response) {
-        switch(error.response.status){
-          case 404:
-            return setGiftCardError('Väärä lahjakortin koodi')
-          case 429:
-            return setGiftCardError('Liian monta yritystä peräkkäin. Odota hetki');
-        }
-      }
-      setGiftCardError('Tapahtui virhe');
-    }).finally(() => {
-      setGiftCard('')
-    })
-  }
-  const handleGiftCardChange = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setGiftCard(e.target.value);
-  }
-  return(
-    <StyledGiftCard>
-      <Label>
-      Lahjakortti
-      <StyledInput
-        type="text"
-        name="giftCard"
-        value={giftCard}
-        onChange={handleGiftCardChange}
-        placeholder="Lahjakortin koodi tähän"
-      ></StyledInput>
-      </Label>
-      <Error>{giftCardError}</Error>
-      <GiftCardButton
-        disabled={isSubmitting || giftCard.length === 0}
-        onClick={submitGiftcard}>
-        Lisää Lahjakortti
-      </GiftCardButton>
-  </StyledGiftCard>
-  )
-}*/
 
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
@@ -108,6 +48,7 @@ const Payment = () => {
       <ContactComponent customerInfo={customerInfo}/>
       <Section>
         <Order />
+        <GiftCardComponent/>
       </Section>
     </OrderInformation>
     <Label>
