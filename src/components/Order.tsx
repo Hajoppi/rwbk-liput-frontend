@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import styled from "styled-components";
-import { Button, Element } from "../styles/Styles";
+import { Element } from "../styles/Styles";
 import { CartContext } from '../contexts/CartContext';
 
 const Order = () => {
-  const { cart, cartTotal, giftCards, removeGiftCard } = useContext(CartContext);
+  const { cart, cartTotal} = useContext(CartContext);
   return (
     <div>
       <Cart>
@@ -24,18 +24,6 @@ const Order = () => {
         </Cart>
         );
       })}
-      {giftCards.map(item => {
-        return (
-          <Cart key={item.id}>
-          <Element flex={4}>Lahjakortti</Element>
-          <Element flex={2}>1</Element>
-          <Element flex={2}>-{item.balance} €</Element>
-          <Element flex={1}>
-            <RemoveButton onClick={() => removeGiftCard(item.id)}>X</RemoveButton>
-            </Element>
-        </Cart>
-        );
-      })}
       <div><b>Yhteensä: {cartTotal} €</b></div>
   </div>
   )
@@ -46,15 +34,6 @@ const Order = () => {
 const Header = styled(Element)`
   font-weight: bold;
 `;
-const RemoveButton = styled(Button)`
-  font-size: 1rem;
-  height: 1.75rem;
-  width: 1.75rem;
-  padding: 2px;
-  font-weight: 600;
-  text-align: center;
-`;
-
 
 const Cart = styled.div`
   display: flex;

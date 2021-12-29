@@ -17,8 +17,6 @@ export type CartItem = {
   limit: number;
 }
 
-type GiftCardsAddResult = 'OK' | 'NOMATCH' | 'DUPLICATE';
-
 export type GiftCard = {
   id: string;
   code: string;
@@ -29,14 +27,14 @@ export type GiftCard = {
 
 export interface CartContextType {
   orderId: string | undefined;
+  status: string;
   cart: CartItem[];
   created: Date | undefined;
   giftCards: GiftCard[];
   paymentByInvoice: boolean;
   addItemToCart: (item: Item) => void;
+  getCart: () => void;
   removeItemFromCart: (item: Item) => void;
-  addGiftCard: (giftCard: GiftCard) => GiftCardsAddResult;
-  removeGiftCard: (itemId: string) => boolean;
   setPaymentByInvoice: (status: boolean) => void;
   cartIsEmpty: boolean;
   resetCart: () => void;
@@ -46,14 +44,14 @@ export interface CartContextType {
 const cartContextDefault: CartContextType = {
   orderId: undefined,
   created: undefined,
+  status: '',
   cart: [],
   giftCards: [],
   paymentByInvoice: false,
   resetCart: () => null,
+  getCart: () => null,
   cartIsEmpty: true,
   setPaymentByInvoice: () => null,
-  addGiftCard: () => 'OK',
-  removeGiftCard: () => false,
   addItemToCart: () => null,
   removeItemFromCart: () => null,
   cartTotal: 0,
@@ -64,31 +62,11 @@ export const CartContext = createContext<CartContextType>(cartContextDefault);
 const CartProvider: FC = ({ children }) => {
   const [ orderId, setOrderId] = useState<undefined | string>(cartContextDefault.orderId);
   const [ created, setCreated ] = useState<undefined | Date>(undefined);
+  const [ status, setStatus ] = useState('new');
   const [ itemsFetched, setItemsFetched] = useState(false);
   const [ cart, setCart ] = useState<CartItem[]>(cartContextDefault.cart);
   const [ giftCards, setGiftCards ] = useState<GiftCard[]>([]);
   const [ paymentByInvoice, setPaymentByInvoice ] = useState(cartContextDefault.paymentByInvoice);
-
-  const addGiftCard = (giftCard: GiftCard) => {
-    const itemAlreadyExists = giftCards.some(card => card.id === giftCard.id);
-    const cartCount = cart.find(item => item.type_id === giftCard.type)?.quantity || 0;
-    const existingCount = giftCards.filter(card => card.type === giftCard.type).length;
-    const result = 
-      itemAlreadyExists ? 'DUPLICATE' :
-      (cartCount === 0 || existingCount >= cartCount) ? 'NOMATCH' : 'OK'
-    if (result === 'OK'){
-      const newCards = [...giftCards, giftCard];
-      setGiftCards(newCards);
-    }
-    return result;
-  }
-  const removeGiftCard = (giftCardId: string) => {
-    const index = giftCards.findIndex(card => card.id === giftCardId);
-    const newCards = [...giftCards];
-    const result = newCards.splice(index, 1);
-    setGiftCards(newCards);
-    return result.length > 0;
-  }
 
   const createOrder = async () => {
     const response = await proxy.post('/order2/create', {
@@ -98,6 +76,13 @@ const CartProvider: FC = ({ children }) => {
     setOrderId(response.data.orderId);
     return response.data.orderId;
   };
+
+  const getCart = async () => {
+    if(orderId === undefined) return;
+    proxy.get<CartItem[]>(`/order2/cart/${orderId}`).then(response => {
+      setCart(response.data);
+    });
+  }
 
   const updateCart = async (item: Item, quantity: number) => {
     let currentOrderId = orderId
@@ -146,9 +131,11 @@ const CartProvider: FC = ({ children }) => {
   useEffect(() => {
     if (created !== undefined || !orderId) return
     proxy.get(`/order2/${orderId}/created`).then((response) => {
-      const { time } = response.data;
+      const { time, status } = response.data;
       setCreated(new Date(time));
-      const timeLeft = Math.max(new Date(time).getTime() + 15*60*1000 - Date.now(),0);
+      setStatus(status);
+      const totalAmountOfMinutes = status === 'new' ? 15 : 30;
+      const timeLeft = Math.max(new Date(time).getTime() + totalAmountOfMinutes * 60 * 1000 - Date.now(), 0);
       setTimeout(() => itemsSetters.resetCart(), timeLeft);
     }).catch(() => {
       itemsSetters.resetCart();
@@ -159,10 +146,10 @@ const CartProvider: FC = ({ children }) => {
   useEffect(() => {
     if(orderId === undefined) return;
     if(orderId && !itemsFetched) {
-        proxy.get<CartItem[]>(`/order2/cart/${orderId}`, {
-        }).then(response => {
-          setCart(response.data);
-          setItemsFetched(true);
+        proxy.get<CartItem[]>(`/order2/cart/${orderId}`)
+          .then(response => {
+            setCart(response.data);
+            setItemsFetched(true);
         });
     }
   },[orderId, itemsFetched, setItemsFetched]);
@@ -187,14 +174,14 @@ const CartProvider: FC = ({ children }) => {
         cart,
         giftCards,
         created,
+        status,
         paymentByInvoice,
         setPaymentByInvoice,
         cartTotal,
         ...itemsSetters,
         addItemToCart,
         removeItemFromCart,
-        addGiftCard,
-        removeGiftCard,
+        getCart,
         cartIsEmpty,
       }}>
       {children}

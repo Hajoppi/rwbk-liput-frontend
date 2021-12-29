@@ -7,13 +7,14 @@ import { Label, Error, Input, Button } from '../styles/Styles';
 
 const GiftCardComponent = () => {
   const [ giftCardError, setGiftCardError ] = useState('');
-  const { orderId } = useContext(CartContext);
+  const { orderId, getCart } = useContext(CartContext);
   const [ giftCard, setGiftCard ] = useState('');
   const submitGiftcard = () => {
     proxy.post<GiftCard>('/giftcard', {
       code: giftCard,
       orderId,
     }).then(() => {
+      getCart();
       setGiftCardError('');
     }).catch((error) => {
       if (error && error.response) {

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useContext, useEffect, useState } from 'react';
 import { proxy } from '../utils/axios';
 import { CartContext } from '../contexts/CartContext';
+import { Redirect } from 'react-router';
 
 interface PaymentProvider {
   id: string;
@@ -39,9 +40,13 @@ const ProviderWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
 `
+const toQueryString = (params: Record<string,string>) => 
+  Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+
 
 const PaymentProviders = () => {
   const [paymentProviders, setProviders] = useState<PaymentProvider[]>([]);
+  const [skipParams, setSkipParams] = useState<Record<string,string>>({})
   const { orderId } = useContext(CartContext);
   useEffect(() => {
     if (!orderId) return
@@ -50,11 +55,17 @@ const PaymentProviders = () => {
       {
         orderId,
       }
-    )
-      .then(response => setProviders(response.data.providers))
-      .catch(error => {});
+    ).then(response => {
+      if(response.data.status === 'skip') {
+        return setSkipParams(response.data.params);
+      }
+      setProviders(response.data.providers)
+      })
+    .catch(error => {});
   },[orderId]);
-
+  if (skipParams['checkout-reference']===orderId) {
+    return <Redirect to={`/success?${toQueryString(skipParams)}`}></Redirect>
+  }
   return (
     <ProviderWrapper>
       {paymentProviders.map(provider =>
