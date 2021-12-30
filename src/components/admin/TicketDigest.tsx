@@ -6,8 +6,8 @@ import { proxy } from "../../utils/axios";
 type Ticket = {
   name: string,
   id: string,
-  amount: number,
-  max: number,
+  quantity: number,
+  limit: number,
   left: number
 };
 
@@ -20,7 +20,7 @@ const StyledButton = styled(Button)`
 `;
 const IndividualTicket = ({ ticket, updateTicketNumbers }: 
   { ticket: Ticket, updateTicketNumbers: () => void  }) => {
-  const [limit, setLimit] = useState(ticket.max);
+  const [limit, setLimit] = useState(ticket.limit);
 
   const updateAmount = (event: ChangeEvent<HTMLInputElement>) => {
     const number = Number(event.target.value);
@@ -41,7 +41,7 @@ const IndividualTicket = ({ ticket, updateTicketNumbers }:
   return (
     <Flex key={ticket.name}>
       <Element>{ticket.name}</Element>
-      <Element>{ticket.amount}</Element>
+      <Element>{ticket.quantity}</Element>
       <Element>{ticket.left}</Element>
       <Element>
         <StyledInput
@@ -71,9 +71,9 @@ const TicketDigest = () => {
       let totalLeft = 0;
       let totalMax = 0;
       data.forEach(item => {
-        totalAmount += item.amount;
+        totalAmount += item.quantity;
         totalLeft += item.left;
-        totalMax += item.max;
+        totalMax += item.limit;
       });
       setAmount(totalAmount);
       setLeft(totalLeft);
