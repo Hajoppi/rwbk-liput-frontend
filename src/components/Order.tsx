@@ -1,10 +1,13 @@
-import { useContext } from "react";
 import styled from "styled-components";
 import { Element } from "../styles/Styles";
-import { CartContext } from '../contexts/CartContext';
+import { CartItem } from '../contexts/CartContext';
 
-const Order = () => {
-  const { cart, cartTotal} = useContext(CartContext);
+type PropType = {
+  cart: CartItem[];
+  cartTotal: number;
+}
+
+const Order = ({cart, cartTotal}: PropType) => {
   return (
     <div>
       <Cart>

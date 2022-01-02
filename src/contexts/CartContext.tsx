@@ -87,7 +87,7 @@ const CartProvider: FC = ({ children }) => {
   const updateCart = async (item: Item, quantity: number) => {
     let currentOrderId = orderId
     try {
-      if (!currentOrderId)  currentOrderId = await createOrder();
+      if (!currentOrderId) currentOrderId = await createOrder();
       const { data } = await proxy.put<CartItem[]>('/order2/cart', {
         item: {
           name: item.name,

@@ -36,6 +36,7 @@ const ContactComponent = ({customerInfo}: {customerInfo: CustomerInfo}) => (
 
 const Payment = () => {
   const { customerInfo } = useContext(ContactContext);
+  const { cart, cartTotal } = useContext(CartContext);
   const [ termsAccepted, setTermsAccepted ] = useState(false);
   const { cartIsEmpty, setPaymentByInvoice } = useContext(CartContext);
   const history = useHistory();
@@ -47,7 +48,7 @@ const Payment = () => {
     <OrderInformation>
       <ContactComponent customerInfo={customerInfo}/>
       <Section>
-        <Order />
+        <Order cart={cart} cartTotal={cartTotal}/>
         <GiftCardComponent/>
       </Section>
     </OrderInformation>

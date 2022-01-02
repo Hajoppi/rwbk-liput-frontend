@@ -20,7 +20,7 @@ export interface ContactContextType {
   resetInfo: () => void;
 }
 
-const contactContextDefault: ContactContextType = {
+export const contactContextDefault: ContactContextType = {
   customerInfo: {
     firstName: '',
     lastName: '',
@@ -40,9 +40,7 @@ export const ContactContext = createContext<ContactContextType>(contactContextDe
 const ContactProvider: FC = ({ children }) => {
   const { orderId } = useContext(CartContext);
   const [ infoFetched, setFetched ] = useState(false);
-  const storage = sessionStorage.getItem('info');
-  const savedInfo = storage ? JSON.parse(storage) as CustomerInfo : contactContextDefault.customerInfo;
-  const [customerInfo, setInfo] = useState<CustomerInfo>(savedInfo);
+  const [customerInfo, setInfo] = useState<CustomerInfo>(contactContextDefault.customerInfo);
   
   useEffect(() => {
     if (!orderId || infoFetched) return
