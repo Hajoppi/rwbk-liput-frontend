@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useContext, useEffect, useState } from 'react';
 import { proxy } from '../utils/axios';
 import { CartContext } from '../contexts/CartContext';
-import { Redirect } from 'react-router';
+import { Redirect, useParams } from 'react-router';
 
 interface PaymentProvider {
   id: string;
@@ -47,7 +47,9 @@ const toQueryString = (params: Record<string,string>) =>
 const PaymentProviders = () => {
   const [paymentProviders, setProviders] = useState<PaymentProvider[]>([]);
   const [skipParams, setSkipParams] = useState<Record<string,string>>({})
-  const { orderId } = useContext(CartContext);
+  let { orderId: orderIdContext } = useContext(CartContext);
+  const { orderId: orderIdParams } = useParams<{orderId: string | undefined}>();
+  const orderId = orderIdContext || orderIdParams
   useEffect(() => {
     if (!orderId) return
     proxy.post(

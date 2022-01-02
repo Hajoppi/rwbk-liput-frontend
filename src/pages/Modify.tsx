@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { CustomerInfo, contactContextDefault } from "../contexts/ContactContext";
 import { proxy } from '../utils/axios';
 import ContactForm from "../components/ContactForm";
-import { Wrapper } from "../styles/Styles";
+import { Wrapper, NavigationButton } from "../styles/Styles";
 import { CartItem } from "../contexts/CartContext";
 import Order from "../components/Order";
 
@@ -14,8 +14,10 @@ const Modify = () => {
   const { orderId } = useParams<{orderId: string}>();
   const [ customerInfo, setInfo ] = useState<CustomerInfo>(contactContextDefault.customerInfo);
   const [ items, setItems ] = useState<CartItem[]>([]);
+  const [ cart, setCart ] = useState<CartItem[]>([]);
   const [ sending, setSending ] = useState(false);
-  const [ message, setMessage ] = useState("")
+  const [ message, setMessage ] = useState("");
+  const history = useHistory();
   const updateInfo = (customerInfo: CustomerInfo) => {
     setSending(true);
     proxy.put('order2/contact', {
@@ -31,7 +33,6 @@ const Modify = () => {
       });
     });
   }
-  const history = useHistory();
   useEffect(() => {
     if (!orderId) return
     proxy.get(`order2/contact/${orderId}`).then(response => {
@@ -41,6 +42,11 @@ const Modify = () => {
     });
     proxy.get(`order2/item/${orderId}`).then(response => {
       setItems(response.data);
+    }).catch(() => {
+      history.push('/');
+    });
+    proxy.get(`order2/cart/${orderId}`).then(response => {
+      setCart(response.data);
     }).catch(() => {
       history.push('/');
     });
@@ -59,6 +65,10 @@ const Modify = () => {
       <Element>
         <Order cart={items} cartTotal={cartTotal} />
       </Element>
+      {cart.length > 0 && <NavigationButton
+        onClick={() => history.push(`/maksu/${orderId}`)}>
+          Maksa
+      </NavigationButton>}
     </StyledWrapper>
   )
 }

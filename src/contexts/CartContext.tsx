@@ -27,6 +27,7 @@ export type GiftCard = {
 
 export interface CartContextType {
   orderId: string | undefined;
+  setOrder: (orderId: string) => void;
   status: string;
   cart: CartItem[];
   created: Date | undefined;
@@ -43,6 +44,7 @@ export interface CartContextType {
 
 const cartContextDefault: CartContextType = {
   orderId: undefined,
+  setOrder: () => null,
   created: undefined,
   status: '',
   cart: [],
@@ -82,6 +84,10 @@ const CartProvider: FC = ({ children }) => {
     proxy.get<CartItem[]>(`/order2/cart/${orderId}`).then(response => {
       setCart(response.data);
     });
+  };
+
+  const setOrder = (orderId: string) => {
+    setOrderId(orderId);
   }
 
   const updateCart = async (item: Item, quantity: number) => {
@@ -140,7 +146,7 @@ const CartProvider: FC = ({ children }) => {
     }).catch(() => {
       itemsSetters.resetCart();
     });
-  },[created, itemsSetters, orderId])
+  },[created, itemsSetters, orderId]);
 
   // Check on load, if we have an active cart for this order
   useEffect(() => {
@@ -171,6 +177,7 @@ const CartProvider: FC = ({ children }) => {
     <CartContext.Provider value={
       {
         orderId,
+        setOrder,
         cart,
         giftCards,
         created,

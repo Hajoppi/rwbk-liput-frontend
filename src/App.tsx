@@ -45,7 +45,7 @@ const App = () => {
           <Route path="/yhteenveto">
             <Summary />
           </Route>
-          <Route path="/maksu">
+          <Route path="/maksu/:orderId?">
             <Checkout />
           </Route>
           <Route path="/ohjeet">
