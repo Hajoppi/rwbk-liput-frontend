@@ -10,8 +10,10 @@ import { proxy } from "../utils/axios";
 export type Item = {
   id: string;
   name: string;
+  quantity: number;
   cost: number;
   limit: number;
+  left: number;
 }
 
 export interface ItemContextType {

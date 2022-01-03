@@ -1,14 +1,18 @@
 import { useContext, useState, ChangeEvent } from "react";
 import { CartContext } from "../contexts/CartContext";
+import { Item } from "../contexts/ItemContext";
 import { Label, Checkbox } from "../styles/Styles";
 
 
-const basePostalItem = {
+const basePostalItem: Item = {
   cost: 3,
   id: '60571',
   name: 'Postitus',
   limit: 0,
+  quantity: 1,
+  left: 1
 }
+
 const PostalComponent = () => {
   const { addItemToCart, removeItemFromCart } = useContext(CartContext);
   const [postalAdded, setPostal] = useState(false);

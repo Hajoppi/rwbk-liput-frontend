@@ -9,10 +9,10 @@ type PropsType = {
 }
 
 const TicketInfoText = ({item}: {item: Item}) => {
-  const maxAmount = item.limit;
-  if (maxAmount === 0)
+  const left = item.left;
+  if (left === 0)
     return <div><Label>lipputyyppi on loppunut</Label></div>
-  if (maxAmount < 30 )
+  if (left < 30 )
     return <div><Label>lipputyyppi on vähissä</Label></div>
   return null;
 }
