@@ -33,12 +33,22 @@ const PlaceOrder = () => {
   const [ selectedTicket, setSelectedTicket ] = useState<Ticket>();
   const [modalVisible, setModalVisible] = useState(false);
   const [sending, setSending] = useState(false);
+  const isReserve = selectedOrder.tickets.length === 1 && 
+    selectedOrder.tickets.some(item => item.name === 'Varasija') ;
   const unPlacedTickets = selectedOrder.tickets.reduce((a,b) => a + (b.seat_number === null ? 1 : 0), 0)
   const selectTicket = (ticket: Ticket) => {
     let result: Ticket | undefined = ticket;
     if (ticket.id === selectedTicket?.id) result = undefined;
     setSelectedTicket(result);
   };
+
+  const addTicket = () => {
+    setSending(true);
+    proxy.post('/admin/ticket/reserve', { orderId }).then(() => {
+    }).finally(() => {
+      setSending(false);
+    });;
+  }
 
   const sendOrderTickets = () => {
     setSending(true);
@@ -216,6 +226,7 @@ const PlaceOrder = () => {
         )}
         <Button onClick={sendOrderTickets} disabled={unPlacedTickets > 0 || selectedOrder.tickets_sent || sending}>Lähetä liput</Button>
         <Button onClick={downloadTickets} disabled={unPlacedTickets > 0 || sending}>Lataa liput</Button>
+        <Button onClick={addTicket} disabled={!isReserve || sending}>Lisää Varasijalle lippu</Button>
         <br></br>
         {selectedOrder.invoice && (
           <div>
