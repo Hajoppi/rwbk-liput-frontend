@@ -1,14 +1,11 @@
 import styled from 'styled-components';
-import { Wrapper, NavigationButton } from '../styles/Styles'
+import { Wrapper } from '../styles/Styles'
 import { useContext } from 'react';
-import { CartContext } from '../contexts/CartContext';
-import { useHistory, Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { TimeContext } from '../contexts/TimeContext';
-import TicketSelection from '../components/TicketSelection';
+import Signup from '../components/Signup';
 
 const Home = () => {
-  const { cartIsEmpty } = useContext(CartContext);
-  const history = useHistory();
   const { state } = useContext(TimeContext)
   if (state === 'NONE') return(
     <CenterWrapper>
@@ -55,10 +52,10 @@ const Home = () => {
           Jos olet epävarma kuinka toimia, ole hyvä ja <StyledLink to="/ohjeet">katso tarkemmat ohjeet.</StyledLink>
         </p>
       </Wrapper>
-      <h2>Konserttiliput</h2>
-      <TicketSelection></TicketSelection>
+      {/* <TicketSelection></TicketSelection>*/ }
       <CenterWrapper>
-        <NavigationButton disabled={cartIsEmpty} onClick={() => history.push("/yhteystiedot")}>Seuraava</NavigationButton>
+        <Signup/>
+       {/* <NavigationButton disabled={cartIsEmpty} onClick={() => history.push("/yhteystiedot")}>Seuraava</NavigationButton> */} 
       </CenterWrapper>
     </Wrapper>
   );

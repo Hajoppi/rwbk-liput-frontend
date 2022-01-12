@@ -33,9 +33,9 @@ export interface CartContextType {
   created: Date | undefined;
   giftCards: GiftCard[];
   paymentByInvoice: boolean;
-  addItemToCart: (item: Item) => void;
+  addItemToCart: (item: Item) => Promise<void>;
   getCart: () => void;
-  removeItemFromCart: (item: Item) => void;
+  removeItemFromCart: (item: Item) => Promise<void>;
   setPaymentByInvoice: (status: boolean) => void;
   cartIsEmpty: boolean;
   resetCart: () => void;
@@ -54,8 +54,8 @@ const cartContextDefault: CartContextType = {
   getCart: () => null,
   cartIsEmpty: true,
   setPaymentByInvoice: () => null,
-  addItemToCart: () => null,
-  removeItemFromCart: () => null,
+  addItemToCart: () => Promise.resolve(),
+  removeItemFromCart: () => Promise.resolve(),
   cartTotal: 0,
 }
 
@@ -110,12 +110,12 @@ const CartProvider: FC = ({ children }) => {
 
   const removeItemFromCart = (item: Item) => {
     const previousQuantity = cart.find(cartItem => cartItem.type_id === item.id)?.quantity || 0;
-    updateCart(item, previousQuantity - 1);
+    return updateCart(item, previousQuantity - 1);
   };
 
   const addItemToCart = (item: Item) => {
     const previousQuantity = cart.find(cartItem => cartItem.type_id === item.id)?.quantity || 0;
-    updateCart(item, previousQuantity + 1);
+    return updateCart(item, previousQuantity + 1);
   };
   
 
@@ -140,7 +140,7 @@ const CartProvider: FC = ({ children }) => {
       const { time, status } = response.data;
       setCreated(new Date(time));
       setStatus(status);
-      const totalAmountOfMinutes = status === 'new' ? 15 : 30;
+      const totalAmountOfMinutes = status === 'new' ? 1 : 30;
       const timeLeft = Math.max(new Date(time).getTime() + totalAmountOfMinutes * 60 * 1000 - Date.now(), 0);
       setTimeout(() => itemsSetters.resetCart(), timeLeft);
     }).catch(() => {
@@ -150,7 +150,9 @@ const CartProvider: FC = ({ children }) => {
 
   // Check on load, if we have an active cart for this order
   useEffect(() => {
-    if(orderId === undefined) return;
+    if(orderId === undefined) {
+      return;
+    }
     if(orderId && !itemsFetched) {
         proxy.get<CartItem[]>(`/order2/cart/${orderId}`)
           .then(response => {
@@ -167,7 +169,7 @@ const CartProvider: FC = ({ children }) => {
     })
   }, [setOrderId]);
 
-  const cartIsEmpty = itemsFetched && cart.length === 0;
+  const cartIsEmpty = orderId === '' || (itemsFetched && cart.length === 0);
 
   const cartTotal = 
     cart.reduce((a,b) => a + b.quantity*b.cost,0)

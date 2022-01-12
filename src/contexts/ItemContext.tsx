@@ -29,7 +29,7 @@ export const ItemContext = createContext<ItemContextType>(itemContextDefault);
 const ItemProvider: FC = ({ children }) => {
   const [availableItems, setItems] = useState<Item[]>(itemContextDefault.availableItems);
   const fetchAvailableItems = () => {
-    proxy.get('/order/tickets').then(response => {
+    proxy.get('/order2/tickets').then(response => {
       setItems(response.data);
     })
   }

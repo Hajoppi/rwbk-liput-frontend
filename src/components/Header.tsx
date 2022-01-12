@@ -17,6 +17,8 @@ const HeaderComponent = () => {
 const Header = styled.header`
   height: 100px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   width: 100%;
 `;

@@ -17,7 +17,7 @@ const Contact = () => {
   return (
     <Wrapper>
       <h1>Yhteystiedot</h1>
-      <ContactForm customerInfo={customerInfo} updateInfo={handleUpdate} />
+      <ContactForm customerInfo={customerInfo} updateInfo={handleUpdate} submitButtonText="Seuraava" />
     </Wrapper>
   )
 }

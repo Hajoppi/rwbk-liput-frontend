@@ -7,9 +7,10 @@ type PropType = {
   customerInfo: CustomerInfo;
   updateInfo: (customerInfo: CustomerInfo) => void;
   sending?: boolean;
+  submitButtonText?: string;
 }
 
-const ContactForm = ({ customerInfo, updateInfo, sending = false }: PropType) => {
+const ContactForm = ({ customerInfo, updateInfo, sending = false, submitButtonText = 'Päivitä' }: PropType) => {
   const firstName = useFormInput(customerInfo.firstName)
   const lastName = useFormInput(customerInfo.lastName)
   const email = useFormInput(customerInfo.email)
@@ -86,7 +87,7 @@ const ContactForm = ({ customerInfo, updateInfo, sending = false }: PropType) =>
           <option value="finland">Suomi</option>
         </Select>
       </Label>
-      <NavigationButton type="submit" disabled={!formReady || sending}>Päivitä</NavigationButton>
+      <NavigationButton type="submit" disabled={!formReady || sending}>{submitButtonText}</NavigationButton>
     </form>
   </>
   );
