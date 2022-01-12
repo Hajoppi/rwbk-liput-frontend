@@ -1,12 +1,17 @@
 import styled from 'styled-components';
-import { Wrapper } from '../styles/Styles'
+import { Wrapper, NavigationButton } from '../styles/Styles'
 import { useContext } from 'react';
-import { Link } from 'react-router-dom'
-import { TimeContext } from '../contexts/TimeContext';
+import { Link, useHistory } from 'react-router-dom'
+import { StateContext } from '../contexts/StateContext';
 import Signup from '../components/Signup';
 
+import TicketSelection from '../components/TicketSelection';
+import { CartContext } from '../contexts/CartContext';
+
 const Home = () => {
-  const { state } = useContext(TimeContext)
+  const { state, mode } = useContext(StateContext);
+  const {cartIsEmpty} = useContext(CartContext);
+  const history = useHistory();
   if (state === 'NONE') return(
     <CenterWrapper>
       <h1>Retuperän WBK:n konserttilipputilaus</h1>
@@ -52,10 +57,12 @@ const Home = () => {
           Jos olet epävarma kuinka toimia, ole hyvä ja <StyledLink to="/ohjeet">katso tarkemmat ohjeet.</StyledLink>
         </p>
       </Wrapper>
-      {/* <TicketSelection></TicketSelection>*/ }
+
+
+      {mode === 'ITEM' && <TicketSelection></TicketSelection>}
       <CenterWrapper>
-        <Signup/>
-       {/* <NavigationButton disabled={cartIsEmpty} onClick={() => history.push("/yhteystiedot")}>Seuraava</NavigationButton> */} 
+        {mode === 'SIGNUP' && <Signup/>}
+       {mode === 'ITEM' && <NavigationButton disabled={cartIsEmpty} onClick={() => history.push("/yhteystiedot")}>Seuraava</NavigationButton>} 
       </CenterWrapper>
     </Wrapper>
   );

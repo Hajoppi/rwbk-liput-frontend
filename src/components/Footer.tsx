@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
-import { TimeContext } from '../contexts/TimeContext';
+import { StateContext } from '../contexts/StateContext';
 import { theme } from '../styles/Styles';
 import { useContext } from 'react';
 
@@ -33,7 +33,7 @@ const Ball = styled.span<{selected: boolean}>`
 
 const FooterComponent = () => {
   const { pathname } = useLocation();
-  const {state} = useContext(TimeContext);
+  const {state} = useContext(StateContext);
   if (state === 'ENDED' || state === 'NONE') return null;
   const includePaths = ['/','/yhteystiedot','/maksu'];
   if(!includePaths.some(path=> path===pathname )) return null;
