@@ -12,6 +12,7 @@ import MultiProvider from './contexts/MultiProvider';
 import { GlobalStyle } from './styles/Styles';
 
 
+const Signups = lazy(() => import('./pages/Signups'));
 const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
 const Instructions = lazy(() => import('./pages/Instruction'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -44,6 +45,9 @@ const App = () => {
           </Route>
           <Route path="/yhteenveto">
             <Summary />
+          </Route>
+          <Route path="/ilmoittautuneet">
+            <Signups />
           </Route>
           <Route path="/maksu/:orderId?">
             <Checkout />

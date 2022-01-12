@@ -140,7 +140,7 @@ const CartProvider: FC = ({ children }) => {
       const { time, status } = response.data;
       setCreated(new Date(time));
       setStatus(status);
-      const totalAmountOfMinutes = status === 'new' ? 1 : 30;
+      const totalAmountOfMinutes = status === 'new' ? 15 : 30;
       const timeLeft = Math.max(new Date(time).getTime() + totalAmountOfMinutes * 60 * 1000 - Date.now(), 0);
       setTimeout(() => itemsSetters.resetCart(), timeLeft);
     }).catch(() => {

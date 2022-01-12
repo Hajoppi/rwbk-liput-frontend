@@ -11,7 +11,7 @@ const Timer = () => {
   const seconds = Math.floor(time-minutes*60);
   useEffect(() => {
     if (!created || status === 'ok') return;
-    const totalAmountOfMinutes = status === 'new' ? 1 : 30;
+    const totalAmountOfMinutes = status === 'new' ? 15 : 30;
     setTime(Math.floor((created.getTime() + totalAmountOfMinutes * 1000*60 - Date.now())/1000));
     const intervalValue = setInterval(() => {
       const newTime = Math.floor((created.getTime() + totalAmountOfMinutes * 1000 * 60 - Date.now())/1000);
